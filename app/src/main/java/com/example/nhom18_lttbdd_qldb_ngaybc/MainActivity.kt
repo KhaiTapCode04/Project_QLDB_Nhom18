@@ -1,24 +1,4 @@
-//import androidx.compose.foundation.BorderStroke
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.layout.*
-//import androidx.compose.foundation.rememberScrollState
-//import androidx.compose.foundation.shape.CircleShape
-//import androidx.compose.foundation.shape.RoundedCornerShape
-//import androidx.compose.foundation.verticalScroll
-//import androidx.compose.material.icons.Icons
-//import androidx.compose.material.icons.filled.ArrowBack
-//import androidx.compose.material.icons.filled.Close
-////import androidx.compose.material.icons.filled.Image
-//import androidx.compose.material.icons.filled.MoreVert
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.draw.clip
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.res.painterResource
-//import androidx.compose.ui.text.font.FontWeight
-//import androidx.compose.ui.tooling.preview.Preview
-//import androidx.compose.ui.unit.dp
-//import androidx.compose.ui.unit.sp
+
 
 
 package com.example.nhom18_lttbdd_qldb_ngaybc
@@ -32,113 +12,140 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Image
+//import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Greeting()
+            ContactEditScreen()
         }
     }
 }
-
+val darkBackground = Color(0xFF121212)
+val goldColor = Color(0xFFE6C28C)
+val brownCircle = Color(0xFF6D604A)
+val darkFieldColor = Color(0xFF1E1E1E)
+//val scrollState = rememberScrollState()
 @Composable
-fun Greeting() {
-    // Sử dụng Box với background màu trắng thay vì theme
-    Box(
+fun ContactEditScreen() {
+        Taskbar()
+}
+@Composable
+fun Taskbar(){
+    Row(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Hi",
-                fontSize = 24.sp,
-                color = Color.Black
+            .fillMaxWidth()
+            .padding(0.dp)
+            .background(Color(0xFFe5e5e5))
+            .padding(vertical = 5.dp),
+
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        IconButton(onClick = {}) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                modifier = Modifier
+                    .size(20.dp),
+                contentDescription = "Back",
+                tint = Color.Black
             )
         }
-    }
-}
-//@Composable
-//fun ContactEditScreen() {
-//    val darkBackground = Color(0xFF121212)
-//    val goldColor = Color(0xFFE6C28C)
-//    val brownCircle = Color(0xFF6D604A)
-//    val darkFieldColor = Color(0xFF1E1E1E)
-//
-//    val scrollState = rememberScrollState()
-//
-//    var nameValue by remember { mutableStateOf("Anh Của Trường") }
-//    var lastNameValue by remember { mutableStateOf("Họ") }
-//    var companyValue by remember { mutableStateOf("Công ty") }
-//    var phoneValue by remember { mutableStateOf("0396 294 644") }
-//
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(darkBackground)
-//    ) {
-//        Column(
+        Text(
+            text = "Chỉnh sửa người liên hệ",
+            color = Color.Black,
+            fontSize = 20.sp
+        )
+        Spacer(modifier = Modifier.width(15.dp))
+//        Button(
+//            onClick = { /* Handle save */ },
 //            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(16.dp)
-//        ) {
-//            // Top Bar - Giữ ngoài khu vực cuộn
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(bottom = 16.dp),
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                IconButton(onClick = { /* Handle back */ }) {
-//                    Icon(
-//                        imageVector = Icons.Default.ArrowBack,
-//                        contentDescription = "Back",
-//                        tint = Color.White
-//                    )
-//                }
+//                .width(70.dp)
+//                .height(40.dp),
+//            colors = ButtonDefaults.buttonColors(
+//                containerColor = Color(0xFF1976D2)),
+////            shape = RoundedCornerShape(16.dp),
+//            contentPadding = PaddingValues(0.dp)
+//        )
 //
-//                Text(
-//                    text = "Chỉnh sửa người liên hệ",
-//                    color = Color.White,
-//                    fontSize = 18.sp
-//                )
-//
-//                Row {
-//                    Button(
-//                        onClick = { /* Handle save */ },
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = goldColor
-//                        ),
-//                        shape = RoundedCornerShape(16.dp)
-//                    ) {
-//                        Text(
-//                            text = "Lưu",
-//                            color = Color.Black,
-//                            fontWeight = FontWeight.Bold
-//                        )
-//                    }
-//
-//                    IconButton(onClick = { /* Handle more options */ }) {
-//                        Icon(
-//                            imageVector = Icons.Default.MoreVert,
-//                            contentDescription = "More options",
-//                            tint = Color.White
-//                        )
-//                    }
-//                }
-//            }
-//
-//            // Phần nội dung có thể cuộn
+        ElevatedButton(
+            onClick = { /* xử lý sự kiện click */ },
+            modifier = Modifier
+                .width(70.dp)
+                .height(40.dp),
+            colors = ButtonDefaults.elevatedButtonColors(
+                containerColor = Color(0xFF2393e8),
+            ),
+            elevation = ButtonDefaults.elevatedButtonElevation(
+                defaultElevation = 3.dp,
+                pressedElevation = 3.dp,
+                focusedElevation = 3.dp,
+                hoveredElevation = 3.dp
+            ),
+            contentPadding = PaddingValues(0.dp)
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "save",
+                    color = Color.Black,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
+                )
+            }
+        }
+            IconButton(
+                onClick = { /* Handle more options */ },
+            ) {
+                Icon(
+                    modifier = Modifier,
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "More options",
+                    tint = Color.Black
+                )
+            }
+        }
+    }
+
+            // Phần nội dung có thể cuộn
 //            Column(
 //                modifier = Modifier
 //                    .fillMaxWidth()
@@ -184,8 +191,7 @@ fun Greeting() {
 //                    modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
 //                )
 //                TextField(
-//                    value = nameValue,
-//                    onValueChange = { nameValue = it },
+//
 //                    modifier = Modifier
 //                        .fillMaxWidth()
 //                        .padding(bottom = 8.dp),
@@ -200,8 +206,8 @@ fun Greeting() {
 //                    ),
 //                    shape = RoundedCornerShape(8.dp)
 //                )
-//
-//                // Last Name Field
+
+                // Last Name Field
 //                TextField(
 //                    value = lastNameValue,
 //                    onValueChange = { lastNameValue = it },
@@ -219,8 +225,8 @@ fun Greeting() {
 //                    ),
 //                    shape = RoundedCornerShape(8.dp)
 //                )
-//
-//                // Company Field
+
+                // Company Field
 //                TextField(
 //                    value = companyValue,
 //                    onValueChange = { companyValue = it },
@@ -238,8 +244,8 @@ fun Greeting() {
 //                    ),
 //                    shape = RoundedCornerShape(8.dp)
 //                )
-//
-//                // Phone Section
+
+//                 Phone Section
 //                Text(
 //                    text = "Điện thoại (Di động)",
 //                    color = Color.White,
@@ -286,7 +292,7 @@ fun Greeting() {
 //                            )
 //
 //                            Text(
-//                                text = phoneValue,
+//                                text = "hí",
 //                                color = Color.White,
 //                                fontSize = 16.sp,
 //                                modifier = Modifier.weight(1f)
@@ -475,12 +481,5 @@ fun Greeting() {
 //            }
 //        }
 //    }
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun ContactEditScreenPreview() {
-//    MaterialTheme {
-//        ContactEditScreen()
-//    }
-//}
+
+
