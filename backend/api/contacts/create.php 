@@ -1,0 +1,104 @@
+<?php
+// Set headers for CORS
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+// Include required files
+include_once '../config/database.php';
+include_once '../classes/Contact.php';
+include_once '../classes/Auth.php';
+include_once '../classes/Response.php';
+
+// Check if it's a POST request
+if($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    Response::error("Only POST method is allowed", 405);
+}
+
+// Get database connection
+$database = new Database();
+$db = $database->getConnection();
+
+// Initialize auth and contact objects
+$auth = new Auth();
+$contact = new Contact($db);
+
+// Get token from headers
+$token = $auth->getBearerToken();
+
+// Validate token
+if(!$token || !($user_data = $auth->validateToken($token))) {
+    Response::unauthorized("Invalid or missing token");
+}
+
+// Get user ID from token
+$user_id = $user_data->user_id;
+
+// Get posted data
+$data = json_decode(file_get_contents("php://input"));
+
+// Check if required fields are provided
+if(empty($data->first_name)) {
+    Response::error("First name is required");
+}
+
+// Set contact properties
+$contact->user_id = $user_id;
+$contact->first_name = $data->first_name;
+$contact->last_name = property_exists($data, 'last_name') ? $data->last_name : "";
+$contact->company = property_exists($data, 'company') ? $data->company : null;
+$contact->job_title = property_exists($data, 'job_title') ? $data->job_title : null;
+$contact->profile_picture = property_exists($data, 'profile_picture') ? $data->profile_picture : null;
+$contact->notes = property_exists($data, 'notes') ? $data->notes : null;
+$contact->favorite = property_exists($data, 'favorite') ? $data->favorite : false;
+
+// Create the contact
+if($contact->create()) {
+    $response_data = [
+        "contact_id" => $contact->contact_id,
+        "message" => "Contact was created successfully"
+    ];
+
+    // Add contact information if provided
+    if(property_exists($data, 'contact_info') && is_array($data->contact_info)) {
+        foreach($data->contact_info as $info) {
+            if(
+                property_exists($info, 'info_type') &&
+                property_exists($info, 'info_value')
+            ) {
+                $info_label = property_exists($info, 'info_label') ? $info->info_label : null;
+                $is_primary = property_exists($info, 'is_primary') ? $info->is_primary : false;
+
+                $contact->addContactInfo(
+                    $info->info_type,
+                    $info->info_value,
+                    $info_label,
+                    $is_primary
+                );
+            }
+        }
+    }
+
+    // Add contact to groups if provided
+    if(property_exists($data, 'groups') && is_array($data->groups)) {
+        foreach($data->groups as $group_id) {
+            $contact->addToGroup($group_id);
+        }
+    }
+
+    // Add tags to contact if provided
+    if(property_exists($data, 'tags') && is_array($data->tags)) {
+        foreach($data->tags as $tag_id) {
+            $contact->addTag($tag_id);
+        }
+    }
+
+    // Return success response
+    Response::success("Contact created successfully", $response_data);
+} else {
+    // Failed to create contact
+    Response::error("Failed to create contact");
+}
+?>

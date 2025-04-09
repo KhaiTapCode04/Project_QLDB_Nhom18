@@ -1,5 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="your_primary_color">#2196F3</color>
+    <color name="your_primary_dark_color">#1976D2</color>
+    <color name="your_accent_color">#FF4081</color>
+
+    <!-- Các màu cơ bản khác -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#757575</color>
+    <color name="light_gray">#EEEEEE</color>
+    <color name="colorSuccess">#4CAF50</color>  <!-- Màu xanh lá cây cho thành công -->
+    <color name="colorError">#F44336</color>    <!-- Màu đỏ cho lỗi -->
+    <color name="colorNeutral">#2196F3</color>
+
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+
+
+    <!-- Màu cho kết nối database -->
+    <color name="color_success">#4CAF50</color>
+    <color name="color_error">#F44336</color>
+    <color name="color_neutral">#2196F3</color>
+
+
+
+
+
+    <!-- Các màu bổ sung cho ứng dụng của bạn -->
+    <!-- Add this to your colors.xml file -->
+    <color name="ic_launcher_background">#4F46E5</color>
+    <color name="background_color">#F5F5F5</color>
+    <color name="text_color_primary">#212121</color>
+    <color name="text_color_secondary">#757575</color>
+    <color name="divider_color">#BDBDBD</color>
+
+    <!-- Màu cho các trạng thái khác nhau -->
+    <color name="success_color">#4CAF50</color>
+    <color name="error_color">#F44336</color>
+    <color name="warning_color">#FFC107</color>
+    <color name="info_color">#2196F3</color>
+    <!-- Add this to your colors.xml file -->
+    <color name="colorAccent">#FF4081</color>
 </resources>

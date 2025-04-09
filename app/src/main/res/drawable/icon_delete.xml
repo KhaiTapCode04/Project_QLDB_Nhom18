@@ -1,0 +1,55 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="28dp"
+    android:height="28dp"
+    android:viewportWidth="28"
+    android:viewportHeight="28">
+    <path
+        android:pathData="M21,7L7,7"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startColor="#EF4444"
+                android:endColor="#F97316"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M11,11V17"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startColor="#EF4444"
+                android:endColor="#F97316"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M17,11V17"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startColor="#EF4444"
+                android:endColor="#F97316"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M19,7V21C19,21.5304 18.7893,22.0391 18.4142,22.4142C18.0391,22.7893 17.5304,23 17,23H11C10.4696,23 9.9609,22.7893 9.5858,22.4142C9.2107,22.0391 9,21.5304 9,21V7M12,7V5C12,4.73478 12.1054,4.48043 12.2929,4.29289C12.4804,4.10536 12.7348,4 13,4H15C15.2652,4 15.5196,4.10536 15.7071,4.29289C15.8946,4.48043 16,4.73478 16,5V7"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startColor="#EF4444"
+                android:endColor="#F97316"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+</vector>

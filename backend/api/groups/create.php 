@@ -1,0 +1,78 @@
+<?php
+// backend/api/groups/create.php - Create new group
+
+// Set headers for CORS
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+// Include required files
+include_once '../config/database.php';
+include_once '../classes/ContactGroup.php';
+include_once '../classes/Auth.php';
+include_once '../classes/Response.php';
+
+// Check if it's a POST request
+if($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    Response::error("Only POST method is allowed", 405);
+}
+
+// Get database connection
+$database = new Database();
+$db = $database->getConnection();
+
+// Initialize auth and group objects
+$auth = new Auth();
+$group = new ContactGroup($db);
+
+// Get token from headers
+$token = $auth->getBearerToken();
+
+// Validate token
+if(!$token || !($user_data = $auth->validateToken($token))) {
+    Response::unauthorized("Invalid or missing token");
+}
+
+// Get user ID from token
+$user_id = $user_data->user_id;
+
+// Get posted data
+$data = json_decode(file_get_contents("php://input"));
+
+// Check if required fields are provided
+if(empty($data->group_name)) {
+    Response::error("Group name is required");
+}
+
+// Set group properties
+$group->user_id = $user_id;
+$group->group_name = $data->group_name;
+$group->description = property_exists($data, 'description') ? $data->description : null;
+$group->color = property_exists($data, 'color') ? $data->color : "#3498DB"; // Default blue color
+
+// Check if group name already exists
+if($group->groupNameExists()) {
+    Response::error("Group name already exists");
+}
+
+// Create the group
+if($group->create()) {
+    $response_data = [
+        "group_id" => $group->group_id,
+        "message" => "Group was created successfully"
+    ];
+
+    // Add contacts to group if provided
+    if(property_exists($data, 'contacts') && is_array($data->contacts)) {
+        $group->addContacts($data->contacts);
+    }
+
+    // Return success response
+    Response::success("Group created successfully", $response_data);
+} else {
+    // Failed to create group
+    Response::error("Failed to create group");
+}
+?>
