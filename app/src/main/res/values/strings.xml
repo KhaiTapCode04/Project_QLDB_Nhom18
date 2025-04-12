@@ -1,3 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Nhom18_LTTBDD_QLDB_NgayBC</string>
+    <string name="app_name">Quản lý danh bạ - Nhóm 18</string>
+    <string name="app_description">Quản lý danh bạ thông minh</string>
+    <string name="app_version">Phiên bản 1.0.0</string>
+
+    <!-- Strings liên quan đến kết nối database -->
+    <string name="db_connection_test">Kiểm tra kết nối cơ sở dữ liệu</string>
+    <string name="database_icon">Biểu tượng cơ sở dữ liệu</string>
+    <string name="test_connection">Kiểm tra kết nối</string>
+    <string name="checking_connection">Đang kiểm tra kết nối…</string>
+    <string name="not_connected">Chưa kiểm tra kết nối</string>
+    <string name="connection_info">Thông tin kết nối</string>
+    <string name="host_info">Máy chủ: 10.0.2.2:3306</string>
+    <string name="db_info">Database: qldb_nhom18</string>
+    <string name="user_info">Người dùng: root</string>
+    <string name="note_emulator">Lưu ý: Địa chỉ 10.0.2.2 được sử dụng để truy cập localhost từ máy ảo Android</string>
+    <string name="retry_connection">Thử lại kết nối</string>
 </resources>
