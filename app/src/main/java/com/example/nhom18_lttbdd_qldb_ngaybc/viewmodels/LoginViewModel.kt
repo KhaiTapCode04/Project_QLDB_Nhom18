@@ -1,0 +1,69 @@
+package com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels
+
+import androidx.compose.runtime.*
+import androidx.lifecycle.ViewModel
+import retrofit2.*
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.*
+
+data class ApiResponse(
+    val isSuccess: Boolean,
+    val reason: String,
+    val data: Data,
+)
+
+data class Data(
+    val id: String = "",
+    val username: String = "",
+    val email: String = "",
+)
+
+interface ApiService {
+    @FormUrlEncoded
+    @POST("login.php")
+    fun login(
+        @Field("username") username: String,
+        @Field("password") password: String
+    ): Call<ApiResponse>
+}
+
+class LoginViewModel : ViewModel() {
+    var username = mutableStateOf("")
+    var password = mutableStateOf("")
+    var loginError = mutableStateOf<String?>(null)
+
+    private val _userDataList = mutableStateOf<List<Data>>(emptyList())
+    val userDataList: State<List<Data>> = _userDataList
+
+    fun login(username: String, password: String, callback: (Data?) -> Unit) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://nettruyen.world/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val apiService = retrofit.create(ApiService::class.java)
+
+        apiService.login(username, password).enqueue(object : Callback<ApiResponse> {
+            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    if (apiResponse?.isSuccess == true) {
+                        _userDataList.value = listOf(apiResponse.data)
+                        loginError.value = null
+                        callback(apiResponse.data)
+                    } else {
+                        loginError.value = apiResponse?.reason ?: "Đăng nhập thất bại"
+                        callback(null)
+                    }
+                } else {
+                    loginError.value = "Lỗi máy chủ"
+                    callback(null)
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                loginError.value = "Lỗi kết nối: ${t.localizedMessage}"
+                callback(null)
+            }
+        })
+    }
+}
