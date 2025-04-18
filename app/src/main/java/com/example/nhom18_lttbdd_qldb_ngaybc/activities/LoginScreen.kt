@@ -9,11 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
-    val userlist by viewModel.userDataList
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+
     val errorMessage by viewModel.loginError
 
     Column(
@@ -53,7 +54,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
                     if (user == null) {
                         Log.d("chuc nang login:","dang nhap khong thanh cong.")
                     } else {
-                        Log.d("chuc nang login:","dang nhap thanh cong.")
+                        Log.d("chuc nang login:","${user.username} dang nhap thanh cong.")
                     }
                 }
             },
@@ -73,7 +74,11 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = { /* TODO: Điều hướng đến màn hình đăng ký */ }) {
+        TextButton(onClick = { /* TODO: Điều hướng đến màn hình đăng ký */
+        navController.navigate("register")
+        }
+
+        ) {
             Text("Chưa có tài khoản? Đăng ký")
         }
 

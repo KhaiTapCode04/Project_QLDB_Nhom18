@@ -44,6 +44,14 @@ android {
 }
 
 dependencies {
+//    icon
+    // Icon cơ bản
+    implementation("androidx.compose.material:material-icons-core:1.5.4")
+
+    // Icon mở rộng (có đủ FilterList, Group, v.v)
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     implementation("androidx.compose.ui:ui:1.5.4")
     implementation("androidx.compose.material:material:1.5.4")

@@ -2,30 +2,24 @@ package com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
+
+
+
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
-data class ApiResponse(
-    val isSuccess: Boolean,
-    val reason: String,
-    val data: Data,
-)
 
-data class Data(
-    val id: String = "",
-    val username: String = "",
-    val email: String = "",
-)
 
-interface ApiService {
-    @FormUrlEncoded
-    @POST("login.php")
-    fun login(
-        @Field("username") username: String,
-        @Field("password") password: String
-    ): Call<ApiResponse>
-}
+//data class Data(
+//    val id: String = "",
+//    val username: String = "",
+//    val email: String = "",
+//)
+
+import com.example.nhom18_lttbdd_qldb_ngaybc.models.ApiResponse
+import com.example.nhom18_lttbdd_qldb_ngaybc.models.Data
+import com.example.nhom18_lttbdd_qldb_ngaybc.network.ApiService
 
 class LoginViewModel : ViewModel() {
     var username = mutableStateOf("")
