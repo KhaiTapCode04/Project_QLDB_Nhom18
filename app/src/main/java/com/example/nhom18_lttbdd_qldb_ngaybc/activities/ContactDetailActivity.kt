@@ -1,1 +1,0 @@
-// ContactDetailActivity.kt

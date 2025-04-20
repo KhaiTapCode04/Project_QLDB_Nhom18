@@ -6,6 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -14,7 +15,7 @@ import com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels.LoginViewModel
 
 @Composable
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
-
+    val context = LocalContext.current
     val errorMessage by viewModel.loginError
 
     Column(
@@ -55,6 +56,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                         Log.d("chuc nang login:","dang nhap khong thanh cong.")
                     } else {
                         Log.d("chuc nang login:","${user.username} dang nhap thanh cong.")
+                        viewModel.saveUserInfo(user, context)
+                        navController.navigate("main")
                     }
                 }
             },

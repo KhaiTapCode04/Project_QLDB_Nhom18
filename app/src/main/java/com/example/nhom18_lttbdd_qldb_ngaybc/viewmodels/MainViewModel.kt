@@ -1,17 +1,29 @@
 package com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
+import com.example.nhom18_lttbdd_qldb_ngaybc.models.ApiResponsecontact
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
 
 
 import com.example.nhom18_lttbdd_qldb_ngaybc.models.Contact
+import com.example.nhom18_lttbdd_qldb_ngaybc.network.ApiService
 import com.example.nhom18_lttbdd_qldb_ngaybc.network.ContactApiService
+import com.google.gson.Gson
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 
 class MainViewModel : ViewModel() {
+
+    // Biến lưu danh sách kết quả tìm kiếm server (email/phone)
+    var searchResult = mutableStateOf<List<Contact>>(emptyList())
+        private set
+
+
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://nettruyen.world/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -19,8 +31,7 @@ class MainViewModel : ViewModel() {
 
     private val apiService = retrofit.create(ContactApiService::class.java)
 
-    var allContacts = mutableStateOf<List<Contact>>(emptyList())
-        private set
+    val allContacts = mutableStateOf<List<Contact>>(emptyList())
 
     var searchQuery = mutableStateOf("")
         private set
@@ -38,65 +49,127 @@ class MainViewModel : ViewModel() {
                 .groupBy { contact -> contact.name.firstOrNull()?.uppercase() ?: "#" }
         }
 
+    fun addContact(context: Context, name: String, email: String, phone: String, onResult: (Boolean) -> Unit) {
+        val userId = getUserIdFromPrefs(context)
+        if (userId.isNullOrEmpty()) {
+            onResult(false)
+            Log.d("IDuser:","Khong co userid")
+            return
+        }
+
+        apiService.addContact(userId, name, email, phone).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    fetchContacts(context)
+                    onResult(true)
+                } else {
+                    Log.e("addContact", "Server error: ${response.code()}")
+                    onResult(false)
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("addContact", "Network error: ${t.message}")
+                onResult(false)
+            }
+        })
+    }
+
+    /*fun deleteContact(contactId: Int, context: Context, onResult: (Boolean) -> Unit) {
+
+        val userId = getUserIdFromPrefs(context)
+        apiService.deleteContact(contactId, userId).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    onResult(true) // Nếu HTTP status 200 thì coi như xóa thành công
+                } else {
+                    onResult(false)
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                onResult(false)
+            }
+        })
+    }*/
+
+
     // Gọi API lấy danh sách liên lạc
-    fun fetchContacts() {
-        apiService.getAllContacts().enqueue(object : Callback<List<Contact>> {
+    fun fetchContacts(context: Context) {
+        Log.e("fetchContacts", "bat dau ham fetch")
+        val userId = getUserIdFromPrefs(context)
+
+        if (userId == null) {
+            Log.e("fetchContacts", "user id la null")
+            return
+        }
+        Log.e("fetchContacts", "userID: $userId")
+        apiService.getAllContacts(userId).enqueue(object : Callback<ApiResponsecontact> {
+            override fun onResponse(call: Call<ApiResponsecontact>, response: Response<ApiResponsecontact>) {
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+                        allContacts.value = body.data // Gán List<Contact> đúng chuẩn
+                    } else {
+                        Log.e("fetchContacts", "API báo lỗi: ${body?.reason}")
+                    }
+                } else {
+                    Log.e("fetchContacts", "HTTP lỗi: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponsecontact>, t: Throwable) {
+                Log.e("fetchContacts", "Lỗi mạng: ${t.localizedMessage}")
+            }
+        })
+    }
+
+
+    private fun getUserIdFromPrefs(context: Context): String? {
+        val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        return sharedPref.getString("userId", null)
+    }
+
+
+
+    fun searchContactByPhone(phone: String, context: Context, onResult: (Boolean) -> Unit) {
+        val userId = getUserIdFromPrefs(context) ?: return
+        apiService.searchByPhone(userId, phone).enqueue(object : Callback<List<Contact>> {
             override fun onResponse(call: Call<List<Contact>>, response: Response<List<Contact>>) {
                 if (response.isSuccessful) {
-                    allContacts.value = response.body() ?: emptyList()
+                    searchResult.value = response.body() ?: emptyList()
+                    onResult(true)
+                } else {
+                    onResult(false)
                 }
             }
 
             override fun onFailure(call: Call<List<Contact>>, t: Throwable) {
-                // TODO: Xử lý lỗi nếu cần
+                onResult(false)
             }
         })
     }
-
-    // Tìm kiếm
-    fun onSearchQueryChanged(newQuery: String) {
-        searchQuery.value = newQuery
-    }
-
-    // Thêm liên lạc mới
-    fun addContact(name: String, phone: String, onResult: (Boolean) -> Unit) {
-        apiService.addContact(name, phone).enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                onResult(response.isSuccessful)
+    fun searchContactByEmail(email: String, context: Context, onResult: (Boolean) -> Unit) {
+        val userId = getUserIdFromPrefs(context) ?: return
+        apiService.searchByEmail(userId, email).enqueue(object : Callback<List<Contact>> {
+            override fun onResponse(call: Call<List<Contact>>, response: Response<List<Contact>>) {
                 if (response.isSuccessful) {
-                    fetchContacts() // Làm mới lại danh sách sau khi thêm
+                    searchResult.value = response.body() ?: emptyList()
+                    onResult(true)
+                } else {
+                    onResult(false)
                 }
             }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
+            override fun onFailure(call: Call<List<Contact>>, t: Throwable) {
                 onResult(false)
             }
         })
     }
 
-    // Thêm email cho liên lạc
-    fun addEmail(contactId: String, email: String, onResult: (Boolean) -> Unit) {
-        apiService.addEmail(contactId, email).enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                onResult(response.isSuccessful)
-            }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                onResult(false)
-            }
-        })
-    }
 
-    // Thêm số điện thoại khác cho liên lạc
-    fun addPhone(contactId: String, phone: String, onResult: (Boolean) -> Unit) {
-        apiService.addPhone(contactId, phone).enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                onResult(response.isSuccessful)
-            }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                onResult(false)
-            }
-        })
-    }
+
+
 }

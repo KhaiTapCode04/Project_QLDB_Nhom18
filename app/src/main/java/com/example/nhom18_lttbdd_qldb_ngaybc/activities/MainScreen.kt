@@ -1,5 +1,7 @@
 package com.example.nhom18_lttbdd_qldb_ngaybc.activities
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,19 +12,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels.MainViewModel
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel = viewModel()) {
+fun MainScreen(navController: NavController, viewModel: MainViewModel = viewModel()) {
     val contacts = viewModel.groupedContacts
-    val searchQuery = viewModel.searchQuery
+
+    val context = LocalContext.current
 
     // Fetch data ngay lần đầu vào màn hình
     LaunchedEffect(Unit) {
-        viewModel.fetchContacts()
+        val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPref.getString("userId", null)
+        if (userId != null) {
+            Log.d("fetch:","Landau trong LaunchedEffect")
+            viewModel.fetchContacts(context)
+        }
     }
 
     Scaffold(
@@ -30,8 +42,13 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
             TopAppBar(
                 title = { Text("Danh bạ") },
                 actions = {
-                    IconButton(onClick = { /* TODO: Chuyển tới Profile */ }) {
-                        Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Profile")
+                    IconButton(onClick = { /* TODO: Chuyển tới Profile */
+                        navController.navigate("profile")
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Profile"
+                        )
                     }
                 }
             )
@@ -41,7 +58,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                FloatingActionButton(onClick = { /* TODO: Thêm liên lạc */ }) {
+                FloatingActionButton(onClick = { /* TODO: Thêm liên lạc */  navController.navigate("add_contact") }) {
                     Icon(Icons.Default.Add, contentDescription = "Thêm")
                 }
                 FloatingActionButton(onClick = { /* TODO: Xóa */ }) {
@@ -66,8 +83,11 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 .padding(16.dp)
         ) {
             OutlinedTextField(
-                value = searchQuery.value,
-                onValueChange = { viewModel.onSearchQueryChanged(it) },
+                value = viewModel.searchQuery.value,
+                onValueChange = {
+                    viewModel.searchQuery.value = it
+
+                },
                 label = { Text("Tìm kiếm liên lạc") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -92,7 +112,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                         ) {
                             ListItem(
                                 text = { Text(contact.name) },
-                                secondaryText = { Text(contact.phone) } // ✅ Dùng contact.phone (đúng với ViewModel)
+//                                secondaryText = { Text(contact.phone) } // ✅ Dùng contact.phone (đúng với ViewModel)
                             )
                         }
                     }

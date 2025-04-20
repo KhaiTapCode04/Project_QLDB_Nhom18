@@ -67,6 +67,8 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                 // TODO: Xử lý nút đăng ký
                 // Các giá trị nhập: viewModel.email.value, viewModel.username.value, viewModel.password.value, viewModel.confirmPassword.value
                 viewModel.register()
+
+                navController.popBackStack()
             },
             modifier = Modifier.fillMaxWidth()
         ) {

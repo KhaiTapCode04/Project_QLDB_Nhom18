@@ -44,6 +44,15 @@ android {
 }
 
 dependencies {
+//    material3
+    implementation("androidx.compose.material3:material3:1.2.0")
+
+
+
+
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+
+
 //    icon
     // Icon cơ bản
     implementation("androidx.compose.material:material-icons-core:1.5.4")

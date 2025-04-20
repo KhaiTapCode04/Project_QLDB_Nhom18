@@ -1,14 +1,13 @@
 package com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels
 
+import android.content.Context
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
-
 
 
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-
 
 
 //data class Data(
@@ -17,7 +16,8 @@ import retrofit2.http.*
 //    val email: String = "",
 //)
 
-import com.example.nhom18_lttbdd_qldb_ngaybc.models.ApiResponse
+
+import com.example.nhom18_lttbdd_qldb_ngaybc.models.ApiResponsedata
 import com.example.nhom18_lttbdd_qldb_ngaybc.models.Data
 import com.example.nhom18_lttbdd_qldb_ngaybc.network.ApiService
 
@@ -36,8 +36,8 @@ class LoginViewModel : ViewModel() {
             .build()
         val apiService = retrofit.create(ApiService::class.java)
 
-        apiService.login(username, password).enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+        apiService.login(username, password).enqueue(object : Callback<ApiResponsedata> {
+            override fun onResponse(call: Call<ApiResponsedata>, response: Response<ApiResponsedata>) {
                 if (response.isSuccessful) {
                     val apiResponse = response.body()
                     if (apiResponse?.isSuccess == true) {
@@ -54,10 +54,23 @@ class LoginViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponsedata>, t: Throwable) {
                 loginError.value = "Lỗi kết nối: ${t.localizedMessage}"
                 callback(null)
             }
         })
     }
+
+
+    //    luu thong tin user da dang nhap vao SharedPre
+    fun saveUserInfo(user: Data, context: Context) {
+        val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("userId", user.id)
+            putString("username", user.username)
+            putString("email", user.email)
+            apply()
+        }
+    }
+
 }
