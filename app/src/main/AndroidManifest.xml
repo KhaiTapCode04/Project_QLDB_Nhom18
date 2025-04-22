@@ -14,8 +14,10 @@
         android:theme="@style/Theme.Nhom18_LTTBDD_QLDB_NgayBC"
         tools:targetApi="31">
         <activity
-            android:name="database.login"
-            android:exported="true">
+            android:name="ui.test"
+
+            android:exported="true"
+            tools:ignore="MissingClass">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
