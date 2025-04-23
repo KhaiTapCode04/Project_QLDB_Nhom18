@@ -1,6 +1,7 @@
 // AddContactActivity.kt
 package com.example.nhom18_lttbdd_qldb_ngaybc.activities
 
+
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -10,11 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels.AddContactViewModel
 import com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels.MainViewModel
 
 @Composable
 fun AddContactScreen(
+    navController: NavController,
     viewModel: AddContactViewModel = viewModel(),
     mainViewModel: MainViewModel = viewModel(),
     onSaveSuccess: () -> Unit,
@@ -58,7 +61,7 @@ fun AddContactScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            OutlinedTextField(
+            /*OutlinedTextField(
                 value = viewModel.birthday.value,
                 onValueChange = { viewModel.birthday.value = it },
                 label = { Text("Ngày sinh") },
@@ -77,7 +80,7 @@ fun AddContactScreen(
                 onValueChange = { viewModel.note.value = it },
                 label = { Text("Ghi chú") },
                 modifier = Modifier.fillMaxWidth()
-            )
+            )*/
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -86,21 +89,16 @@ fun AddContactScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(onClick = {
-                    viewModel.saveContact(context, mainViewModel) { success ->
-                        if (success) {
-                            Log.d("Save contact:","Da luu thanh cong contact.")
-                            onSaveSuccess()
-                        } else {
-                            // TODO: Hiển thị thông báo lỗi
-                            Log.d("Save contact:","Khong save contact duoc")
-                        }
-                    }
+                    viewModel.addContact(context)
+
 
                 }) {
                     Text("Lưu")
                 }
 
-                OutlinedButton(onClick = onCancelClicked) {
+                OutlinedButton(onClick = {
+                    navController.popBackStack()
+                }) {
                     Text("Hủy")
                 }
             }
