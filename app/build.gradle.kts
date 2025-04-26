@@ -91,5 +91,13 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+
+    // Retrofit - để sử dụng phương pháp thứ hai
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.google.code.gson:gson:2.10.1")
+
+    implementation ("io.coil-kt:coil-compose:2.4.0")
 }
 
