@@ -18,10 +18,7 @@ import com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels.MainViewModel
 @Composable
 fun AddContactScreen(
     navController: NavController,
-    viewModel: AddContactViewModel = viewModel(),
-    mainViewModel: MainViewModel = viewModel(),
-    onSaveSuccess: () -> Unit,
-    onCancelClicked: () -> Unit
+    viewModel: AddContactViewModel = viewModel()
 ) {
 
     val context = LocalContext.current
@@ -90,6 +87,7 @@ fun AddContactScreen(
             ) {
                 Button(onClick = {
                     viewModel.addContact(context)
+                    Log.d("ket qua them contact:","Ket qua: ${viewModel.addContactResult.value}")
 
 
                 }) {

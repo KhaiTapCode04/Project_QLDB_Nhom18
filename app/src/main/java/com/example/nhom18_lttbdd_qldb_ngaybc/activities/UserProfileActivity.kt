@@ -1,5 +1,7 @@
 // UserProfileActivity.kt
 //ProfileScreen.kt
+package com.example.nhom18_lttbdd_qldb_ngaybc.activities
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 
@@ -15,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nhom18_lttbdd_qldb_ngaybc.viewmodels.ProfileViewModel
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
 import androidx.navigation.NavController
 
 @Composable

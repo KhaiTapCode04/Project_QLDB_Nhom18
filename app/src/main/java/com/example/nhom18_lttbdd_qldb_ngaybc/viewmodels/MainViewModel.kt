@@ -40,54 +40,84 @@ class MainViewModel : ViewModel() {
     }
 
     fun loadContacts(context: Context) {
-        val userId = getUserIdFromPrefs(context) ?: return
+        val userId = getUserIdFromPrefs(context)
+        if (userId == null) {
+            Log.e("MainViewModel", "Không tìm thấy userId trong SharedPreferences")
+            return
+        }
+
+        Log.d("MainViewModel", "Bắt đầu tải danh bạ cho userId: $userId")
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getContacts(userId).execute()
                 if (response.isSuccessful) {
-                    val json = response.body() ?: return@launch
-                    val root = JSONObject(json)
-                    if (root.getBoolean("isSuccess")) {
-                        val dataArray = root.getJSONArray("data")
-                        val loadedContacts = mutableListOf<ContactItem>()
+                    val json = response.body()
+                    Log.d("MainViewModel", "Phản hồi getContacts: $json")
 
-                        for (i in 0 until dataArray.length()) {
-                            val obj = dataArray.getJSONObject(i)
-                            val name = obj.getString("name")
-                            val contactId = obj.getInt("id")
+                    if (json != null) {
+                        val root = JSONObject(json)
+                        val isSuccess = root.getBoolean("isSuccess")
+                        Log.d("MainViewModel", "isSuccess: $isSuccess")
 
-                            // Lấy email
-                            val emailRes = api.getEmail(contactId).execute()
-                            val email = if (emailRes.isSuccessful) emailRes.body() ?: "trống" else "trống"
+                        if (isSuccess) {
+                            val dataArray = root.getJSONArray("data")
+                            val loadedContacts = mutableListOf<ContactItem>()
 
-                            // Lấy phone
-                            val phoneRes = api.getPhone(contactId).execute()
-                            val phone = if (phoneRes.isSuccessful) phoneRes.body() ?: "trống" else "trống"
+                            Log.d("MainViewModel", "Tổng số contact nhận được: ${dataArray.length()}")
 
-                            loadedContacts.add(ContactItem(name, contactId, phone, email))
+                            for (i in 0 until dataArray.length()) {
+                                val obj = dataArray.getJSONObject(i)
+                                val name = obj.getString("name")
+                                val contactId = obj.getInt("id")
+
+                                Log.d("MainViewModel", "Đang xử lý contact $i: name=$name, id=$contactId")
+
+                                // Lấy email
+                                val emailRes = api.getEmail(contactId).execute()
+                                val emailBody = emailRes.body()
+                                val email = if (emailRes.isSuccessful) emailBody ?: "trống" else "trống"
+                                Log.d("MainViewModel", "Email response: ${emailBody ?: "null"}")
+
+                                // Lấy phone
+                                val phoneRes = api.getPhone(contactId).execute()
+                                val phoneBody = phoneRes.body()
+                                val phone = if (phoneRes.isSuccessful) phoneBody ?: "trống" else "trống"
+                                Log.d("MainViewModel", "Phone response: ${phoneBody ?: "null"}")
+
+                                loadedContacts.add(ContactItem(name, contactId, phone, email))
+                            }
+
+                            Log.d("MainViewModel", "Hoàn tất tải danh bạ. Tổng cộng: ${loadedContacts.size}")
+                            contacts.value = loadedContacts
+                        } else {
+                            val reason = root.optString("reason")
+                            Log.e("MainViewModel", "API trả về lỗi: $reason")
                         }
-
-                        contacts.value = loadedContacts
+                    } else {
+                        Log.e("MainViewModel", "Phản hồi từ getContacts null")
                     }
+                } else {
+                    Log.e("MainViewModel", "Lỗi gọi API getContacts: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                Log.e("MainViewModel", "Lỗi tải danh bạ: ${e.message}")
+                Log.e("MainViewModel", "Lỗi tải danh bạ: ${e.message}", e)
             }
         }
     }
 
+
     interface ApiService {
         @FormUrlEncoded
-        @POST("contact/select.php")
+        @POST("contacts/select.php")
         fun getContacts(@Field("user_id") userId: String): Call<String>
 
         @FormUrlEncoded
-        @POST("contact/select_email.php")
+        @POST("contacts/select_email.php")
         fun getEmail(@Field("contact_id") contactId: Int): Call<String>
 
         @FormUrlEncoded
-        @POST("contact/select_phone.php")
+        @POST("contacts/select_phone.php")
         fun getPhone(@Field("contact_id") contactId: Int): Call<String>
     }
 }

@@ -1,6 +1,5 @@
 package com.example.nhom18_lttbdd_qldb_ngaybc.activities
 
-import ProfileScreen
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -53,14 +52,8 @@ fun AppNavGraph(navController: NavHostController) {
         }
         composable("add_contact") {
             AddContactScreen(
-                viewModel = addContactViewModel,
-                mainViewModel = mainViewModel,
-                onSaveSuccess = {
-                    navController.popBackStack() // Quay về main khi lưu thành công
-                },
-                onCancelClicked = {
-                    navController.popBackStack() // Quay về main nếu hủy
-                }
+                navController,
+                viewModel = addContactViewModel
             )
         }
 

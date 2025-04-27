@@ -5,10 +5,11 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -20,9 +21,9 @@ class AddContactViewModel : ViewModel() {
     val phone = mutableStateOf("")
     val addContactResult = mutableStateOf<String?>(null)
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://nettruyen.world/") //
-        .addConverterFactory(ScalarsConverterFactory.create())
+    val retrofit = Retrofit.Builder()
+        .baseUrl("https://nettruyen.world/")
+        .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     private val apiService = retrofit.create(ApiService::class.java)
@@ -38,26 +39,46 @@ class AddContactViewModel : ViewModel() {
         val currentUserId = getUserIdFromPrefs(context)
         val currentEmail = email.value
         val currentPhone = phone.value
-
+        Log.d("Add contact:","uid: $currentUserId, name: $currentName, email: $currentEmail, phone: $currentPhone.")
         if (currentUserId == null) {
             addContactResult.value = "Không tìm thấy userId trong thiết bị"
             return
         }
 
         viewModelScope.launch(Dispatchers.IO) {
+            Log.e("AddContact", "Bắt đầu launch")
             try {
-                val contactResponse = apiService.addContact(currentName, currentUserId).execute()
-                if (contactResponse.isSuccessful) {
-                    val contactId = contactResponse.body()?.toIntOrNull()
+                Log.e("AddContact", "Gọi API addContact với name: $currentName - userId: $currentUserId")
 
+                val contactResponse = apiService.addContact(currentName, currentUserId, "1").execute()
+                Log.e("AddContact", "Đã nhận response: isSuccessful = ${contactResponse.isSuccessful}")
+                if (contactResponse.isSuccessful) {
+
+                    val rawBodyText = contactResponse.errorBody()?.string()
+                    Log.e("AddContact", "Error body = $rawBodyText")
+
+                    val successBody = contactResponse.body()
+                    Log.e("AddContact", "Body = $successBody")
+
+                    val raw = contactResponse.raw()
+                    Log.e("AddContact", "Raw full: $raw")
+
+
+                    val rawResponseText = contactResponse.raw().toString()
+                    Log.e("AddContact", "Raw HTTP: $rawResponseText")
+
+                    val contactId = contactResponse.body()?.data?.get(0)?.contact_id
+                    Log.d("contactidvuatao: ",": $contactId")
                     if (contactId != null) {
                         Log.e("AddContact", "Contact ID: $contactId")
 
-                        val emailResponse = apiService.addEmail(contactId, currentEmail).execute()
+                        val emailResponse = apiService.addEmail(contactId.toInt(),"personal", currentEmail).execute()
+
+
                         if (emailResponse.isSuccessful) {
                             Log.e("AddContact", "Thêm email thành công")
 
-                            val phoneResponse = apiService.addPhone(contactId, currentPhone).execute()
+                            val phoneResponse = apiService.addPhone(contactId.toInt(),"mobile", currentPhone).execute()
                             if (phoneResponse.isSuccessful) {
                                 Log.e("AddContact", "Thêm phone thành công")
                                 addContactResult.value = "Thêm contact thành công!"
@@ -81,25 +102,49 @@ class AddContactViewModel : ViewModel() {
     }
 
     interface ApiService {
+
         @FormUrlEncoded
-        @POST("contact/add.php")
+        @POST("contacts/add.php")
         fun addContact(
             @Field("name") name: String,
-            @Field("userId") userId: String
-        ): retrofit2.Call<String>
+            @Field("user_id") user_Id: String,
+            @Field("group_id") group_id: String
+        ): retrofit2.Call<AddContactResponse>
 
         @FormUrlEncoded
-        @POST("contact/add_email.php")
+        @POST("contacts/add_email.php")
         fun addEmail(
             @Field("contact_id") contactId: Int,
-            @Field("email") email: String
-        ): retrofit2.Call<String>
+            @Field("email_type") emailType: String,
+            @Field("email_address") email: String
+        ): retrofit2.Call<AddEmailResponse>
 
         @FormUrlEncoded
-        @POST("contact/add_phone.php")
+        @POST("contacts/add_phone.php")
         fun addPhone(
             @Field("contact_id") contactId: Int,
-            @Field("phone") phone: String
-        ): retrofit2.Call<String>
+            @Field("phone_type") phoneType: String,
+            @Field("phone_number") phone: String
+        ): retrofit2.Call<AddPhoneResponse>
     }
 }
+data class AddContactResponse(
+    val isSuccess: Boolean,
+    val data: List<ContactData>,
+    val reason: String
+) {
+    data class ContactData(
+        val contact_id: String,
+        val user_id: String,
+        val name: String,
+        val group_id: String
+    )
+}
+data class AddEmailResponse(
+    @SerializedName("isSuccess") val isSuccess: Boolean,
+    @SerializedName("reason") val reason: String
+)
+data class AddPhoneResponse(
+    @SerializedName("isSuccess") val isSuccess: Boolean,
+    @SerializedName("reason") val reason: String
+)
