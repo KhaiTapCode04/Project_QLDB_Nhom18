@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Nhom18_LTTBDD_QLDB_NgayBC"
         tools:targetApi="31">
         <activity
-            android:name="ui.view.dowloadImg"
+            android:name="ui.view.img"
             android:exported="true"
             tools:ignore="MissingClass">
             <intent-filter>

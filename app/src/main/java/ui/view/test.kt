@@ -1,33 +1,24 @@
 package ui.view
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ui.viewmodel.test
+import ui.viewmodel.users.test
 import ui.viewmodel.users.LoginService
 
-class TestActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            UserScreen(viewModel())
-        }
-    }
-}
+
 
 @Composable
-fun UserScreen(viewModel: test) {
+fun UserScreen(navController: NavHostController, viewModel: test) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
@@ -35,7 +26,7 @@ fun UserScreen(viewModel: test) {
 
     val scope = rememberCoroutineScope()
     val name by viewModel.userName.collectAsState()
-
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -96,11 +87,19 @@ fun UserScreen(viewModel: test) {
                 scope.launch {
                     try {
                         val loginHandler = withContext(Dispatchers.IO) {
-                            LoginService.login(username, password)
+                            LoginService.login(context,username, password)
                         }
 
                         if (loginHandler != null) {
-                            viewModel.updateUserName(loginHandler.id.toInt(),loginHandler.username,loginHandler.email)
+                            viewModel.updateUserName(
+                                loginHandler.id.toInt(),
+                                loginHandler.username,
+                                loginHandler.email,
+                                loginHandler.profile_picture.toString()
+                            )
+                            navController.navigate("profile")
+
+
                         } else {
                             errorMessage = "Đăng nhập thất bại. Kiểm tra lại thông tin đăng nhập"
                         }

@@ -11,5 +11,5 @@ data class User(
     val id: String = "",
     val username: String = "",
     val email: String = "",
-    val profile_picture : String = ""
+    val profile_picture : String? = null
 )
