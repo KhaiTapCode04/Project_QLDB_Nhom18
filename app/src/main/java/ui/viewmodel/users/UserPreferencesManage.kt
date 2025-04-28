@@ -24,13 +24,15 @@ class UserPreferencesManager(private val context: Context) {
         private const val KEY_USER_ID = "user_id"
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_USER_EMAIL = "user_email"
+        private const val KEY_USER_PHONE = "user_phone"
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val KEY_LOCAL_PROFILE_PICTURE = "local_profile_picture"
 
         // Default values
-        private const val DEFAULT_USER_ID = ""
+        private const val DEFAULT_USER_ID = 0
         private const val DEFAULT_USER_NAME = ""
         private const val DEFAULT_USER_EMAIL = ""
+        private const val DEFAULT_USER_PHONE = ""
         private const val DEFAULT_PROFILE_PICTURE = ""
         private const val DEFAULT_LOCAL_PROFILE_PICTURE = ""
     }
@@ -45,8 +47,8 @@ class UserPreferencesManager(private val context: Context) {
     }
 
     // Get user ID
-    fun getUserId(): String {
-        return sharedPreferences.getString(KEY_USER_ID, DEFAULT_USER_ID) ?: DEFAULT_USER_ID
+    fun getUserId(): Int {
+        return sharedPreferences.getInt(KEY_USER_ID, DEFAULT_USER_ID) ?: DEFAULT_USER_ID
     }
 
     // Save user name
@@ -67,6 +69,12 @@ class UserPreferencesManager(private val context: Context) {
     // Get user email
     fun getUserEmail(): String {
         return sharedPreferences.getString(KEY_USER_EMAIL, DEFAULT_USER_EMAIL) ?: DEFAULT_USER_EMAIL
+    }
+    fun saveUserPhone(userPhone: String) {
+        sharedPreferences.edit().putString(KEY_USER_EMAIL, userPhone).apply()
+    }
+    fun getUserPhone(): String {
+        return sharedPreferences.getString(KEY_USER_PHONE, DEFAULT_USER_PHONE) ?: DEFAULT_USER_PHONE
     }
 
     // Save profile picture URL or path
@@ -92,11 +100,12 @@ class UserPreferencesManager(private val context: Context) {
     }
 
     // Save all user information at once
-    fun saveUserInfo(userId: String, userName: String, userEmail: String, profilePicture: String?) {
+    fun saveUserInfo(userId: Int, userName: String, userEmail: String,userPhone: String, profilePicture: String?) {
         sharedPreferences.edit().apply {
-            putString(KEY_USER_ID, userId)
+            putInt(KEY_USER_ID, userId)
             putString(KEY_USER_NAME, userName)
             putString(KEY_USER_EMAIL, userEmail)
+            putString(KEY_USER_PHONE, userPhone)
             putString(KEY_PROFILE_PICTURE, profilePicture)
             apply()
         }
@@ -117,6 +126,7 @@ class UserPreferencesManager(private val context: Context) {
             remove(KEY_USER_ID)
             remove(KEY_USER_NAME)
             remove(KEY_USER_EMAIL)
+            remove(KEY_USER_PHONE)
             remove(KEY_PROFILE_PICTURE)
             remove(KEY_LOCAL_PROFILE_PICTURE)
             apply()
@@ -124,8 +134,8 @@ class UserPreferencesManager(private val context: Context) {
     }
 
     // Check if user is logged in
-    fun isUserLoggedIn(): Boolean {
-        return getUserId().isNotEmpty()
+    fun isUserLoggedIn(): Int {
+        return getUserId()
     }
 
     /**

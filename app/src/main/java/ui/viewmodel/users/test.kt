@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class test : ViewModel() {
 
-    private val _user_id = MutableStateFlow<Int?>(null)
+    private val _user_id = MutableStateFlow<Int>(0)
     val user_id = _user_id.asStateFlow()
 
     private val _userName = MutableStateFlow("")
@@ -21,11 +21,14 @@ class test : ViewModel() {
     private val _profile_picture = MutableStateFlow("")
     val profile_picturel = _profile_picture.asStateFlow()
 
-    fun updateUserName(id: Int, name: String, email: String, phone: String, profile_picture: String) {
+    fun updateUser(id: Int, name: String, email: String, phone: String, profile_picture: String) {
         _user_id.value = id
         _userName.value = name
         _email.value = email
         _phone.value = phone
+        _profile_picture.value = profile_picture
+    }
+    fun updatePicture(profile_picture: String){
         _profile_picture.value = profile_picture
     }
 }

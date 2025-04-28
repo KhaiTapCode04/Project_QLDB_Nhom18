@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ui.view.Navigation
+import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.test
 
 @Composable
@@ -161,7 +162,13 @@ fun ProfileScreen(navController: NavHostController, viewModel: test) {
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedButton(
-                onClick = {},
+                onClick = {
+                    val user = UserPreferencesManager(context)
+                    user.clearUserInfo()
+                    navController.navigate("login"){
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error

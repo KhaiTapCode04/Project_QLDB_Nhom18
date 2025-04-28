@@ -125,7 +125,6 @@ fun TransparentCircleCropperScreen() {
             y = (offset.y + offsetChange.y).coerceIn(-maxY, maxY)
         )
     }
-
     // Hàm cắt ảnh thành hình tròn
     fun cropCircularImage(bitmap: Bitmap): Bitmap {
         val centerX = containerSize.width / 2f
@@ -307,6 +306,14 @@ fun TransparentCircleCropperScreen() {
                     onClick = {
                         croppedBitmap = cropCircularImage(bitmap!!)
                         isCropping = false
+                        if(croppedBitmap != null){
+                            scope.launch {
+                                var a = UploadImgViewModel.UploadImg1(context,1,croppedBitmap!!)
+                                if(a?.isSuccess==true){
+                                    Toast.makeText(context,a.toString(), Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
                     },
                     containerColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(56.dp)
@@ -363,13 +370,13 @@ fun TransparentCircleCropperScreen() {
                 )
             }
 
-            // Nút tải ảnh lên nếu đã cắt xong
+//             Nút tải ảnh lên nếu đã cắt xong
             if (croppedBitmap != null) {
                 Button(
                     onClick = {
                         scope.launch {
                             var a = UploadImgViewModel.UploadImg1(context,1,croppedBitmap!!)
-                            if(a == true){
+                            if(a?.isSuccess == true){
                                 Toast.makeText(context,a.toString(), Toast.LENGTH_LONG).show()
                             }
                         }

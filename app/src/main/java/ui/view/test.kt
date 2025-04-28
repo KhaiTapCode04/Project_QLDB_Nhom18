@@ -13,8 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ui.viewmodel.users.test
-import ui.viewmodel.users.LoginService
-
+import ui.viewmodel.users.UserService
 
 
 @Composable
@@ -87,18 +86,20 @@ fun UserScreen(navController: NavHostController, viewModel: test) {
                 scope.launch {
                     try {
                         val loginHandler = withContext(Dispatchers.IO) {
-                            LoginService.login(context,username, password)
+                            UserService.login(context,username, password)
                         }
 
                         if (loginHandler != null) {
-                            viewModel.updateUserName(
-                                loginHandler.id.toInt(),
+                            viewModel.updateUser(
+                                loginHandler.id,
                                 loginHandler.username,
                                 loginHandler.email,
                                 loginHandler.phone.toString(),
                                 loginHandler.profile_picture.toString()
                             )
-                            navController.navigate("profile")
+                            navController.navigate("profile"){
+                                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                            }
 
 
                         } else {

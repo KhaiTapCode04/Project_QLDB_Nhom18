@@ -1,204 +1,271 @@
-package ui.view
-import android.content.Context
-import androidx.compose.foundation.Image
+import android.R.attr.fontWeight
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import ui.viewmodel.users.test
+import ui.view.Navigation
+
+// Contact data class
+data class Contact(
+    val name: String,
+    val phoneNumber: String,
+    val type: String
+)
+
+// Sample contact list
+val contactList = listOf(
+    Contact("Lê Văn C", "0923456789", "Đồng nghiệp"),
+    Contact("Nguyễn Văn A", "0901234567", "Bạn bè")
+)
 
 @Composable
-fun UserProfileScreen(navController: NavHostController, viewModel: test) {
+fun ContactListScreen(navController: NavHostController) {
+    Scaffold(
+        topBar = {
+            Box(
+                modifier = Modifier
+                    .height(50.dp)
+                    .fillMaxSize()
+                    .background(color = Color(0xFF1774A6))
+            ){
+                Row(
+                    modifier = Modifier
+                        .height(50.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = "Hồ Sơ",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.W800,
+                        )
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "profile",
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clickable{
+                                navController.navigate("profile")
+                            },
+                    )
+                }
+            }
+        },
 
-    val userId by viewModel.user_id.collectAsState()
-    val userName by viewModel.userName.collectAsState()
-    val email by viewModel.email.collectAsState()
-    val profilePicture by viewModel.profile_picturel.collectAsState()
-
-    val context = LocalContext.current
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    selected = true,
+                    onClick = { /* Danh bạ tab action */ },
+                    icon = { Icon(Icons.Filled.Person, contentDescription = "Danh bạ") },
+                    label = { Text("Danh bạ") }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { /* Nhóm tab action */ },
+                    icon = { Icon(Icons.Filled.Person, contentDescription = "Nhóm") },
+                    label = { Text("Nhóm") }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { /* Cài đặt tab action */ },
+                    icon = { Icon(Icons.Filled.Person, contentDescription = "Cài đặt") },
+                    label = { Text("Cài đặt") }
+                )
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { /* Add contact action */ },
+                containerColor = Color(0xFF2196F3)
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = "Add Contact")
+            }
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
+                .padding(paddingValues)
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Phần avatar
-            Card(
+            // Search Bar with Filter
+            Row(
                 modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .size(120.dp),
-                shape = CircleShape,
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (profilePicture.isNotEmpty()) {
-                        // Sử dụng Coil để tải ảnh từ URL hoặc đường dẫn cục bộ
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data(profilePicture)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = "Ảnh đại diện",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        // Hiển thị avatar mặc định nếu không có ảnh
+                TextField(
+                    value = "",
+                    onValueChange = {},
+                    placeholder = { Text("Tìm kiếm liên hệ") },
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(8.dp)),
+                    singleLine = true,
+                    leadingIcon = {
                         Icon(
-                            imageVector = Icons.Filled.Person,
-                            contentDescription = "Avatar mặc định",
-                            modifier = Modifier.size(60.dp),
-                            tint = MaterialTheme.colorScheme.primary
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Search",
+                            modifier = Modifier
+                                .clickable{
+                                    navController.navigate("profile")
+                                },
                         )
                     }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                IconButton(onClick = { /* Filter action */ }) {
+                    Icon(
+                        imageVector = Icons.Outlined.FilterList,
+                        contentDescription = "Filter"
+                    )
                 }
             }
 
-            // Tên người dùng
-            Text(
-                text = userName,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-
-            // ID người dùng
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = "ID",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "ID: ${userId ?: "Chưa đăng nhập"}",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-
-            // Email
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Email,
-                    contentDescription = "Email",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = email,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Nút chỉnh sửa hồ sơ
-            Button(
-                onClick = {  },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                Text("Chỉnh sửa hồ sơ")
+            // Contact List
+            LazyColumn {
+                items(contactList) { contact ->
+                    ContactListItem(contact, navController)
+                }
             }
         }
     }
 }
 
 @Composable
-fun UserProfileCard(viewModel: test = viewModel()) {
-    // Thu thập trạng thái từ ViewModel
-    val userName by viewModel.userName.collectAsState()
-    val email by viewModel.email.collectAsState()
-    val profilePicture by viewModel.profile_picturel.collectAsState()
+fun ContactListItem(contact: Contact, navController: NavHostController) {
+    var showDropdownMenu by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+        // Placeholder Profile Image
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .size(48.dp)
+                .clip(CircleShape)
+                .background(Color.LightGray),
+            contentAlignment = Alignment.Center
         ) {
-            // Avatar
-            if (profilePicture.isNotEmpty()) {
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(profilePicture)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Ảnh đại diện",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "Profile",
+                tint = Color.White
+            )
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        // Contact Details
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = contact.name,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = contact.phoneNumber,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
+            Text(
+                text = contact.type,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
+        }
+
+        // More Options with Dropdown Menu
+        Box {
+            IconButton(onClick = { showDropdownMenu = true }) {
                 Icon(
-                    imageVector = Icons.Filled.Person,
-                    contentDescription = "Avatar mặc định",
-                    modifier = Modifier.size(60.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "More options"
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Thông tin người dùng
-            Column {
-                Text(
-                    text = userName,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+            DropdownMenu(
+                expanded = showDropdownMenu,
+                onDismissRequest = { showDropdownMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Xem chi tiết") },
+                    onClick = {
+                        // Handle view details action
+                        showDropdownMenu = false
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Xem chi tiết"
+                        )
+                    }
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = email,
-                    style = MaterialTheme.typography.bodyMedium
+                DropdownMenuItem(
+                    text = { Text("Chỉnh sửa") },
+                    onClick = {
+                        // Handle edit action
+                        showDropdownMenu = false
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Chỉnh sửa"
+                        )
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Chặn") },
+                    onClick = {
+// Handle block action
+                        showDropdownMenu = false
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Chặn"
+                        )
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Xóa") },
+                    onClick = {
+                        // Handle delete action
+                        showDropdownMenu = false
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Xóa"
+                        )
+                    }
                 )
             }
         }
     }
 }
+

@@ -28,4 +28,14 @@ interface ApiService {
         @Part description: MultipartBody.Part
     ): UploadResponse
 
+    @FormUrlEncoded
+    @POST("update_user.php")
+    suspend fun update_user(@Field("user_id") user_id: Int, @Field("email") email: String, @Field("phone") phone: String): Get_user
+
+
+    @FormUrlEncoded
+    @POST("update_user.php")
+    suspend fun update_pass(@Field("user_id") userId: Int, @Field("password") password: String, @Field("newPassword") newPassword: String): Get_user
+
+
 }
