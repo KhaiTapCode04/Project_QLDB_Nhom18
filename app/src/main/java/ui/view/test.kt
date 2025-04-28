@@ -95,6 +95,7 @@ fun UserScreen(navController: NavHostController, viewModel: test) {
                                 loginHandler.id.toInt(),
                                 loginHandler.username,
                                 loginHandler.email,
+                                loginHandler.phone.toString(),
                                 loginHandler.profile_picture.toString()
                             )
                             navController.navigate("profile")

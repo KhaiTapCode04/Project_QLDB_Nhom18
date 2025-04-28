@@ -17,7 +17,7 @@ object LoginService {
             userPrefs.saveUserInfo(check.id, check.username, check.email, profilePicture)
 
             // Tạo user với thông tin cơ bản
-            val user = User(check.id, check.username, check.email, check.profile_picture)
+            val user = User(check.id, check.username, check.email,check.phone, check.profile_picture)
 
             // Tải ảnh đại diện nếu có
             if (check.profile_picture?.isNotEmpty() == true) {

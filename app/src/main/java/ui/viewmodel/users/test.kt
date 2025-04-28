@@ -15,13 +15,17 @@ class test : ViewModel() {
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
+    private val _phone = MutableStateFlow("")
+    val phone = _phone.asStateFlow()
+
     private val _profile_picture = MutableStateFlow("")
     val profile_picturel = _profile_picture.asStateFlow()
 
-    fun updateUserName(id: Int, name: String, email: String, profile_picture: String) {
+    fun updateUserName(id: Int, name: String, email: String, phone: String, profile_picture: String) {
         _user_id.value = id
         _userName.value = name
         _email.value = email
+        _phone.value = phone
         _profile_picture.value = profile_picture
     }
 }

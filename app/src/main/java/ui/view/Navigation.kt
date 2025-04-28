@@ -1,5 +1,6 @@
 package ui.view
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -49,11 +50,16 @@ fun TodoNavigation() {
             )
         }
         composable("profile") {
-            UserProfileScreen(
+            ProfileScreen(
                 navController = navController,
                 viewModel = testViewModel
             )
         }
-
+        composable("EditProfile") {
+            EditProfile(
+                navController = navController,
+                viewModel = testViewModel
+            )
+        }
     }
 }

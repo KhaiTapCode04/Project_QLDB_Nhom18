@@ -23,11 +23,9 @@ interface ApiService {
     @Multipart
     @POST("upload_img.php")
     suspend fun uploadProfileImage(
-        @Part("user_id") user_id: RequestBody, // Sửa thành @Part với RequestBody
+        @Part("user_id") user_id: RequestBody,
         @Part image: MultipartBody.Part,
         @Part description: MultipartBody.Part
     ): UploadResponse
-
-
 
 }
