@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,6 +18,8 @@ fun EditProfileScreen(
     navController: NavController,
     viewModel: EditProfileViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -51,6 +54,8 @@ fun EditProfileScreen(
             Button(
                 onClick = {
                     // TODO: xử lý cập nhật profile (sau này)
+                    viewModel.updateUser(context = context, viewModel.name.value, viewModel.email.value, viewModel.phone.value)
+
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

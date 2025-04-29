@@ -37,12 +37,20 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Tên: ${viewModel.userName.value}", style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = "Tên: ${viewModel.userName.value}",
+                style = MaterialTheme.typography.titleLarge
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Email: ${viewModel.userEmail.value}", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Email: ${viewModel.userEmail.value}",
+                style = MaterialTheme.typography.titleMedium
+            )
             Spacer(modifier = Modifier.height(32.dp))
             Button(
-                onClick = { /* TODO: chức năng Edit */ },
+                onClick = { /* TODO: chức năng Edit */
+                    navController.navigate("edit_profile")
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Edit")

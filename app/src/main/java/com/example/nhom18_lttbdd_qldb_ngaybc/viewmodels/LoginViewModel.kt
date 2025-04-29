@@ -18,7 +18,7 @@ import retrofit2.http.*
 
 
 import com.example.nhom18_lttbdd_qldb_ngaybc.models.ApiResponsedata
-import com.example.nhom18_lttbdd_qldb_ngaybc.models.Data
+import com.example.nhom18_lttbdd_qldb_ngaybc.models.UserResponse
 import com.example.nhom18_lttbdd_qldb_ngaybc.network.ApiService
 
 class LoginViewModel : ViewModel() {
@@ -26,10 +26,10 @@ class LoginViewModel : ViewModel() {
     var password = mutableStateOf("")
     var loginError = mutableStateOf<String?>(null)
 
-    private val _userDataList = mutableStateOf<List<Data>>(emptyList())
-    val userDataList: State<List<Data>> = _userDataList
+    private val _userDataList = mutableStateOf<List<UserResponse>>(emptyList())
+    val userDataList: State<List<UserResponse>> = _userDataList
 
-    fun login(username: String, password: String, callback: (Data?) -> Unit) {
+    fun login(username: String, password: String, callback: (UserResponse?) -> Unit) {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://nettruyen.world/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -63,12 +63,13 @@ class LoginViewModel : ViewModel() {
 
 
     //    luu thong tin user da dang nhap vao SharedPre
-    fun saveUserInfo(user: Data, context: Context) {
+    fun saveUserInfo(user: UserResponse, context: Context) {
         val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putString("userId", user.id)
             putString("username", user.username)
             putString("email", user.email)
+            putString("phone", user.phone)
             apply()
         }
     }

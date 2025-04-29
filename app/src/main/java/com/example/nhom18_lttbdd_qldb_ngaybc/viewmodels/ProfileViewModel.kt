@@ -7,11 +7,13 @@ class ProfileViewModel : ViewModel() {
 
     val userName = mutableStateOf("")
     val userEmail = mutableStateOf("")
+    val userPhone = mutableStateOf("")
 
     fun loadUserData(context: Context) {
         val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         userName.value = sharedPref.getString("username", "") ?: ""
         userEmail.value = sharedPref.getString("email", "") ?: ""
+        userPhone.value = sharedPref.getString("phone", "") ?: ""
     }
 
     fun logout(context: Context) {
