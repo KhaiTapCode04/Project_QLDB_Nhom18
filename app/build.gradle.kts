@@ -1,6 +1,8 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+//    alias(libs.plugins.android.application)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+//    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -9,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.nhom18_lttbdd_qldb_ngaybc"
-        minSdk = 32
+        minSdk = 31
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
