@@ -1,10 +1,10 @@
-package ui.viewmodel.users
+package ui.viewmodel.contact
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class test : ViewModel() {
+class User_state : ViewModel() {
 
     private val _user_id = MutableStateFlow<Int>(0)
     val user_id = _user_id.asStateFlow()

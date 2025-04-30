@@ -1,14 +1,14 @@
 package data.repository
 
 
+import android.util.Log
 import data.api.ApiService
 import data.model.Contact
-import data.model.Get_contacts
+import email
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-import data.model.User
-import data.model.Get_user
+import kotlinx.coroutines.flow.StateFlow
 
 class ContactRepository {
     private val retrofit = Retrofit.Builder()
@@ -18,12 +18,29 @@ class ContactRepository {
 
     private val apiService = retrofit.create(ApiService::class.java)
 
-    suspend fun Get_contacts(user_id: Int): Contact? {
+    suspend fun getContacts(userId: Int): List<Contact> {
         return try {
-            val response = apiService.getContact(user_id)
-            if (response.isSuccess) response.data else null
+            val response = apiService.getContact(userId)
+            if (response.isSuccess) {
+                response.data
+            } else {
+                emptyList()
+            }
         } catch (e: Exception) {
-            null
+            emptyList()
+        }
+    }
+    suspend fun getEmail(userId: Int): List<email> {
+        return try {
+            val response = apiService.GetEmail(userId)
+            if (response.isSuccess) {
+                Log.d("check", response.isSuccess.toString())
+                response.data
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
         }
     }
 }

@@ -12,12 +12,12 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ui.viewmodel.users.test
+import ui.viewmodel.users.User_state
 import ui.viewmodel.users.UserService
 
 
 @Composable
-fun UserScreen(navController: NavHostController, viewModel: test) {
+fun UserScreen(navController: NavHostController, viewModel: User_state) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }

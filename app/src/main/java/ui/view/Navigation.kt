@@ -1,6 +1,7 @@
 package ui.view
 
 
+import ContactDetailScreen
 import ContactListScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,23 +10,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.google.gson.Gson
+import data.model.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ui.viewmodel.users.UserPreferencesManager
-import ui.viewmodel.users.test
+import ui.viewmodel.users.User_state
 
 class Navigation: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val testViewModel: test = viewModel()
+            val testViewModel: User_state = viewModel()
             TodoNavigation(viewModel = testViewModel)
         }
 }
@@ -39,15 +43,15 @@ class SharedViewModel : ViewModel() {
     }
 }
 @Composable
-fun TodoNavigation(viewModel: test) {
+fun TodoNavigation(viewModel: User_state) {
     val navController = rememberNavController()
     val sharedViewModel: SharedViewModel = viewModel()
-    val testViewModel: test = viewModel()
+    val testViewModel: User_state = viewModel()
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
     NavHost(
         navController = navController,
-        startDestination = "a"
+        startDestination = "login"
     ) {
         composable("login") {
             if(user.getUserId() == 0){
@@ -57,7 +61,7 @@ fun TodoNavigation(viewModel: test) {
             )}
             else{
                 viewModel.updateUser(user.getUserId(),user.getUserName(),user.getUserEmail(),user.getUserPhone(),user.getProfilePicture())
-                navController.navigate("profile")
+                navController.navigate("a")
             }
         }
         composable("profile") {
@@ -73,7 +77,16 @@ fun TodoNavigation(viewModel: test) {
             )
         }
         composable("a"){
-            ContactListScreen(navController = navController)
+                ContactListScreen(navController = navController, viewModel = testViewModel, context)
+        }
+        composable("email"){
+            a(navController = navController, viewModel = testViewModel, context)
+        }
+
+        composable("ContactDetail/{contactJson}",arguments = listOf(navArgument("contactJson") { type = NavType.StringType })){backStackEntry ->
+            val contactJson = backStackEntry.arguments?.getString("contactJson") ?: ""
+            val contact = Gson().fromJson(contactJson, Contact::class.java)
+            ContactDetailScreen(navController = navController,contact)
         }
     }
 }

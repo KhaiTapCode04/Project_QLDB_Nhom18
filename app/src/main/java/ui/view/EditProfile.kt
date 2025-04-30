@@ -1,5 +1,4 @@
 package ui.view
-import android.R.attr.bitmap
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -45,7 +44,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -56,12 +54,12 @@ import kotlinx.coroutines.withContext
 import ui.viewmodel.users.UploadImgViewModel
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.UserService
-import ui.viewmodel.users.test
+import ui.viewmodel.users.User_state
 import kotlin.math.max
 import kotlin.math.min
 
 @Composable
-fun EditProfile(navController: NavHostController, viewModel: test) {
+fun EditProfile(navController: NavHostController, viewModel: User_state) {
     val context = LocalContext.current
 
     // Collect initial values from viewModel

@@ -17,8 +17,8 @@ class UserPreferencesManager(private val context: Context) {
 
     // Constants
     companion object {
-        private const val PREF_NAME = "UserPreferences"
-        private const val TAG = "UserPreferencesManager"
+        internal const val PREF_NAME = "UserPreferences"
+
 
         // Keys for user data
         private const val KEY_USER_ID = "user_id"
@@ -156,7 +156,6 @@ class UserPreferencesManager(private val context: Context) {
 
             // Check if the connection was successful
             if (connection.responseCode != HttpURLConnection.HTTP_OK) {
-                Log.e(TAG, "HTTP error code: ${connection.responseCode}")
                 return@withContext null
             }
 
@@ -167,7 +166,6 @@ class UserPreferencesManager(private val context: Context) {
             connection.disconnect()
 
             if (bitmap == null) {
-                Log.e(TAG, "Failed to decode bitmap from URL")
                 return@withContext null
             }
 
@@ -200,7 +198,6 @@ class UserPreferencesManager(private val context: Context) {
 
             return@withContext localPath
         } catch (e: Exception) {
-            Log.e(TAG, "Error downloading image: ${e.message}")
             e.printStackTrace()
             return@withContext null
         }
@@ -226,7 +223,6 @@ class UserPreferencesManager(private val context: Context) {
 
             return BitmapFactory.decodeFile(localPath)
         } catch (e: Exception) {
-            Log.e(TAG, "Error loading profile image: ${e.message}")
             return null
         }
     }
