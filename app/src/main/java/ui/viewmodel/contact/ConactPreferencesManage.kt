@@ -20,7 +20,6 @@ class ConactPreferencesManage(private val context: Context) {
 
     fun saveOrUpdateContact(contact: Contact) {
         val currentList = getContactList().toMutableList()
-
         val index = currentList.indexOfFirst { it.contact_id == contact.contact_id }
 
         if (index != -1) {
@@ -37,7 +36,7 @@ class ConactPreferencesManage(private val context: Context) {
             .apply()
     }
 
-    fun getContactList(): List<Contact> {
+    fun getContactList(): List<Contact> {//string -> object -> algoth
         val json = sharedPreferences.getString(KEY_CONTACT_LIST, null)
         return if (json != null) {
             val type = object : TypeToken<List<Contact>>() {}.type

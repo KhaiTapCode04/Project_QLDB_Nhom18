@@ -24,3 +24,4 @@ class Constact_state: ViewModel() {
         _contacts.value = emptyList()
     }
 }
+

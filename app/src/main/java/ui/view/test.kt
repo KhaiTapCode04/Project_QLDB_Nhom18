@@ -1,5 +1,6 @@
 package ui.view
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,6 +23,7 @@ import ui.viewmodel.users.User_state
 import ui.viewmodel.users.UserService
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun UserScreen(navController: NavHostController, userViewModel: User_state,
                contactViewModel: Constact_state,
@@ -113,6 +115,7 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
                 errorMessage = null
 
                 scope.launch {
+//                    context
                     try {
                         val loginHandler = withContext(Dispatchers.IO) {
                             UserService.login(context,username, password)
@@ -159,3 +162,7 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
         }
     }
 }
+
+//suy thận
+
+// mã màu, UI

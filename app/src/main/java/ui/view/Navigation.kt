@@ -49,6 +49,7 @@ class Navigation: ComponentActivity() {
             }
         }
     }
+//    laucheffect()
     suspend fun get_email(viewModel: Email_state, context: Context) {
         if(EmailPreferencesManage(context).getEmailList().isEmpty()){
             val user_id = UserPreferencesManager(context).getUserId()
