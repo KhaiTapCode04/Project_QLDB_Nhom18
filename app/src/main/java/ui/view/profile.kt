@@ -22,12 +22,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import ui.view.Navigation
+import ui.viewmodel.contact.ConactPreferencesManage
 import ui.viewmodel.users.UserPreferencesManager
-import ui.viewmodel.users.test
+import ui.viewmodel.users.User_state
 
 @Composable
-fun ProfileScreen(navController: NavHostController, viewModel: test) {
+fun ProfileScreen(navController: NavHostController, viewModel: User_state) {
     val context = LocalContext.current
     val user_id by viewModel.user_id.collectAsState()
     val name by viewModel.userName.collectAsState()
@@ -164,7 +164,10 @@ fun ProfileScreen(navController: NavHostController, viewModel: test) {
             OutlinedButton(
                 onClick = {
                     val user = UserPreferencesManager(context)
+                    val contact = ConactPreferencesManage(context)
                     user.clearUserInfo()
+                    contact.clearContacts()
+                    viewModel.clearUser()
                     navController.navigate("login"){
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }

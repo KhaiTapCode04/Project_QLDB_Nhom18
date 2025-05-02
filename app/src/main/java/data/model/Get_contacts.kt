@@ -3,7 +3,7 @@ package data.model
 data class Get_contacts(
     val isSuccess: Boolean,
     val reason: String,
-    val data: Contact
+    val data: List<Contact>
 )
 data class Contact(
     val contact_id: Int,

@@ -1,9 +1,10 @@
 package data.api
 
+import Get_email
 import data.model.Get_contacts
 import data.model.Get_user
 import data.model.UploadResponse
-import data.model.User
+import kotlinx.coroutines.flow.StateFlow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Field
@@ -17,6 +18,7 @@ interface ApiService {
     @POST("login.php")
     suspend fun loginWithForm(@Field("username") email: String, @Field("password") password: String): Get_user
 
+    @FormUrlEncoded
     @POST("select.php")
     suspend fun getContact(@Field("user_id") user_id: Int): Get_contacts
 
@@ -37,5 +39,7 @@ interface ApiService {
     @POST("update_user.php")
     suspend fun update_pass(@Field("user_id") userId: Int, @Field("password") password: String, @Field("newPassword") newPassword: String): Get_user
 
-
+    @FormUrlEncoded
+    @POST("select_email.php")
+    suspend fun GetEmail(@Field("user_id") user_id: Int): Get_email
 }
