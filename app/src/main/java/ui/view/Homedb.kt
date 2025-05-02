@@ -1,5 +1,6 @@
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,36 +25,35 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import data.model.Contact
+import ui.view.Navigation
 import ui.viewmodel.contact.ConactPreferencesManage
+import ui.viewmodel.contact.Constact_state
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
 
 
 
-// Sample contact list
-var contactList: List<Contact> = listOf()
 
 
 
-suspend fun get_contact(viewModel: User_state, context: Context): List<data.model.Contact> {
-    if(ConactPreferencesManage(context).getContactList().isEmpty()){
+
+
+suspend fun reload_contact(viewModel: Constact_state, context: Context) {
         val user_id = UserPreferencesManager(context).getUserId()
         val contact = Contact_service().get_contact(user_id)
         contact.forEach {
             ConactPreferencesManage(context).saveOrUpdateContact(it)
-        }
+            viewModel.addOrUpdateContact(it)
     }
-    return ConactPreferencesManage(context).getContactList()
 }
 
 @Composable
-fun ContactListScreen(navController: NavHostController, viewModel: User_state, context: Context) {
-
+fun ContactListScreen(navController: NavHostController, viewModel: Constact_state, context: Context) {
     LaunchedEffect(Unit) {
-        contactList = get_contact(viewModel,context)
-
+        Navigation().get_contact(viewModel, context)
     }
+    val contactList by viewModel.contacts.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,7 +74,7 @@ fun ContactListScreen(navController: NavHostController, viewModel: User_state, c
                             contentDescription = "profile",
                             modifier = Modifier
                                 .size(48.dp)
-                                .clickable{
+                                .clickable {
                                     navController.navigate("profile")
                                 },
                         )
@@ -140,7 +140,7 @@ fun ContactListScreen(navController: NavHostController, viewModel: User_state, c
                             imageVector = Icons.Default.Person,
                             contentDescription = "Search",
                             modifier = Modifier
-                                .clickable{
+                                .clickable {
                                     navController.navigate("profile")
                                 },
                         )
@@ -155,7 +155,6 @@ fun ContactListScreen(navController: NavHostController, viewModel: User_state, c
                 }
             }
 
-            // Contact List
             LazyColumn {
                 items(contactList) { contact ->
                     ContactListItem(contact, navController)
@@ -286,3 +285,119 @@ fun ContactListItem(contact: Contact, navController: NavHostController) {
     }
 }
 
+//fun ContactListScreen(navController: NavHostController, viewModel: Constact_state, context: Context) {
+//    LaunchedEffect(Unit) {
+//        get_contact(viewModel,context)
+//    }
+//    val contactList by viewModel.contacts.collectAsState()
+//
+//    Scaffold(
+//        topBar = {
+//            TopAppBar(
+//
+//                title = { Text("Hồ Sơ") },
+//                navigationIcon = {
+//                    IconButton(onClick = { navController.navigateUp() }) {
+//                        Icon(
+//                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//                            contentDescription = "Quay lại"
+//                        )
+//                    }
+//                },
+//                actions = {
+//                    IconButton(onClick = { /* Profile action */ }) {
+//                        Icon(
+//                            imageVector = Icons.Default.Person,
+//                            contentDescription = "profile",
+//                            modifier = Modifier
+//                                .size(48.dp)
+//                                .clickable{
+//                                    navController.navigate("profile")
+//                                },
+//                        )
+//                    }
+//                })
+//        },
+//
+//        bottomBar = {
+//            NavigationBar {
+//                NavigationBarItem(
+//                    selected = true,
+//                    onClick = { /* Danh bạ tab action */ },
+//                    icon = { Icon(Icons.Filled.Person, contentDescription = "Danh bạ") },
+//                    label = { Text("Danh bạ") }
+//                )
+//                NavigationBarItem(
+//                    selected = false,
+//                    onClick = { /* Nhóm tab action */ },
+//                    icon = { Icon(Icons.Filled.Person, contentDescription = "Nhóm") },
+//                    label = { Text("Nhóm") }
+//                )
+//                NavigationBarItem(
+//                    selected = false,
+//                    onClick = { /* Cài đặt tab action */ },
+//                    icon = { Icon(Icons.Filled.Person, contentDescription = "Cài đặt") },
+//                    label = { Text("Cài đặt") }
+//                )
+//            }
+//        },
+//        floatingActionButton = {
+//            FloatingActionButton(
+//                onClick = { /* Add contact action */ },
+//                containerColor = Color(0xFF2196F3)
+//            ) {
+//                Icon(Icons.Filled.Add, contentDescription = "Add Contact")
+//            }
+//        }
+//    ) { paddingValues ->
+//
+//        Column(
+//            modifier = Modifier
+//                .padding(paddingValues)
+//                .fillMaxSize()
+//        ) {
+//            // Search Bar with Filter
+//            Divider()
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                TextField(
+//                    value = "",
+//                    onValueChange = {},
+//                    placeholder = { Text("Tìm kiếm liên hệ") },
+//                    modifier = Modifier
+//                        .weight(1f)
+//                        .clip(RoundedCornerShape(8.dp)),
+//                    singleLine = true,
+//                    leadingIcon = {
+//                        Icon(
+//                            imageVector = Icons.Default.Person,
+//                            contentDescription = "Search",
+//                            modifier = Modifier
+//                                .clickable{
+//                                    navController.navigate("profile")
+//                                },
+//                        )
+//                    }
+//                )
+//                Spacer(modifier = Modifier.width(8.dp))
+//                IconButton(onClick = { /* Filter action */ }) {
+//                    Icon(
+//                        imageVector = Icons.Outlined.FilterList,
+//                        contentDescription = "Filter"
+//                    )
+//                }
+//            }
+//
+//            // Contact List
+//            LazyColumn {
+//                items(contactList) { contact ->
+//                    ContactListItem(contact, navController)
+//                }
+//            }
+//        }
+//    }
+//}

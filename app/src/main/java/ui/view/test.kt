@@ -8,24 +8,53 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ui.viewmodel.contact.ConactPreferencesManage
+import ui.viewmodel.contact.Constact_state
+import ui.viewmodel.contact.EmailPreferencesManage
+import ui.viewmodel.contact.Email_state
+import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
 import ui.viewmodel.users.UserService
 
 
 @Composable
-fun UserScreen(navController: NavHostController, viewModel: User_state) {
+fun UserScreen(navController: NavHostController, userViewModel: User_state,
+               contactViewModel: Constact_state,
+               emailViewModel: Email_state) {
+    val context = LocalContext.current
+    val user = UserPreferencesManager(context)
+        if (user.getUserId() != 0) {
+            userViewModel.updateUser(
+                user.getUserId(),
+                user.getUserName(),
+                user.getUserEmail(),
+                user.getUserPhone(),
+                user.getProfilePicture()
+            )
+            ConactPreferencesManage(context).getContactList().forEach {
+                contactViewModel.addOrUpdateContact(it)
+            }
+            EmailPreferencesManage(context).getEmailList().forEach {
+                emailViewModel.addOrUpdateEmail(it)
+            }
+
+            navController.navigate("a") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val scope = rememberCoroutineScope()
-    val name by viewModel.userName.collectAsState()
-    val context = LocalContext.current
+    val name by userViewModel.userName.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,14 +119,17 @@ fun UserScreen(navController: NavHostController, viewModel: User_state) {
                         }
 
                         if (loginHandler != null) {
-                            viewModel.updateUser(
+                            userViewModel.updateUser(
                                 loginHandler.id,
                                 loginHandler.username,
                                 loginHandler.email,
                                 loginHandler.phone.toString(),
                                 loginHandler.profile_picture.toString()
                             )
-                            navController.navigate("profile"){
+
+                            Navigation().get_contact(contactViewModel, context)
+                            Navigation().get_email(emailViewModel,context)
+                            navController.navigate("a"){
                                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
                             }
 

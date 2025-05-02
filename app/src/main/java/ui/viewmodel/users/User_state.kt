@@ -31,4 +31,11 @@ class User_state : ViewModel() {
     fun updatePicture(profile_picture: String){
         _profile_picture.value = profile_picture
     }
+    fun  clearUser(){
+        _user_id.value = 0
+        _userName.value = ""
+        _email.value = ""
+        _phone.value = ""
+        _profile_picture.value = ""
+    }
 }

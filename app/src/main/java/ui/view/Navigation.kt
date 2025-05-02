@@ -3,6 +3,7 @@ package ui.view
 
 import ContactDetailScreen
 import ContactListScreen
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,6 +22,11 @@ import data.model.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ui.viewmodel.contact.ConactPreferencesManage
+import ui.viewmodel.contact.Constact_state
+import ui.viewmodel.contact.Contact_service
+import ui.viewmodel.contact.EmailPreferencesManage
+import ui.viewmodel.contact.Email_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
 
@@ -32,7 +38,32 @@ class Navigation: ComponentActivity() {
             val testViewModel: User_state = viewModel()
             TodoNavigation(viewModel = testViewModel)
         }
-}
+    }
+    suspend fun get_contact(viewModel: Constact_state, context: Context) {
+        if(ConactPreferencesManage(context).getContactList().isEmpty()) {
+            val user_id = UserPreferencesManager(context).getUserId()
+            val contact = Contact_service().get_contact(user_id)
+            contact.forEach {
+                ConactPreferencesManage(context).saveOrUpdateContact(it)
+                viewModel.addOrUpdateContact(it)
+            }
+        }
+    }
+    suspend fun get_email(viewModel: Email_state, context: Context) {
+        if(EmailPreferencesManage(context).getEmailList().isEmpty()){
+            val user_id = UserPreferencesManager(context).getUserId()
+            val email = Contact_service().get_email(user_id)
+            email.forEach {
+                EmailPreferencesManage(context).saveEmailList(it)
+                viewModel.addOrUpdateEmail(it)
+
+            }
+        }else{
+            EmailPreferencesManage(context).getEmailList().forEach {
+                viewModel.addOrUpdateEmail(it)
+            }
+        }
+    }
 }
 
 class SharedViewModel : ViewModel() {
@@ -46,7 +77,10 @@ class SharedViewModel : ViewModel() {
 fun TodoNavigation(viewModel: User_state) {
     val navController = rememberNavController()
     val sharedViewModel: SharedViewModel = viewModel()
-    val testViewModel: User_state = viewModel()
+    val UserViewModel: User_state = viewModel()
+    val ContactViewModel: Constact_state = viewModel()
+    val EmailViewModel: Email_state = viewModel()
+
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
     NavHost(
@@ -54,33 +88,32 @@ fun TodoNavigation(viewModel: User_state) {
         startDestination = "login"
     ) {
         composable("login") {
-            if(user.getUserId() == 0){
+
             UserScreen(
                 navController = navController,
-                viewModel = testViewModel
-            )}
-            else{
-                viewModel.updateUser(user.getUserId(),user.getUserName(),user.getUserEmail(),user.getUserPhone(),user.getProfilePicture())
-                navController.navigate("a")
-            }
+                userViewModel = UserViewModel,
+                contactViewModel = ContactViewModel,
+                emailViewModel = EmailViewModel
+            )
+
         }
         composable("profile") {
             ProfileScreen(
                 navController = navController,
-                viewModel = testViewModel
+                viewModel = UserViewModel
             )
         }
         composable("EditProfile") {
             EditProfile(
                 navController = navController,
-                viewModel = testViewModel
+                viewModel = UserViewModel
             )
         }
         composable("a"){
-                ContactListScreen(navController = navController, viewModel = testViewModel, context)
+            ContactListScreen(navController = navController, viewModel = ContactViewModel, context)
         }
         composable("email"){
-            a(navController = navController, viewModel = testViewModel, context)
+            a(navController = navController, viewModel = EmailViewModel, context)
         }
 
         composable("ContactDetail/{contactJson}",arguments = listOf(navArgument("contactJson") { type = NavType.StringType })){backStackEntry ->

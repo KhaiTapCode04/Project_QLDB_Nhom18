@@ -167,6 +167,7 @@ fun ProfileScreen(navController: NavHostController, viewModel: User_state) {
                     val contact = ConactPreferencesManage(context)
                     user.clearUserInfo()
                     contact.clearContacts()
+                    viewModel.clearUser()
                     navController.navigate("login"){
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }

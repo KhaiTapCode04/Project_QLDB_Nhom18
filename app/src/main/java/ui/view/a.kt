@@ -7,38 +7,41 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
-import contactList
-import data.model.Contact
 import email
-import get_contact
-import ui.viewmodel.contact.ConactPreferencesManage
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.contact.EmailPreferencesManage
 import ui.viewmodel.users.UserPreferencesManager
-import ui.viewmodel.users.User_state
+import ui.viewmodel.contact.Email_state
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.NavigationBar
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 var emailList: List<email> = listOf()
-suspend fun get_email(viewModel: User_state, context: Context): List<email> {
-    if(EmailPreferencesManage(context).getEmailList().isEmpty()){
+
+suspend fun reload_email(viewModel: Email_state, context: Context){
         val user_id = UserPreferencesManager(context).getUserId()
         val email = Contact_service().get_email(user_id)
         email.forEach {
             EmailPreferencesManage(context).saveEmailList(it)
+            viewModel.addOrUpdateEmail(it)
         }
-    }
-    return EmailPreferencesManage(context).getEmailList()
 }
 
 @Composable
-fun a(navController: NavHostController, viewModel: User_state, context: Context){
+fun a(navController: NavHostController, viewModel: Email_state, context: Context){
     LaunchedEffect(Unit) {
-        emailList = get_email(viewModel,context)
+        Navigation().get_email(viewModel,context)
     }
+    val emails by viewModel.emails.collectAsState()
+
     LazyColumn {
-        items(emailList) { email ->
-            Text(text = email.email_id.toString())
-            Log.d(email.email_id.toString(), email.email_address)
+        items(emails) { email ->
+            Text(text = email.email_address)
+            Log.d("Email", email.email_address)
         }
     }
 }
