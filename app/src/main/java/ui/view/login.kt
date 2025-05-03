@@ -1,5 +1,5 @@
 package ui.view
-
+//ten file test -> login
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -9,14 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ui.viewmodel.contact.ConactPreferencesManage
 import ui.viewmodel.contact.Constact_state
-import ui.viewmodel.contact.EmailPreferencesManage
 import ui.viewmodel.contact.Email_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
@@ -30,25 +27,23 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
                emailViewModel: Email_state) {
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
-        if (user.getUserId() != 0) {
-            userViewModel.updateUser(
-                user.getUserId(),
-                user.getUserName(),
-                user.getUserEmail(),
-                user.getUserPhone(),
-                user.getProfilePicture()
-            )
-            ConactPreferencesManage(context).getContactList().forEach {
-                contactViewModel.addOrUpdateContact(it)
-            }
-            EmailPreferencesManage(context).getEmailList().forEach {
-                emailViewModel.addOrUpdateEmail(it)
-            }
 
+    LaunchedEffect(Unit) {
+//        goi ham load
+//        dữ liệu gắn cho userviewmodel
+
+        userViewModel.loadUserData(context)
+    }
+//kiem tra bien quyet dinh
+    if (userViewModel.navigateToA) {
+        // Điều hướng khi có tín hiệu
+//      goi tiep Laucheffect dam bao goi 1 lan view khac thoi
+        LaunchedEffect(Unit) {
             navController.navigate("a") {
                 popUpTo("login") { inclusive = true }
             }
         }
+    }
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
