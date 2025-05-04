@@ -13,12 +13,8 @@ import ui.viewmodel.contact.EmailPreferencesManage
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.contact.Email_state
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 
 var emailList: List<email> = listOf()
 
@@ -32,9 +28,9 @@ suspend fun reload_email(viewModel: Email_state, context: Context){
 }
 
 @Composable
-fun a(navController: NavHostController, viewModel: Email_state, context: Context){
+fun itemEmail(navController: NavHostController, viewModel: Email_state, context: Context){
     LaunchedEffect(Unit) {
-        Navigation().get_email(viewModel,context)
+        viewModel.get_email(context)
     }
     val emails by viewModel.emails.collectAsState()
 

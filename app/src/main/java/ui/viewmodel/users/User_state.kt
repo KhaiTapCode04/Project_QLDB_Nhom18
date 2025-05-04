@@ -33,8 +33,13 @@ class User_state : ViewModel() {
     lateinit var emailViewModel: Email_state
 
     // Kết quả cần báo về UI (UI State), biến lưu quyết định
-    var navigateToA by mutableStateOf(false)
+    var navigateToHome by mutableStateOf(false)
         private set
+    init {
+//        buoc khoi tao chinh sau khi khai bao
+        contactViewModel = Constact_state()
+        emailViewModel = Email_state()
+    }
 //viết cái hàm load cho view sử dụng
     fun loadUserData(context: Context) {
         val user = UserPreferencesManager(context)
@@ -57,10 +62,13 @@ class User_state : ViewModel() {
             }
 
             // Yêu cầu UI điều hướng
-            navigateToA = true
+            navigateToHome = true
         }
     }
 
+    fun setNavigatetoAfalse(){
+        navigateToHome = false
+    }
     fun updateUser(id: Int, name: String, email: String, phone: String, profile_picture: String) {
         _user_id.value = id
         _userName.value = name

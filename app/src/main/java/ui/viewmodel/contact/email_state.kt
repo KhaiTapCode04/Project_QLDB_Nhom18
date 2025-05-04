@@ -1,10 +1,12 @@
 
 package ui.viewmodel.contact
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import email
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ui.viewmodel.users.UserPreferencesManager
 
 class Email_state : ViewModel() {
     private val _emails = MutableStateFlow<List<email>>(emptyList())
@@ -22,5 +24,20 @@ class Email_state : ViewModel() {
 
     fun clearAllEmails() {
         _emails.value = emptyList()
+    }
+    suspend fun get_email(context: Context) {
+        if(EmailPreferencesManage(context).getEmailList().isEmpty()){
+            val user_id = UserPreferencesManager(context).getUserId()
+            val email = Contact_service().get_email(user_id)
+            email.forEach {
+                EmailPreferencesManage(context).saveEmailList(it)
+                addOrUpdateEmail(it)
+
+            }
+        }else{
+            EmailPreferencesManage(context).getEmailList().forEach {
+                addOrUpdateEmail(it)
+            }
+        }
     }
 }

@@ -60,27 +60,6 @@ fun AddContactScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            /*OutlinedTextField(
-                value = viewModel.birthday.value,
-                onValueChange = { viewModel.birthday.value = it },
-                label = { Text("Ngày sinh") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = viewModel.address.value,
-                onValueChange = { viewModel.address.value = it },
-                label = { Text("Địa chỉ") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = viewModel.note.value,
-                onValueChange = { viewModel.note.value = it },
-                label = { Text("Ghi chú") },
-                modifier = Modifier.fillMaxWidth()
-            )*/
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Row(

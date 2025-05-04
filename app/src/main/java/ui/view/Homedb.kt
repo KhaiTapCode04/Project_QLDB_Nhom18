@@ -30,7 +30,6 @@ import ui.viewmodel.contact.ConactPreferencesManage
 import ui.viewmodel.contact.Constact_state
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.users.UserPreferencesManager
-import ui.viewmodel.users.User_state
 
 
 
@@ -39,19 +38,12 @@ import ui.viewmodel.users.User_state
 
 
 
-suspend fun reload_contact(viewModel: Constact_state, context: Context) {
-        val user_id = UserPreferencesManager(context).getUserId()
-        val contact = Contact_service().get_contact(user_id)
-        contact.forEach {
-            ConactPreferencesManage(context).saveOrUpdateContact(it)
-            viewModel.addOrUpdateContact(it)
-    }
-}
+
 
 @Composable
 fun ContactListScreen(navController: NavHostController, viewModel: Constact_state, context: Context) {
     LaunchedEffect(Unit) {
-        Navigation().get_contact(viewModel, context)
+        viewModel.get_contact(context)
     }
     val contactList by viewModel.contacts.collectAsState()
     Scaffold(
@@ -106,7 +98,9 @@ fun ContactListScreen(navController: NavHostController, viewModel: Constact_stat
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Add contact action */ },
+                onClick = { /* Add contact action */
+                navController.navigate("addcontact")
+                },
                 containerColor = Color(0xFF2196F3)
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Add Contact")

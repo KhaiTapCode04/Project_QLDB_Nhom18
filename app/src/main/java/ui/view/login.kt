@@ -31,15 +31,15 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
     LaunchedEffect(Unit) {
 //        goi ham load
 //        dữ liệu gắn cho userviewmodel
-
         userViewModel.loadUserData(context)
     }
 //kiem tra bien quyet dinh
-    if (userViewModel.navigateToA) {
+    if (userViewModel.navigateToHome) {
+        userViewModel.setNavigatetoAfalse()
         // Điều hướng khi có tín hiệu
 //      goi tiep Laucheffect dam bao goi 1 lan view khac thoi
         LaunchedEffect(Unit) {
-            navController.navigate("a") {
+            navController.navigate("homedb") {
                 popUpTo("login") { inclusive = true }
             }
         }
@@ -125,8 +125,10 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
                                 loginHandler.profile_picture.toString()
                             )
 
-                            Navigation().get_contact(contactViewModel, context)
-                            Navigation().get_email(emailViewModel,context)
+//                            Navigation().get_contact(contactViewModel, context)
+                            contactViewModel.get_contact(context)
+//                            Navigation().get_email(emailViewModel,context)
+                            emailViewModel.get_email(context)
                             navController.navigate("a"){
                                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
                             }
@@ -157,7 +159,3 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
         }
     }
 }
-
-//suy thận
-
-// mã màu, UI

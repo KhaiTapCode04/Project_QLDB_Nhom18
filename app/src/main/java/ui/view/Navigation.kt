@@ -22,6 +22,7 @@ import data.model.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ui.viewmodel.contact.AddContactViewModel
 import ui.viewmodel.contact.ConactPreferencesManage
 import ui.viewmodel.contact.Constact_state
 import ui.viewmodel.contact.Contact_service
@@ -37,32 +38,6 @@ class Navigation: ComponentActivity() {
         setContent {
             val testViewModel: User_state = viewModel()
             TodoNavigation(viewModel = testViewModel)
-        }
-    }
-    suspend fun get_contact(viewModel: Constact_state, context: Context) {
-        if(ConactPreferencesManage(context).getContactList().isEmpty()) {
-            val user_id = UserPreferencesManager(context).getUserId()
-            val contact = Contact_service().get_contact(user_id)
-            contact.forEach {
-                ConactPreferencesManage(context).saveOrUpdateContact(it)
-                viewModel.addOrUpdateContact(it)
-            }
-        }
-    }
-//    laucheffect()
-    suspend fun get_email(viewModel: Email_state, context: Context) {
-        if(EmailPreferencesManage(context).getEmailList().isEmpty()){
-            val user_id = UserPreferencesManager(context).getUserId()
-            val email = Contact_service().get_email(user_id)
-            email.forEach {
-                EmailPreferencesManage(context).saveEmailList(it)
-                viewModel.addOrUpdateEmail(it)
-
-            }
-        }else{
-            EmailPreferencesManage(context).getEmailList().forEach {
-                viewModel.addOrUpdateEmail(it)
-            }
         }
     }
 }
@@ -110,17 +85,24 @@ fun TodoNavigation(viewModel: User_state) {
                 viewModel = UserViewModel
             )
         }
-        composable("a"){
+        composable("homedb"){
             ContactListScreen(navController = navController, viewModel = ContactViewModel, context)
         }
         composable("email"){
-            a(navController = navController, viewModel = EmailViewModel, context)
+            itemEmail(navController = navController, viewModel = EmailViewModel, context)
         }
 
         composable("ContactDetail/{contactJson}",arguments = listOf(navArgument("contactJson") { type = NavType.StringType })){backStackEntry ->
             val contactJson = backStackEntry.arguments?.getString("contactJson") ?: ""
             val contact = Gson().fromJson(contactJson, Contact::class.java)
             ContactDetailScreen(navController = navController,contact)
+        }
+
+        composable("addcontact") {
+            AddContactScreen(
+                navController = navController,
+                viewModel = AddContactViewModel()
+            )
         }
     }
 }
