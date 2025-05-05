@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ui.viewmodel.contact.ConactPreferencesManage
-import ui.viewmodel.contact.Contact_state
+
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.contact.EmailPreferencesManage
 import ui.viewmodel.contact.Email_state
@@ -32,6 +32,8 @@ import ui.viewmodel.contact.PhonePreferencesManage
 import ui.viewmodel.contact.Phone_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
+
+import ui.viewmodel.contact.Contact_state
 
 class Navigation: ComponentActivity() {
 
@@ -110,13 +112,14 @@ fun TodoNavigation(viewModel: User_state) {
     ) {
         composable("login") {
 
-            UserScreen(
-                navController = navController,
-                userViewModel = UserViewModel,
-                contactViewModel = ContactViewModel,
-                emailViewModel = EmailViewModel,
-            )
+//            UserScreen(
+//                navController = navController,
+//                userViewModel = UserViewModel,
+//                contactViewModel = ContactViewModel,
+//                emailViewModel = EmailViewModel,
+//            )
 
+            AddContact2(navController)
         }
         composable("profile") {
             ProfileScreen(
@@ -136,9 +139,9 @@ fun TodoNavigation(viewModel: User_state) {
         composable("a"){
             ContactListScreen(navController = navController, viewModel = ContactViewModel, context)
         }
-        composable("email"){
-            a(navController = navController, viewModel = EmailViewModel, context)
-        }
+//        composable("email"){
+//            a(navController = navController, viewModel = EmailViewModel, context)
+//        }
 
         composable("ContactDetail/{contactJson}",arguments = listOf(navArgument("contactJson") { type = NavType.StringType })){backStackEntry ->
             val contactJson = backStackEntry.arguments?.getString("contactJson") ?: ""

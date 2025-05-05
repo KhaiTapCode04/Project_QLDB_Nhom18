@@ -47,7 +47,7 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
         Navigation().get_contact(viewModel, context)
     }
     val contactList by viewModel.contacts.collectAsState()
-    val selectedTabIndex = 0
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -76,34 +76,11 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
                 })
         },
 
-<<<<<<< HEAD
-        bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = true,
-                    onClick = { /* Danh bạ tab action */ },
-                    icon = { Icon(Icons.Filled.Person, contentDescription = "Danh bạ") },
-                    label = { Text("Danh bạ") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { /* Nhóm tab action */
-                    navController.navigate("groupscreen")
-                    },
-                    icon = { Icon(Icons.Filled.Person, contentDescription = "Nhóm") },
-                    label = { Text("Nhóm") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { /* Cài đặt tab action */ },
-                    icon = { Icon(Icons.Filled.Person, contentDescription = "Cài đặt") },
-                    label = { Text("Cài đặt") }
-                )
-            }
-        },
-=======
+
+
+
         bottomBar = {BottomNavigationBar()},
->>>>>>> 59b1c6e43e71682fa1a51d638c8c78168a296587
+
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Add contact action */ },
@@ -284,7 +261,4 @@ fun ContactListItem(contact: Contact, navController: NavHostController) {
         }
     }
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 59b1c6e43e71682fa1a51d638c8c78168a296587

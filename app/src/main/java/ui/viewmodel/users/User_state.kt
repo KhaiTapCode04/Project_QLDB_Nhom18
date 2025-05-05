@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import ui.viewmodel.contact.Constact_state
+import ui.viewmodel.contact.Contact_state
 import ui.viewmodel.contact.Email_state
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
@@ -29,7 +29,7 @@ class User_state : ViewModel() {
     private val _profile_picture = MutableStateFlow("")
     val profile_picturel = _profile_picture.asStateFlow()
 //khai báo hai biến này để sử dụng addorupdate trong contactviewmodel,emailviewmodel
-    lateinit var contactViewModel: Constact_state
+    lateinit var contactViewModel: Contact_state
     lateinit var emailViewModel: Email_state
 
     // Kết quả cần báo về UI (UI State), biến lưu quyết định
@@ -37,7 +37,7 @@ class User_state : ViewModel() {
         private set
     init {
 //        buoc khoi tao chinh sau khi khai bao
-        contactViewModel = Constact_state()
+        contactViewModel = Contact_state()
         emailViewModel = Email_state()
     }
 //viết cái hàm load cho view sử dụng

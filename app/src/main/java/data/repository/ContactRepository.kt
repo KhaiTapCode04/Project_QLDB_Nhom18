@@ -31,6 +31,18 @@ class ContactRepository {
             emptyList()
         }
     }
+
+    suspend fun addContacts(userId: Int, name: String, group_id: Int): Boolean {
+        return try {
+            val response = apiService.addContact(userId,name, group_id)
+            response.isSuccess
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+
+
     suspend fun getEmail(userId: Int): List<email> {
         return try {
             val response = apiService.GetEmail(userId)
