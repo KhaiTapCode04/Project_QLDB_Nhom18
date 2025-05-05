@@ -21,6 +21,7 @@ class AddContactViewModel : ViewModel() {
     val phone = mutableStateOf("")
     val addContactResult = mutableStateOf<String?>(null)
 
+
     val retrofit = Retrofit.Builder()
         .baseUrl("https://nettruyen.world/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -114,6 +115,12 @@ class AddContactViewModel : ViewModel() {
                 addContactResult.value = "Lỗi kết nối hoặc server"
             }
         }
+    }
+
+    fun clearAllfields(){
+        name.value = ""
+        email.value = ""
+        phone.value = ""
     }
 
     interface ApiService {

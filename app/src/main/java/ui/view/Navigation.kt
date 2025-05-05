@@ -1,6 +1,7 @@
 package ui.view
 
 
+import AddGroupViewModel
 import ContactDetailScreen
 import ContactListScreen
 import android.content.Context
@@ -104,5 +105,19 @@ fun TodoNavigation(viewModel: User_state) {
                 viewModel = AddContactViewModel()
             )
         }
+
+        composable("addgroupscreen") {
+            AddGroupScreen(
+                navController = navController,
+                viewModel = AddGroupViewModel()
+            )
+        }
+
+        composable("groupscreen") {
+            GroupScreen(
+                navController = navController
+            )
+        }
+
     }
 }

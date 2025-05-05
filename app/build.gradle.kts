@@ -66,6 +66,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    //Accompanist SwipeRefresh (0.33.2-alpha)
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.33.2-alpha")
     // Sử dụng phiên bản BOM mới hơn cho Compose
     implementation(platform("androidx.compose:compose-bom:2025.04.00"))
     implementation("androidx.compose.ui:ui")
@@ -93,14 +95,14 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
     // Retrofit - để sử dụng phương pháp thứ hai
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
-    implementation ("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
 }

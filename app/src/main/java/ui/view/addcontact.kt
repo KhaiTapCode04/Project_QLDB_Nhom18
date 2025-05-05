@@ -3,13 +3,13 @@ package ui.view
 // AddContactActivity.kt
 
 
-
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,6 +22,7 @@ fun AddContactScreen(
     navController: NavController,
     viewModel: AddContactViewModel = viewModel()
 ) {
+    val resultMessage = viewModel.addContactResult.value
 
     val context = LocalContext.current
     Scaffold(
@@ -68,7 +69,8 @@ fun AddContactScreen(
             ) {
                 Button(onClick = {
                     viewModel.addContact(context)
-                    Log.d("ket qua them contact:","Ket qua: ${viewModel.addContactResult.value}")
+                    Log.d("ket qua them contact:", "Ket qua: ${viewModel.addContactResult.value}")
+                    viewModel.clearAllfields()
 
 
                 }) {
@@ -80,6 +82,13 @@ fun AddContactScreen(
                 }) {
                     Text("Hủy")
                 }
+            }
+            resultMessage?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    modifier = Modifier.padding(16.dp)
+                )
             }
         }
     }
