@@ -96,7 +96,6 @@ fun GroupScreen(
             }
         }
     ) { paddingValues ->
-
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing.value),
             onRefresh = {
@@ -106,33 +105,33 @@ fun GroupScreen(
             },
             modifier = Modifier.padding(paddingValues)
         ) {
-            when {
-                isLoading.value -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
+            // ⚡️ Luôn sử dụng LazyColumn (kể cả khi groups rỗng)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = if (groups.isEmpty()) Arrangement.Center else Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                when {
+                    isLoading.value -> {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
                     }
-                }
 
-                groups.isEmpty() -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("Chưa có nhóm nào được tạo.")
+                    groups.isEmpty() -> {
+                        item {
+                            Text("Chưa có nhóm nào được tạo.")
+                        }
                     }
-                }
 
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxSize()
-                    ) {
+                    else -> {
                         items(groups) { group ->
                             Card(
                                 modifier = Modifier
