@@ -4,6 +4,7 @@ package data.repository
 import android.util.Log
 import data.api.ApiService
 import data.model.Contact
+import data.model.group
 import email
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,6 +19,23 @@ class ContactRepository {
         .build()
 
     private val apiService = retrofit.create(ApiService::class.java)
+
+    suspend fun getGroup(): List<group>{
+        return try{
+            val response = apiService.Get_group()
+            if (response.isSuccess){
+                response.data
+            }
+            else{
+                emptyList()
+            }
+        }
+        catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+
 
     suspend fun getContacts(userId: Int): List<Contact> {
         return try {

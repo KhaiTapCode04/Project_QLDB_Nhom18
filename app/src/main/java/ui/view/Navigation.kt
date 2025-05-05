@@ -23,6 +23,7 @@ import data.model.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.ConactPreferencesManage
 
 import ui.viewmodel.contact.Contact_service

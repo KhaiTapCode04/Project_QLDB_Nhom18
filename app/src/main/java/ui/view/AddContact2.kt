@@ -1,4 +1,5 @@
 package ui.view
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,10 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import data.model.group
+import ui.view.components.BottomNavigationBar
+import ui.viewmodel.contact.Contact_service
 
 @Composable
 fun AddContact2(navController: NavHostController) {
@@ -26,9 +31,12 @@ fun AddContact2(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var selectedGroup by remember { mutableStateOf("Chọn nhóm") }
+    var groups by remember { mutableStateOf<List<group>>(emptyList()) }
+    LaunchedEffect(Unit) {
+        groups = Contact_service().get_group()
+    }
 
-    // Sample group options (you can replace with actual data)
-    val groups = listOf("Gia đình", "Bạn bè", "Công việc", "Khác")
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -188,39 +196,20 @@ fun AddContact2(navController: NavHostController) {
                 color = Color.Black
             )
             Spacer(modifier = Modifier.height(4.dp))
-            ExposedDropdownMenuBox(
-                expanded = false, // You can add state to toggle this
-                onExpandedChange = { /* Handle dropdown toggle */ },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedTextField(
-                    value = selectedGroup,
-                    onValueChange = {},
-                    placeholder = { Text("Chọn nhóm", color = Color.Gray) },
-                    readOnly = true,
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = false)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .menuAnchor(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Gray,
-                        unfocusedBorderColor = Color.Gray,
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black
-                    )
-                )
-            }
+            GroupDropdownMenu(
+                selectedGroup = selectedGroup,
+                groups = groups,
+                onGroupSelected = { selectedGroup = it.group_name }
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             // Save Button
             Button(
                 onClick = {
-                    // Handle save action here (e.g., save to database)
-                    navController.navigateUp()
+                    Toast.makeText(context,name+" "+phoneNumber+" "+email+" "+address+" "+selectedGroup,
+                        Toast.LENGTH_LONG).show()
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -241,29 +230,54 @@ fun AddContact2(navController: NavHostController) {
         }
     }
 }
-
 @Composable
-fun BottomNavigationBar() {
-    NavigationBar(
-        containerColor = Color.White
+fun GroupDropdownMenu(
+    selectedGroup: String,
+    groups: List<group>,
+    onGroupSelected: (group) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = Modifier.fillMaxWidth()
     ) {
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Danh bạ", tint = Color(0xFF4CAF50)) },
-            label = { Text("Danh bạ", color = Color(0xFF4CAF50), fontSize = 12.sp) },
-            selected = true,
-            onClick = { /* Navigate to contacts */ }
+        OutlinedTextField(
+            value = selectedGroup,
+            onValueChange = {},
+            placeholder = { Text("Chọn nhóm", color = Color.Gray) },
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Gray,
+                unfocusedBorderColor = Color.Gray,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black
+            )
         )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Nhóm", tint = Color.Gray) },
-            label = { Text("Nhóm", color = Color.Gray, fontSize = 12.sp) },
-            selected = false,
-            onClick = { /* Navigate to groups */ }
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Cài đặt", tint = Color.Gray) },
-            label = { Text("Cài đặt", color = Color.Gray, fontSize = 12.sp) },
-            selected = false,
-            onClick = { /* Navigate to settings */ }
-        )
+
+        // Dropdown menu hiển thị bên dưới
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            groups.forEach { group ->
+                DropdownMenuItem(
+                    text = { Text(group.group_name) },
+                    onClick = {
+                        onGroupSelected(group)
+                        expanded = false
+                    }
+                )
+            }
+        }
     }
 }
+
+

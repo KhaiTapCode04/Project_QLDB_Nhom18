@@ -3,6 +3,7 @@ package data.api
 import Get_email
 import Get_phone
 import data.model.Get_contacts
+import data.model.Get_group
 import data.model.Get_user
 import data.model.UploadResponse
 import kotlinx.coroutines.flow.StateFlow
@@ -53,6 +54,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("add.php")
     suspend fun addContact( @Field("user_id") user_Id: Int,@Field("name") name: String, @Field("group_id") group_id: Int): Get_contacts
+
+    @FormUrlEncoded
+    @POST("get_group.php")
+    suspend fun Get_group(): Get_group
 }
 
 //interface ApiService {

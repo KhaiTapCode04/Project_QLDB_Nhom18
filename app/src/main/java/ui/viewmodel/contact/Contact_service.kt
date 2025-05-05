@@ -1,12 +1,16 @@
 package ui.viewmodel.contact
 
 import data.model.Contact
+import data.model.group
 import data.repository.ContactRepository
 import email
 import kotlinx.coroutines.flow.StateFlow
 import phone
 
 class Contact_service {
+    suspend fun get_group(): List<group>{
+        return ContactRepository().getGroup()
+    }
     suspend fun get_contact(user_id: Int): List<Contact>{
         return ContactRepository().getContacts(user_id)
     }
