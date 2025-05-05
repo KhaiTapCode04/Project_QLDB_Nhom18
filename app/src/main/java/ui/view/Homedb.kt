@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import data.model.Contact
 import ui.view.Navigation
+import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.ConactPreferencesManage
 import ui.viewmodel.contact.Contact_state
 import ui.viewmodel.contact.Contact_service
@@ -46,6 +47,7 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
         Navigation().get_contact(viewModel, context)
     }
     val contactList by viewModel.contacts.collectAsState()
+    val selectedTabIndex = 0
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,6 +76,7 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
                 })
         },
 
+<<<<<<< HEAD
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
@@ -98,6 +101,9 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
                 )
             }
         },
+=======
+        bottomBar = {BottomNavigationBar()},
+>>>>>>> 59b1c6e43e71682fa1a51d638c8c78168a296587
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Add contact action */ },
@@ -113,7 +119,7 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            // Search Bar with Filter
+
             Divider()
             Row(
                 modifier = Modifier
@@ -173,7 +179,7 @@ fun ContactListItem(contact: Contact, navController: NavHostController) {
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Placeholder Profile Image
+
         Box(
             modifier = Modifier
                 .size(48.dp)
@@ -190,7 +196,7 @@ fun ContactListItem(contact: Contact, navController: NavHostController) {
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Contact Details
+
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = contact.contact_id.toString(),
@@ -209,7 +215,7 @@ fun ContactListItem(contact: Contact, navController: NavHostController) {
             )
         }
 
-        // More Options with Dropdown Menu
+
         Box {
             IconButton(onClick = { showDropdownMenu = true }) {
                 Icon(
@@ -251,7 +257,7 @@ fun ContactListItem(contact: Contact, navController: NavHostController) {
                 DropdownMenuItem(
                     text = { Text("Chặn") },
                     onClick = {
-// Handle block action
+
                         showDropdownMenu = false
                     },
                     leadingIcon = {
@@ -278,4 +284,7 @@ fun ContactListItem(contact: Contact, navController: NavHostController) {
         }
     }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 59b1c6e43e71682fa1a51d638c8c78168a296587

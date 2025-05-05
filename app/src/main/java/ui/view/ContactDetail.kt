@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import data.model.Contact
 import ui.view.Navigation
+import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.Email_state
 import ui.viewmodel.contact.Phone_state
 
@@ -65,7 +66,9 @@ fun ContactDetailScreen(navController: NavHostController, contact: Contact, emai
                     }
                 }
             )
-        }
+        },
+        bottomBar = {BottomNavigationBar()}
+
     ) { paddingValues ->
         Column(
             modifier = Modifier
