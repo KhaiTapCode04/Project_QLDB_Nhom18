@@ -9,13 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ui.viewmodel.contact.ConactPreferencesManage
-import ui.viewmodel.contact.Constact_state
+import ui.viewmodel.contact.Contact_state
 import ui.viewmodel.contact.EmailPreferencesManage
 import ui.viewmodel.contact.Email_state
 import ui.viewmodel.users.UserPreferencesManager
@@ -26,7 +25,7 @@ import ui.viewmodel.users.UserService
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun UserScreen(navController: NavHostController, userViewModel: User_state,
-               contactViewModel: Constact_state,
+               contactViewModel: Contact_state,
                emailViewModel: Email_state) {
     val context = LocalContext.current
     val user = UserPreferencesManager(context)

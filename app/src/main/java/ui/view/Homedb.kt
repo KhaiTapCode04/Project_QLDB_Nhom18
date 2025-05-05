@@ -1,6 +1,5 @@
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,19 +26,12 @@ import com.google.gson.Gson
 import data.model.Contact
 import ui.view.Navigation
 import ui.viewmodel.contact.ConactPreferencesManage
-import ui.viewmodel.contact.Constact_state
+import ui.viewmodel.contact.Contact_state
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.users.UserPreferencesManager
-import ui.viewmodel.users.User_state
 
 
-
-
-
-
-
-
-suspend fun reload_contact(viewModel: Constact_state, context: Context) {
+suspend fun reload_contact(viewModel: Contact_state, context: Context) {
         val user_id = UserPreferencesManager(context).getUserId()
         val contact = Contact_service().get_contact(user_id)
         contact.forEach {
@@ -49,7 +41,7 @@ suspend fun reload_contact(viewModel: Constact_state, context: Context) {
 }
 
 @Composable
-fun ContactListScreen(navController: NavHostController, viewModel: Constact_state, context: Context) {
+fun ContactListScreen(navController: NavHostController, viewModel: Contact_state, context: Context) {
     LaunchedEffect(Unit) {
         Navigation().get_contact(viewModel, context)
     }

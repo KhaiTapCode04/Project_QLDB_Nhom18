@@ -2,11 +2,10 @@ package ui.viewmodel.contact
 
 import androidx.lifecycle.ViewModel
 import data.model.Contact
-import email
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class Constact_state: ViewModel() {
+class Contact_state: ViewModel() {
     private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
     val contacts = _contacts.asStateFlow()
 

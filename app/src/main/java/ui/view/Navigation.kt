@@ -23,10 +23,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ui.viewmodel.contact.ConactPreferencesManage
-import ui.viewmodel.contact.Constact_state
+import ui.viewmodel.contact.Contact_state
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.contact.EmailPreferencesManage
 import ui.viewmodel.contact.Email_state
+import ui.viewmodel.contact.PhonePreferencesManage
+import ui.viewmodel.contact.Phone_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
 
@@ -39,7 +41,7 @@ class Navigation: ComponentActivity() {
             TodoNavigation(viewModel = testViewModel)
         }
     }
-    suspend fun get_contact(viewModel: Constact_state, context: Context) {
+    suspend fun get_contact(viewModel: Contact_state, context: Context) {
         if(ConactPreferencesManage(context).getContactList().isEmpty()) {
             val user_id = UserPreferencesManager(context).getUserId()
             val contact = Contact_service().get_contact(user_id)
@@ -49,7 +51,7 @@ class Navigation: ComponentActivity() {
             }
         }
     }
-//    laucheffect()
+
     suspend fun get_email(viewModel: Email_state, context: Context) {
         if(EmailPreferencesManage(context).getEmailList().isEmpty()){
             val user_id = UserPreferencesManager(context).getUserId()
@@ -62,6 +64,22 @@ class Navigation: ComponentActivity() {
         }else{
             EmailPreferencesManage(context).getEmailList().forEach {
                 viewModel.addOrUpdateEmail(it)
+            }
+        }
+    }
+
+    suspend fun get_phone(viewModel: Phone_state, context: Context) {
+        if(PhonePreferencesManage(context).getPhoneList().isEmpty()){
+            val user_id = UserPreferencesManager(context).getUserId()
+            val phone = Contact_service().get_phone(user_id)
+            phone.forEach {
+                PhonePreferencesManage(context).savePhoneList(it)
+                viewModel.addOrUpdatePhone(it)
+
+            }
+        }else{
+            PhonePreferencesManage(context).getPhoneList().forEach {
+                viewModel.addOrUpdatePhone(it)
             }
         }
     }
@@ -79,8 +97,9 @@ fun TodoNavigation(viewModel: User_state) {
     val navController = rememberNavController()
     val sharedViewModel: SharedViewModel = viewModel()
     val UserViewModel: User_state = viewModel()
-    val ContactViewModel: Constact_state = viewModel()
+    val ContactViewModel: Contact_state = viewModel()
     val EmailViewModel: Email_state = viewModel()
+    val PhoneViewModel: Phone_state = viewModel()
 
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
@@ -94,14 +113,17 @@ fun TodoNavigation(viewModel: User_state) {
                 navController = navController,
                 userViewModel = UserViewModel,
                 contactViewModel = ContactViewModel,
-                emailViewModel = EmailViewModel
+                emailViewModel = EmailViewModel,
             )
 
         }
         composable("profile") {
             ProfileScreen(
                 navController = navController,
-                viewModel = UserViewModel
+                userViewModel = UserViewModel,
+                contactViewModel = ContactViewModel,
+                emailViewModel = EmailViewModel,
+                phoneViewModel = PhoneViewModel
             )
         }
         composable("EditProfile") {
@@ -120,7 +142,7 @@ fun TodoNavigation(viewModel: User_state) {
         composable("ContactDetail/{contactJson}",arguments = listOf(navArgument("contactJson") { type = NavType.StringType })){backStackEntry ->
             val contactJson = backStackEntry.arguments?.getString("contactJson") ?: ""
             val contact = Gson().fromJson(contactJson, Contact::class.java)
-            ContactDetailScreen(navController = navController,contact)
+            ContactDetailScreen(navController = navController,contact, emailViewModel = EmailViewModel, phoneViewModel = PhoneViewModel, context)
         }
     }
 }
