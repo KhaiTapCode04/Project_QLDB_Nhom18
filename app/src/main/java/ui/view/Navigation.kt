@@ -1,6 +1,7 @@
 package ui.view
 
 
+import AddGroupViewModel
 import ContactDetailScreen
 import ContactListScreen
 import android.content.Context
@@ -144,5 +145,19 @@ fun TodoNavigation(viewModel: User_state) {
             val contact = Gson().fromJson(contactJson, Contact::class.java)
             ContactDetailScreen(navController = navController,contact, emailViewModel = EmailViewModel, phoneViewModel = PhoneViewModel, context)
         }
+
+        composable("addgroupscreen") {
+            AddGroupScreen(
+                navController = navController,
+                viewModel = AddGroupViewModel()
+            )
+        }
+
+        composable("groupscreen") {
+            GroupScreen(
+                navController = navController
+            )
+        }
+
     }
 }

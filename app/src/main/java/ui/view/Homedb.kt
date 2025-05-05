@@ -84,7 +84,9 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = { /* Nhóm tab action */ },
+                    onClick = { /* Nhóm tab action */
+                    navController.navigate("groupscreen")
+                    },
                     icon = { Icon(Icons.Filled.Person, contentDescription = "Nhóm") },
                     label = { Text("Nhóm") }
                 )
@@ -277,119 +279,3 @@ fun ContactListItem(contact: Contact, navController: NavHostController) {
     }
 }
 
-//fun ContactListScreen(navController: NavHostController, viewModel: Constact_state, context: Context) {
-//    LaunchedEffect(Unit) {
-//        get_contact(viewModel,context)
-//    }
-//    val contactList by viewModel.contacts.collectAsState()
-//
-//    Scaffold(
-//        topBar = {
-//            TopAppBar(
-//
-//                title = { Text("Hồ Sơ") },
-//                navigationIcon = {
-//                    IconButton(onClick = { navController.navigateUp() }) {
-//                        Icon(
-//                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-//                            contentDescription = "Quay lại"
-//                        )
-//                    }
-//                },
-//                actions = {
-//                    IconButton(onClick = { /* Profile action */ }) {
-//                        Icon(
-//                            imageVector = Icons.Default.Person,
-//                            contentDescription = "profile",
-//                            modifier = Modifier
-//                                .size(48.dp)
-//                                .clickable{
-//                                    navController.navigate("profile")
-//                                },
-//                        )
-//                    }
-//                })
-//        },
-//
-//        bottomBar = {
-//            NavigationBar {
-//                NavigationBarItem(
-//                    selected = true,
-//                    onClick = { /* Danh bạ tab action */ },
-//                    icon = { Icon(Icons.Filled.Person, contentDescription = "Danh bạ") },
-//                    label = { Text("Danh bạ") }
-//                )
-//                NavigationBarItem(
-//                    selected = false,
-//                    onClick = { /* Nhóm tab action */ },
-//                    icon = { Icon(Icons.Filled.Person, contentDescription = "Nhóm") },
-//                    label = { Text("Nhóm") }
-//                )
-//                NavigationBarItem(
-//                    selected = false,
-//                    onClick = { /* Cài đặt tab action */ },
-//                    icon = { Icon(Icons.Filled.Person, contentDescription = "Cài đặt") },
-//                    label = { Text("Cài đặt") }
-//                )
-//            }
-//        },
-//        floatingActionButton = {
-//            FloatingActionButton(
-//                onClick = { /* Add contact action */ },
-//                containerColor = Color(0xFF2196F3)
-//            ) {
-//                Icon(Icons.Filled.Add, contentDescription = "Add Contact")
-//            }
-//        }
-//    ) { paddingValues ->
-//
-//        Column(
-//            modifier = Modifier
-//                .padding(paddingValues)
-//                .fillMaxSize()
-//        ) {
-//            // Search Bar with Filter
-//            Divider()
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp),
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                TextField(
-//                    value = "",
-//                    onValueChange = {},
-//                    placeholder = { Text("Tìm kiếm liên hệ") },
-//                    modifier = Modifier
-//                        .weight(1f)
-//                        .clip(RoundedCornerShape(8.dp)),
-//                    singleLine = true,
-//                    leadingIcon = {
-//                        Icon(
-//                            imageVector = Icons.Default.Person,
-//                            contentDescription = "Search",
-//                            modifier = Modifier
-//                                .clickable{
-//                                    navController.navigate("profile")
-//                                },
-//                        )
-//                    }
-//                )
-//                Spacer(modifier = Modifier.width(8.dp))
-//                IconButton(onClick = { /* Filter action */ }) {
-//                    Icon(
-//                        imageVector = Icons.Outlined.FilterList,
-//                        contentDescription = "Filter"
-//                    )
-//                }
-//            }
-//
-//            // Contact List
-//            LazyColumn {
-//                items(contactList) { contact ->
-//                    ContactListItem(contact, navController)
-//                }
-//            }
-//        }
-//    }
-//}
