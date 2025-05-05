@@ -1,6 +1,5 @@
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,23 +26,24 @@ import com.google.gson.Gson
 import data.model.Contact
 import ui.view.Navigation
 import ui.viewmodel.contact.ConactPreferencesManage
-import ui.viewmodel.contact.Constact_state
+import ui.viewmodel.contact.Contact_state
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.users.UserPreferencesManager
 
 
-
-
-
-
-
-
-
+suspend fun reload_contact(viewModel: Contact_state, context: Context) {
+        val user_id = UserPreferencesManager(context).getUserId()
+        val contact = Contact_service().get_contact(user_id)
+        contact.forEach {
+            ConactPreferencesManage(context).saveOrUpdateContact(it)
+            viewModel.addOrUpdateContact(it)
+    }
+}
 
 @Composable
-fun ContactListScreen(navController: NavHostController, viewModel: Constact_state, context: Context) {
+fun ContactListScreen(navController: NavHostController, viewModel: Contact_state, context: Context) {
     LaunchedEffect(Unit) {
-        viewModel.get_contact(context)
+        Navigation().get_contact(viewModel, context)
     }
     val contactList by viewModel.contacts.collectAsState()
     Scaffold(
@@ -98,9 +98,7 @@ fun ContactListScreen(navController: NavHostController, viewModel: Constact_stat
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Add contact action */
-                navController.navigate("addcontact")
-                },
+                onClick = { /* Add contact action */ },
                 containerColor = Color(0xFF2196F3)
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Add Contact")

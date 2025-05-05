@@ -1,5 +1,5 @@
 package ui.view
-//ten file test -> login
+
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -13,7 +13,9 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ui.viewmodel.contact.Constact_state
+import ui.viewmodel.contact.ConactPreferencesManage
+import ui.viewmodel.contact.Contact_state
+import ui.viewmodel.contact.EmailPreferencesManage
 import ui.viewmodel.contact.Email_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
@@ -23,27 +25,29 @@ import ui.viewmodel.users.UserService
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun UserScreen(navController: NavHostController, userViewModel: User_state,
-               contactViewModel: Constact_state,
+               contactViewModel: Contact_state,
                emailViewModel: Email_state) {
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
+        if (user.getUserId() != 0) {
+            userViewModel.updateUser(
+                user.getUserId(),
+                user.getUserName(),
+                user.getUserEmail(),
+                user.getUserPhone(),
+                user.getProfilePicture()
+            )
+            ConactPreferencesManage(context).getContactList().forEach {
+                contactViewModel.addOrUpdateContact(it)
+            }
+            EmailPreferencesManage(context).getEmailList().forEach {
+                emailViewModel.addOrUpdateEmail(it)
+            }
 
-    LaunchedEffect(Unit) {
-//        goi ham load
-//        dữ liệu gắn cho userviewmodel
-        userViewModel.loadUserData(context)
-    }
-//kiem tra bien quyet dinh
-    if (userViewModel.navigateToHome) {
-        userViewModel.setNavigatetoAfalse()
-        // Điều hướng khi có tín hiệu
-//      goi tiep Laucheffect dam bao goi 1 lan view khac thoi
-        LaunchedEffect(Unit) {
-            navController.navigate("homedb") {
+            navController.navigate("a") {
                 popUpTo("login") { inclusive = true }
             }
         }
-    }
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -125,10 +129,8 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
                                 loginHandler.profile_picture.toString()
                             )
 
-//                            Navigation().get_contact(contactViewModel, context)
-                            contactViewModel.get_contact(context)
-//                            Navigation().get_email(emailViewModel,context)
-                            emailViewModel.get_email(context)
+                            Navigation().get_contact(contactViewModel, context)
+                            Navigation().get_email(emailViewModel,context)
                             navController.navigate("a"){
                                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
                             }
@@ -159,3 +161,7 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
         }
     }
 }
+
+//suy thận
+
+// mã màu, UI

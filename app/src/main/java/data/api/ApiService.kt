@@ -1,6 +1,7 @@
 package data.api
 
 import Get_email
+import Get_phone
 import data.model.Get_contacts
 import data.model.Get_user
 import data.model.UploadResponse
@@ -42,4 +43,8 @@ interface ApiService {
     @FormUrlEncoded
     @POST("select_email.php")
     suspend fun GetEmail(@Field("user_id") user_id: Int): Get_email
+
+    @FormUrlEncoded
+    @POST("select_phone.php")
+    suspend fun GetPhone(@Field("user_id") user_id: Int): Get_phone
 }

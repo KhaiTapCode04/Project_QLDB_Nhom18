@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 import kotlinx.coroutines.flow.StateFlow
+import phone
 
 class ContactRepository {
     private val retrofit = Retrofit.Builder()
@@ -43,4 +44,19 @@ class ContactRepository {
             emptyList()
         }
     }
+
+    suspend fun getPhone(userId: Int): List<phone> {
+        return try {
+            val response = apiService.GetPhone(userId)
+            if (response.isSuccess) {
+                Log.d("check", response.isSuccess.toString())
+                response.data
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
 }
