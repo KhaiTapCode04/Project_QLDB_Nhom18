@@ -30,12 +30,12 @@ fun GroupScreen(
     val viewModel: GroupViewModel = viewModel(factory = GroupViewModelFactory(context))
     val groups by viewModel.groups.collectAsState()
     val isRefreshing = remember { mutableStateOf(false) }
-    val isLoading = remember { mutableStateOf(false) }
-
+//    val isLoading = remember { mutableStateOf(false) }
+    val isLoading by viewModel.isLoading.collectAsState()
+    // Đơn giản hóa trạng thái refresh
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
     LaunchedEffect(true) {
-        isLoading.value = true
         viewModel.loadGroupsFromCache()
-        isLoading.value = false
     }
 
     Scaffold(
@@ -67,7 +67,7 @@ fun GroupScreen(
             NavigationBar {
                 NavigationBarItem(
                     selected = false,
-                    onClick = { navController.navigate("contactlist") },
+                    onClick = { navController.navigate("homedb") },
                     icon = { Icon(Icons.Default.Person, contentDescription = "Danh bạ") },
                     label = { Text("Danh bạ") }
                 )
@@ -97,12 +97,8 @@ fun GroupScreen(
         }
     ) { paddingValues ->
         SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing.value),
-            onRefresh = {
-                isRefreshing.value = true
-                viewModel.fetchGroups()
-                isRefreshing.value = false
-            },
+            state = swipeRefreshState,
+            onRefresh = { viewModel.fetchGroups() },
             modifier = Modifier.padding(paddingValues)
         ) {
             // ⚡️ Luôn sử dụng LazyColumn (kể cả khi groups rỗng)
@@ -113,25 +109,26 @@ fun GroupScreen(
                 verticalArrangement = if (groups.isEmpty()) Arrangement.Center else Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                when {
-                    isLoading.value -> {
-                        item {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
+                if (isLoading && groups.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primary // Thêm màu cho indicator
+                            )
                         }
                     }
-
-                    groups.isEmpty() -> {
-                        item {
-                            Text("Chưa có nhóm nào được tạo.")
-                        }
+                } else if (groups.isEmpty()) {
+                    item {
+                        Text(
+                            text = "Chưa có nhóm nào được tạo",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
-
-                    else -> {
+                } else {
                         items(groups) { group ->
                             Card(
                                 modifier = Modifier
@@ -149,4 +146,4 @@ fun GroupScreen(
             }
         }
     }
-}
+

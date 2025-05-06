@@ -28,6 +28,9 @@ class GroupViewModel(private val context: Context) : ViewModel() {
     private val _groups = MutableStateFlow<List<Group>>(emptyList())
     val groups: StateFlow<List<Group>> = _groups
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     private val sharedPref = context.getSharedPreferences("groups_pref", Context.MODE_PRIVATE)
 
     fun loadGroupsFromCache() {
@@ -52,7 +55,7 @@ class GroupViewModel(private val context: Context) : ViewModel() {
                     .build()
 
                 val request = Request.Builder()
-                    .url("https://nettruyen.world/get_groups.php")
+                    .url("https://nettruyen.world/group/get_group.php")
                     .post(formBody)
                     .build()
 
@@ -63,13 +66,13 @@ class GroupViewModel(private val context: Context) : ViewModel() {
 
                 if (result.status == "success") {
                     _groups.value = result.groups
-
-                    // Lưu vào SharedPre
                     val jsonSave = Gson().toJson(result.groups)
                     sharedPref.edit().putString("groups", jsonSave).apply()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                _isLoading.value = false
             }
         }
     }
