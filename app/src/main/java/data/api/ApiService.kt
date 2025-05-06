@@ -11,6 +11,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -55,9 +56,9 @@ interface ApiService {
     @POST("add.php")
     suspend fun addContact( @Field("user_id") user_Id: Int,@Field("name") name: String, @Field("group_id") group_id: Int): Get_contacts
 
-    @FormUrlEncoded
-    @POST("get_group.php")
+    @GET("get_group.php")
     suspend fun Get_group(): Get_group
+
 }
 
 //interface ApiService {

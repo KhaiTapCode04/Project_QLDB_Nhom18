@@ -32,11 +32,11 @@ fun AddContact2(navController: NavHostController) {
     var address by remember { mutableStateOf("") }
     var selectedGroup by remember { mutableStateOf("Chọn nhóm") }
     var groups by remember { mutableStateOf<List<group>>(emptyList()) }
+
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         groups = Contact_service().get_group()
     }
-
-    val context = LocalContext.current
 
     Scaffold(
         topBar = {

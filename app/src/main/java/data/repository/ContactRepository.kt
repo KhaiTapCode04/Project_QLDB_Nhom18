@@ -1,6 +1,7 @@
 package data.repository
 
 
+import android.content.Context
 import android.util.Log
 import data.api.ApiService
 import data.model.Contact
@@ -23,7 +24,9 @@ class ContactRepository {
     suspend fun getGroup(): List<group>{
         return try{
             val response = apiService.Get_group()
+            Log.e("API get group",":response: ${response.isSuccess}")
             if (response.isSuccess){
+                Log.e("Data get group:",": ${response.data}")
                 response.data
             }
             else{

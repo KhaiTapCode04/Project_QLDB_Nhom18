@@ -1,5 +1,7 @@
 package ui.viewmodel.contact
 
+import android.content.Context
+import android.util.Log
 import data.model.Contact
 import data.model.group
 import data.repository.ContactRepository
@@ -8,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import phone
 
 class Contact_service {
+
     suspend fun get_group(): List<group>{
         return ContactRepository().getGroup()
     }
