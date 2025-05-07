@@ -131,7 +131,7 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
 
                             Navigation().get_contact(contactViewModel, context)
                             Navigation().get_email(emailViewModel,context)
-                            navController.navigate("a"){
+                            navController.navigate("homedb"){
                                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
                             }
 
@@ -161,7 +161,3 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
         }
     }
 }
-
-//suy thận
-
-// mã màu, UI

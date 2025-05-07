@@ -112,15 +112,12 @@ fun TodoNavigation(viewModel: User_state) {
         startDestination = "login"
     ) {
         composable("login") {
-
-//            UserScreen(
-//                navController = navController,
-//                userViewModel = UserViewModel,
-//                contactViewModel = ContactViewModel,
-//                emailViewModel = EmailViewModel,
-//            )
-
-            AddContact2(navController)
+            UserScreen(
+                navController = navController,
+                userViewModel = UserViewModel,
+                contactViewModel = ContactViewModel,
+                emailViewModel = EmailViewModel,
+            )
         }
         composable("profile") {
             ProfileScreen(
@@ -137,7 +134,7 @@ fun TodoNavigation(viewModel: User_state) {
                 viewModel = UserViewModel
             )
         }
-        composable("a"){
+        composable("homedb"){
             ContactListScreen(navController = navController, viewModel = ContactViewModel, context)
         }
 //        composable("email"){
@@ -150,15 +147,14 @@ fun TodoNavigation(viewModel: User_state) {
             ContactDetailScreen(navController = navController,contact, emailViewModel = EmailViewModel, phoneViewModel = PhoneViewModel, context)
         }
 
-        composable("addgroupscreen") {
-            AddGroupScreen(
-                navController = navController,
-                viewModel = AddGroupViewModel()
+        composable("groupscreen") {
+            GroupScreen(
+                navController = navController
             )
         }
 
-        composable("groupscreen") {
-            GroupScreen(
+        composable("addcontact") {
+            AddContact(
                 navController = navController
             )
         }

@@ -1,4 +1,5 @@
 package ui.view
+
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,224 +13,151 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import data.model.group
 import ui.view.components.BottomNavigationBar
-import ui.viewmodel.contact.Contact_service
+import ui.viewmodel.contact.AddContactViewModel
 
 @Composable
-fun AddContact2(navController: NavHostController) {
-    // State variables for form inputs
-    var name by remember { mutableStateOf("") }
-    var phoneNumber by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var address by remember { mutableStateOf("") }
-    var selectedGroup by remember { mutableStateOf("Chọn nhóm") }
-    var groups by remember { mutableStateOf<List<group>>(emptyList()) }
+fun AddContact(navController: NavHostController, viewModel: AddContactViewModel = viewModel()) {
 
     val context = LocalContext.current
+    val groups = viewModel.groups.value
+    val addResult = viewModel.addContactResult.value
+    val isLoading = viewModel.isLoading.value
+
     LaunchedEffect(Unit) {
-        groups = Contact_service().get_group()
+        viewModel.getGroup()
+    }
+
+    LaunchedEffect(addResult) {
+        addResult?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        "Thêm Liên Hệ Mới",
-                        fontSize = 20.sp
-                    )
-                },
+                title = { Text("Thêm Liên Hệ Mới", fontSize = 20.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Quay lại",
-                            tint = Color.Black
-                        )
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Quay lại", tint = Color.Black)
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Profile action */ }) {
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "Hồ sơ",
-                            tint = Color.Gray
-                        )
+                    IconButton(onClick = { navController.navigate("profile") }) {
+                        Icon(Icons.Default.AccountCircle, contentDescription = "Hồ sơ", tint = Color.Gray)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF5F7FA),
-                    titleContentColor = Color.Black
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F7FA))
             )
         },
-        bottomBar = {
-            BottomNavigationBar()
-        }
+        bottomBar = { BottomNavigationBar() }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF5F7FA))
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
 
-            // Name Input
-            Text(
-                text = "Họ và tên",
-                modifier = Modifier.align(Alignment.Start),
-                fontSize = 16.sp,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                placeholder = { Text("Nhập họ và tên", color = Color.Gray) },
+        Box(modifier = Modifier.fillMaxSize()) {
+
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Phone Number Input
-            Text(
-                text = "Số điện thoại",
-                modifier = Modifier.align(Alignment.Start),
-                fontSize = 16.sp,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            OutlinedTextField(
-                value = phoneNumber,
-                onValueChange = { phoneNumber = it },
-                placeholder = { Text("Nhập số điện thoại", color = Color.Gray) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Email Input
-            Text(
-                text = "Email",
-                modifier = Modifier.align(Alignment.Start),
-                fontSize = 16.sp,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                placeholder = { Text("Nhập email", color = Color.Gray) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Address Input
-            Text(
-                text = "Địa chỉ",
-                modifier = Modifier.align(Alignment.Start),
-                fontSize = 16.sp,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            OutlinedTextField(
-                value = address,
-                onValueChange = { address = it },
-                placeholder = { Text("Nhập địa chỉ", color = Color.Gray) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Group Dropdown
-            Text(
-                text = "Nhóm",
-                modifier = Modifier.align(Alignment.Start),
-                fontSize = 16.sp,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            GroupDropdownMenu(
-                selectedGroup = selectedGroup,
-                groups = groups,
-                onGroupSelected = { selectedGroup = it.group_name }
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Save Button
-            Button(
-                onClick = {
-                    Toast.makeText(context,name+" "+phoneNumber+" "+email+" "+address+" "+selectedGroup,
-                        Toast.LENGTH_LONG).show()
-
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2196F3)
-                ),
-                shape = MaterialTheme.shapes.medium
+                    .fillMaxSize()
+                    .background(Color(0xFFF5F7FA))
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Lưu",
-                    color = Color.White,
-                    fontSize = 16.sp
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Họ và tên
+                FieldLabel("Họ và tên")
+                OutlinedTextField(
+                    value = viewModel.name.value,
+                    onValueChange = { viewModel.name.value = it },
+                    placeholder = { Text("Nhập họ và tên", color = Color.Gray) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp)
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Số điện thoại
+                FieldLabel("Số điện thoại")
+                OutlinedTextField(
+                    value = viewModel.phone.value,
+                    onValueChange = { viewModel.phone.value = it },
+                    placeholder = { Text("Nhập số điện thoại", color = Color.Gray) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    modifier = Modifier.fillMaxWidth().height(56.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Email
+                FieldLabel("Email")
+                OutlinedTextField(
+                    value = viewModel.email.value,
+                    onValueChange = { viewModel.email.value = it },
+                    placeholder = { Text("Nhập email", color = Color.Gray) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier.fillMaxWidth().height(56.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Nhóm
+                FieldLabel("Nhóm")
+                GroupDropdownMenu(
+                    selectedGroup = viewModel.selectedGroup.value?.group_name ?: "Chọn nhóm",
+                    groups = groups,
+                    onGroupSelected = { viewModel.selectedGroup.value = it }
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // Button lưu
+                Button(
+                    onClick = { viewModel.addContact(context) },
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                ) {
+                    Text(text = "Lưu", color = Color.White, fontSize = 16.sp)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            // Loading overlay
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            }
         }
     }
 }
+
+@Composable
+fun FieldLabel(text: String) {
+    Text(
+        text = text,
+        modifier = Modifier.fillMaxWidth(),
+        fontSize = 16.sp,
+        color = Color.Black,
+        textAlign = TextAlign.Start
+    )
+}
+
 @Composable
 fun GroupDropdownMenu(
     selectedGroup: String,
@@ -238,35 +166,16 @@ fun GroupDropdownMenu(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
         OutlinedTextField(
             value = selectedGroup,
             onValueChange = {},
             placeholder = { Text("Chọn nhóm", color = Color.Gray) },
             readOnly = true,
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Gray,
-                unfocusedBorderColor = Color.Gray,
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black
-            )
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier.fillMaxWidth().menuAnchor()
         )
-
-        // Dropdown menu hiển thị bên dưới
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             groups.forEach { group ->
                 DropdownMenuItem(
                     text = { Text(group.group_name) },
@@ -279,5 +188,3 @@ fun GroupDropdownMenu(
         }
     }
 }
-
-

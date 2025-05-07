@@ -62,7 +62,9 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Profile action */ }) {
+                    IconButton(onClick = { /* Profile action */
+                    navController.navigate("profile")
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "profile",
@@ -83,7 +85,9 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
 
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Add contact action */ },
+                onClick = { /* Add contact action */
+                navController.navigate("addcontact")
+                },
                 containerColor = Color(0xFF2196F3)
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Add Contact")

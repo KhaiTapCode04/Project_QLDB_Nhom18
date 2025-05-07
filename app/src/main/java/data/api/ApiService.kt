@@ -2,6 +2,8 @@ package data.api
 
 import Get_email
 import Get_phone
+import data.model.AddEmailResponse
+import data.model.AddPhoneResponse
 import data.model.Get_contacts
 import data.model.Get_group
 import data.model.Get_user
@@ -21,6 +23,23 @@ interface ApiService {
     @FormUrlEncoded
     @POST("login.php")
     suspend fun loginWithForm(@Field("username") email: String, @Field("password") password: String): Get_user
+
+    @FormUrlEncoded
+    @POST("add_email.php")
+    fun addEmail(
+        @Field("contact_id") contactId: Int,
+        @Field("type") type: String,
+        @Field("email") email: String
+    ): retrofit2.Call<AddEmailResponse>
+
+    @FormUrlEncoded
+    @POST("add_phone.php")
+    fun addPhone(
+        @Field("contact_id") contactId: Int,
+        @Field("type") type: String,
+        @Field("phone") phone: String
+    ): retrofit2.Call<AddPhoneResponse>
+
 
     @FormUrlEncoded
     @POST("select.php")
@@ -61,23 +80,3 @@ interface ApiService {
 
 }
 
-//interface ApiService {
-//
-//
-//
-//    @FormUrlEncoded
-//    @POST("contacts/add_email.php")
-//    fun addEmail(
-//        @Field("contact_id") contactId: Int,
-//        @Field("email_type") emailType: String,
-//        @Field("email_address") email: String
-//    ): retrofit2.Call<AddEmailResponse>
-//
-//    @FormUrlEncoded
-//    @POST("contacts/add_phone.php")
-//    fun addPhone(
-//        @Field("contact_id") contactId: Int,
-//        @Field("phone_type") phoneType: String,
-//        @Field("phone_number") phone: String
-//    ): retrofit2.Call<AddPhoneResponse>
-//}

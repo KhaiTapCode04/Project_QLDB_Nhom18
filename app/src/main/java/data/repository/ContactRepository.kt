@@ -91,5 +91,22 @@ class ContactRepository {
             emptyList()
         }
     }
+    suspend fun addEmail(contactId: Int, type: String, email: String): Boolean {
+        return try {
+            val response = apiService.addEmail(contactId, type, email).execute()
+            response.isSuccessful && response.body()?.isSuccess == true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun addPhone(contactId: Int, type: String, phone: String): Boolean {
+        return try {
+            val response = apiService.addPhone(contactId, type, phone).execute()
+            response.isSuccessful && response.body()?.isSuccess == true
+        } catch (e: Exception) {
+            false
+        }
+    }
 
 }
