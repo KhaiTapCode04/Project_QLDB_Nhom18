@@ -36,21 +36,25 @@ import ui.viewmodel.users.UserPreferencesManager
 
 
 suspend fun reload_contact(viewModel: Contact_state, context: Context) {
-        val user_id = UserPreferencesManager(context).getUserId()
-        val contact = Contact_service().get_contact(user_id)
-        contact.forEach {
-            ConactPreferencesManage(context).saveOrUpdateContact(it)
-            viewModel.addOrUpdateContact(it)
+    val user_id = UserPreferencesManager(context).getUserId()
+    val contact = Contact_service().get_contact(user_id)
+    contact.forEach {
+        ConactPreferencesManage(context).saveOrUpdateContact(it)
+        viewModel.addOrUpdateContact(it)
     }
 }
 
 @Composable
-fun ContactListScreen(navController: NavHostController, viewmodel: Contact_state, context: Context) {
+fun ContactListScreen(
+    navController: NavHostController,
+    viewmodel: Contact_state,
+    context: Context
+) {
     LaunchedEffect(Unit) {
         viewmodel.get_contact(context)
         viewmodel.getGroup()
     }
-val groups by viewmodel.groups.collectAsState()
+    val groups by viewmodel.groups.collectAsState()
     val contactList by viewmodel.contacts.collectAsState()
     var search by remember { mutableStateOf("") }
     var fillter = contactList.filter { it.name.contains(search, ignoreCase = true) }
@@ -74,7 +78,7 @@ val groups by viewmodel.groups.collectAsState()
                 },
                 actions = {
                     IconButton(onClick = { /* Profile action */
-                    navController.navigate("profile")
+                        navController.navigate("profile")
                     }) {
                         Icon(
                             imageVector = Icons.Default.Person,
@@ -90,14 +94,12 @@ val groups by viewmodel.groups.collectAsState()
         },
 
 
-
-
-        bottomBar = {BottomNavigationBar()},
+        bottomBar = { BottomNavigationBar(navController) },
 
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Add contact action */
-                navController.navigate("addcontact")
+                    navController.navigate("addcontact")
                 },
                 containerColor = Color(0xFF2196F3)
             ) {
@@ -121,7 +123,7 @@ val groups by viewmodel.groups.collectAsState()
             ) {
                 TextField(
                     value = search,
-                    onValueChange = {search = it},
+                    onValueChange = { search = it },
                     placeholder = { Text("Tìm kiếm liên hệ") },
                     modifier = Modifier
                         .weight(1f)
@@ -158,7 +160,12 @@ val groups by viewmodel.groups.collectAsState()
 }
 
 @Composable
-fun ContactListItem(contact: Contact, navController: NavHostController, Contact_state: Contact_state, Group_name: String) {
+fun ContactListItem(
+    contact: Contact,
+    navController: NavHostController,
+    Contact_state: Contact_state,
+    Group_name: String
+) {
     var showDropdownMenu by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -269,7 +276,11 @@ fun ContactListItem(contact: Contact, navController: NavHostController, Contact_
                     onClick = {
                         scope.launch {
 
-                        ContactViewModel().deleteContact(contact_id = contact.contact_id, Contact_state, context)
+                            ContactViewModel().deleteContact(
+                                contact_id = contact.contact_id,
+                                Contact_state,
+                                context
+                            )
                         }
                         showDropdownMenu = false
                     },
