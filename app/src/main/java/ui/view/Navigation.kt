@@ -44,16 +44,7 @@ class Navigation: ComponentActivity() {
             TodoNavigation(viewModel = testViewModel)
         }
     }
-    suspend fun get_contact(viewModel: Contact_state, context: Context) {
-        if(ConactPreferencesManage(context).getContactList().isEmpty()) {
-            val user_id = UserPreferencesManager(context).getUserId()
-            val contact = Contact_service().get_contact(user_id)
-            contact.forEach {
-                ConactPreferencesManage(context).saveOrUpdateContact(it)
-                viewModel.addOrUpdateContact(it)
-            }
-        }
-    }
+
     suspend fun reload_contact(Contact_state: Contact_state, context: Context) {
         val user_id = UserPreferencesManager(context).getUserId()
         val contact = Contact_service().get_contact(user_id)
@@ -66,37 +57,9 @@ class Navigation: ComponentActivity() {
     }
 
 
-    suspend fun get_email(viewModel: Email_state, context: Context) {
-        if(EmailPreferencesManage(context).getEmailList().isEmpty()){
-            val user_id = UserPreferencesManager(context).getUserId()
-            val email = Contact_service().get_email(user_id)
-            email.forEach {
-                EmailPreferencesManage(context).saveEmailList(it)
-                viewModel.addOrUpdateEmail(it)
 
-            }
-        }else{
-            EmailPreferencesManage(context).getEmailList().forEach {
-                viewModel.addOrUpdateEmail(it)
-            }
-        }
-    }
 
-    suspend fun get_phone(viewModel: Phone_state, context: Context) {
-        if(PhonePreferencesManage(context).getPhoneList().isEmpty()){
-            val user_id = UserPreferencesManager(context).getUserId()
-            val phone = Contact_service().get_phone(user_id)
-            phone.forEach {
-                PhonePreferencesManage(context).savePhoneList(it)
-                viewModel.addOrUpdatePhone(it)
 
-            }
-        }else{
-            PhonePreferencesManage(context).getPhoneList().forEach {
-                viewModel.addOrUpdatePhone(it)
-            }
-        }
-    }
 }
 
 class SharedViewModel : ViewModel() {
@@ -117,6 +80,9 @@ fun TodoNavigation(viewModel: User_state) {
     val AddContact_state: AddContact_state = viewModel()
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
+    val emailState: Email_state = viewModel()
+    val phoneState: Phone_state = viewModel()
+
     NavHost(
         navController = navController,
         startDestination = "login"
@@ -145,7 +111,8 @@ fun TodoNavigation(viewModel: User_state) {
             )
         }
         composable("homedb"){
-            ContactListScreen(navController = navController, Contact_state = Contact_state, context)
+            ContactListScreen(navController = navController, viewmodel = Contact_state, context)
+
         }
 //        composable("email"){
 //            a(navController = navController, viewModel = EmailViewModel, context)
@@ -171,5 +138,16 @@ fun TodoNavigation(viewModel: User_state) {
             )
         }
 
+        composable(
+            route = "contactDetail/{contactJson}",
+            arguments = listOf(navArgument("contactJson") {
+                type = NavType.StringType
+            })
+        ) { backStackEntry ->
+            val contactJson = backStackEntry.arguments?.getString("contactJson") ?: ""
+            val contact = Gson().fromJson(contactJson, Contact::class.java)
+
+            ContactDetailScreen(navController, contact, emailState, phoneState, context)
+        }
     }
 }

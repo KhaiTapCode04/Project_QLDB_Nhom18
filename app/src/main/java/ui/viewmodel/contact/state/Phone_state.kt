@@ -1,16 +1,36 @@
 package ui.viewmodel.contact.state
 
+import Phone
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import phone
+import ui.viewmodel.contact.Contact_service
+import ui.viewmodel.contact.sharedPreferences.PhonePreferencesManage
+import ui.viewmodel.users.UserPreferencesManager
 import kotlin.collections.plus
 
 class Phone_state : ViewModel() {
-    private val _phone = MutableStateFlow<List<phone>>(emptyList())
+    private val _phone = MutableStateFlow<List<Phone>>(emptyList())
     val phones = _phone.asStateFlow()
 
-    fun addOrUpdatePhone(newPhone: phone) {
+    suspend fun get_phone(context: Context) {
+        val listFromPref = PhonePreferencesManage(context).getPhoneList()
+
+        if(listFromPref.isEmpty()){
+            val user_id = UserPreferencesManager(context).getUserId()
+            val phoneList = Contact_service().get_phone(user_id)
+            phoneList.forEach {
+                PhonePreferencesManage(context).savePhoneList(it)
+            }
+            _phone.value = phoneList
+        } else {
+            _phone.value = listFromPref
+        }
+    }
+
+
+    fun addOrUpdatePhone(newPhone: Phone) {
         _phone.value = _phone.value
             .filterNot { it.phone_id == newPhone.phone_id }
             .plus(newPhone)

@@ -11,17 +11,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import data.model.Contact
 import ui.view.Navigation
 import ui.view.components.BottomNavigationBar
+import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.state.Phone_state
 
@@ -29,15 +33,22 @@ import ui.viewmodel.contact.state.Phone_state
 @Composable
 fun ContactDetailScreen(navController: NavHostController, contact: Contact, Email_state: Email_state,Phone_state: Phone_state, context: Context) {
     LaunchedEffect(Unit) {
-        Navigation().get_phone(Phone_state,context)
-        Navigation().get_email(Email_state,context)
+        Phone_state.get_phone(context)
+        Email_state.get_email(context)
+        Email_state.getGroup()
     }
-    val emails by Email_state.emails.collectAsState()
+    val groups by Email_state.groups.collectAsState()
     val phones by Phone_state.phones.collectAsState()
+    val emails by Email_state.emails.collectAsState()
 
     val emailFilter = emails.filter { it.contact_id == contact.contact_id }
     val phoneFilter = phones.filter { it.contact_id == contact.contact_id }
 
+    val groupName by remember(groups) {
+        derivedStateOf {
+            Email_state.getGroupnameById(contact.group_id) ?: ""
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -154,7 +165,7 @@ fun ContactDetailScreen(navController: NavHostController, contact: Contact, Emai
                         Divider(modifier = Modifier.padding(vertical = 8.dp))
                         ContactDetailRow("Địa chỉ", contact.contact_id.toString() ?: "Không có")
                         Divider(modifier = Modifier.padding(vertical = 8.dp))
-                        ContactDetailRow("Nhóm", contact.group_id.toString())
+                        ContactDetailRow("Nhóm: ", groupName )
                     }
                 }
 

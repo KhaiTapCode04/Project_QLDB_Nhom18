@@ -129,8 +129,8 @@ fun UserScreen(navController: NavHostController, User_state: User_state,
                                 loginHandler.profile_picture.toString()
                             )
 
-                            Navigation().get_contact(Contact_state, context)
-                            Navigation().get_email(Email_state,context)
+                            Contact_state().get_contact(context)
+                            Email_state.get_email(context)
                             navController.navigate("homedb"){
                                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
                             }

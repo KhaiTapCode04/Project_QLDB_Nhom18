@@ -1,18 +1,14 @@
 package data.repository
 
-
-import android.content.Context
+import Email
+import Phone
 import android.util.Log
 import data.api.ApiService
 import data.model.Contact
-import data.model.Get_contacts
 import data.model.group
-import email
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-import kotlinx.coroutines.flow.StateFlow
-import phone
 
 class ContactRepository {
     private val retrofit = Retrofit.Builder()
@@ -77,7 +73,7 @@ class ContactRepository {
     }
 
 
-    suspend fun getEmail(userId: Int): List<email> {
+    suspend fun getEmail(userId: Int): List<Email> {
         return try {
             val response = apiService.GetEmail(userId)
             if (response.isSuccess) {
@@ -91,7 +87,7 @@ class ContactRepository {
         }
     }
 
-    suspend fun getPhone(userId: Int): List<phone> {
+    suspend fun getPhone(userId: Int): List<Phone> {
         return try {
             val response = apiService.GetPhone(userId)
             if (response.isSuccess) {

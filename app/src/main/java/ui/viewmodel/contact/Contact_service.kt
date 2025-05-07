@@ -1,13 +1,10 @@
 package ui.viewmodel.contact
 
-import android.content.Context
-import android.util.Log
+import Email
+import Phone
 import data.model.Contact
 import data.model.group
 import data.repository.ContactRepository
-import email
-import kotlinx.coroutines.flow.StateFlow
-import phone
 
 class Contact_service {
 
@@ -17,10 +14,10 @@ class Contact_service {
     suspend fun get_contact(user_id: Int): List<Contact>{
         return ContactRepository().getContacts(user_id)
     }
-    suspend fun get_email(user_id: Int): List<email> {
+    suspend fun get_email(user_id: Int): List<Email> {
         return ContactRepository().getEmail(user_id)
     }
-    suspend fun get_phone(user_id: Int): List<phone> {
+    suspend fun get_phone(user_id: Int): List<Phone> {
         return ContactRepository().getPhone(user_id)
     }
 }

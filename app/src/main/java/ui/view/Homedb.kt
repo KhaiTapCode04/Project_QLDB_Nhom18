@@ -45,16 +45,20 @@ suspend fun reload_contact(viewModel: Contact_state, context: Context) {
 }
 
 @Composable
-fun ContactListScreen(navController: NavHostController, Contact_state: Contact_state, context: Context) {
+fun ContactListScreen(navController: NavHostController, viewmodel: Contact_state, context: Context) {
     LaunchedEffect(Unit) {
-        Navigation().get_contact(Contact_state, context)
+        viewmodel.get_contact(context)
+        viewmodel.getGroup()
     }
-    val contactList by Contact_state.contacts.collectAsState()
-
+val groups by viewmodel.groups.collectAsState()
+    val contactList by viewmodel.contacts.collectAsState()
     var search by remember { mutableStateOf("") }
     var fillter = contactList.filter { it.name.contains(search, ignoreCase = true) }
-
-
+    val filteredContactList by remember(contactList, search, groups) {
+        derivedStateOf {
+            contactList.filter { it.name.contains(search, ignoreCase = true) }
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -144,8 +148,9 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
             }
 
             LazyColumn {
-                items(fillter) { contact ->
-                    ContactListItem(contact, navController, Contact_state)
+                items(filteredContactList) { contact ->
+                    viewmodel.getGroupnameById(contact.group_id)
+                        ?.let { ContactListItem(contact, navController, viewmodel, it) }
                 }
             }
         }
@@ -153,14 +158,14 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
 }
 
 @Composable
-fun ContactListItem(contact: Contact, navController: NavHostController, Contact_state: Contact_state) {
+fun ContactListItem(contact: Contact, navController: NavHostController, Contact_state: Contact_state, Group_name: String) {
     var showDropdownMenu by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable{
+            .clickable {
                 val gson = Gson()
                 val contactJson = Uri.encode(gson.toJson(contact))
                 navController.navigate("ContactDetail/$contactJson")
@@ -188,17 +193,17 @@ fun ContactListItem(contact: Contact, navController: NavHostController, Contact_
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = contact.contact_id.toString(),
+                text = contact.name,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
             )
+//            Text(
+//                text = contact.name,
+//                style = MaterialTheme.typography.bodyMedium,
+//                color = Color.Gray
+//            )
             Text(
-                text = contact.name,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Text(
-                text = contact.group_id.toString(),
+                text = "Nhóm: ${Group_name}",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )
@@ -220,6 +225,9 @@ fun ContactListItem(contact: Contact, navController: NavHostController, Contact_
                 DropdownMenuItem(
                     text = { Text("Xem chi tiết") },
                     onClick = {
+                        val gson = Gson()
+                        val contactJson = Uri.encode(gson.toJson(contact))
+                        navController.navigate("contactDetail/$contactJson")
                         // Handle view details action
                         showDropdownMenu = false
                     },

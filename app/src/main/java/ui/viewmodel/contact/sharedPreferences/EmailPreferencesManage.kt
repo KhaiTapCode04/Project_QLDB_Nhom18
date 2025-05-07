@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import email
+import Email
 
 class EmailPreferencesManage(context: Context) {
     companion object {
@@ -17,7 +17,7 @@ class EmailPreferencesManage(context: Context) {
     private val gson = Gson()
 
 
-    fun saveEmailList(email: email) {
+    fun saveEmailList(email: Email) {
         val currentList = getEmailList().toMutableList()
 
         val index = currentList.indexOfFirst { it.email_id == email.email_id }
@@ -38,10 +38,10 @@ class EmailPreferencesManage(context: Context) {
 
 
 
-    fun getEmailList(): List<email> {
+    fun getEmailList(): List<Email> {
         val json = sharedPreferences.getString(KEY_EMAIL_LIST, null)
         return if (json != null) {
-            val type = object : TypeToken<List<email>>() {}.type
+            val type = object : TypeToken<List<Email>>() {}.type
             gson.fromJson(json, type)
         } else {
             emptyList()
