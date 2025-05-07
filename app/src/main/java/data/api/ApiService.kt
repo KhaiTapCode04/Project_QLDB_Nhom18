@@ -26,19 +26,19 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST("add_email.php")
-    fun addEmail(
-        @Field("contact_id") contactId: Int,
-        @Field("type") type: String,
-        @Field("email") email: String
-    ): retrofit2.Call<AddEmailResponse>
+    suspend fun addEmail(
+        @Field("contact_id") contact_id: Int,
+        @Field("email_type") email_type: String,
+        @Field("email_address") email_address: String
+    ): Get_email
 
     @FormUrlEncoded
     @POST("add_phone.php")
-    fun addPhone(
+    suspend fun addPhone(
         @Field("contact_id") contactId: Int,
-        @Field("type") type: String,
-        @Field("phone") phone: String
-    ): retrofit2.Call<AddPhoneResponse>
+        @Field("phone_type") phone_type: String,
+        @Field("phone_number") phone_number: String
+    ): Get_phone
 
 
     @FormUrlEncoded
@@ -74,6 +74,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("add.php")
     suspend fun addContact( @Field("user_id") user_Id: Int,@Field("name") name: String, @Field("group_id") group_id: Int): Get_contacts
+
+    @FormUrlEncoded
+    @POST("deleteContact.php")
+    suspend fun deleteContact( @Field("contact_id") contact_id: Int): Get_contacts
 
     @GET("get_group.php")
     suspend fun Get_group(): Get_group

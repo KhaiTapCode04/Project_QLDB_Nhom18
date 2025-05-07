@@ -13,10 +13,10 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ui.viewmodel.contact.ConactPreferencesManage
-import ui.viewmodel.contact.Contact_state
-import ui.viewmodel.contact.EmailPreferencesManage
-import ui.viewmodel.contact.Email_state
+import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
+import ui.viewmodel.contact.state.Contact_state
+import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
+import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
 import ui.viewmodel.users.UserService
@@ -24,13 +24,13 @@ import ui.viewmodel.users.UserService
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun UserScreen(navController: NavHostController, userViewModel: User_state,
-               contactViewModel: Contact_state,
-               emailViewModel: Email_state) {
+fun UserScreen(navController: NavHostController, User_state: User_state,
+               Contact_state: Contact_state,
+               Email_state: Email_state) {
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
         if (user.getUserId() != 0) {
-            userViewModel.updateUser(
+            User_state.updateUser(
                 user.getUserId(),
                 user.getUserName(),
                 user.getUserEmail(),
@@ -38,13 +38,13 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
                 user.getProfilePicture()
             )
             ConactPreferencesManage(context).getContactList().forEach {
-                contactViewModel.addOrUpdateContact(it)
+                Contact_state.addOrUpdateContact(it)
             }
             EmailPreferencesManage(context).getEmailList().forEach {
-                emailViewModel.addOrUpdateEmail(it)
+                Email_state.addOrUpdateEmail(it)
             }
 
-            navController.navigate("a") {
+            navController.navigate("homedb") {
                 popUpTo("login") { inclusive = true }
             }
         }
@@ -55,7 +55,7 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val scope = rememberCoroutineScope()
-    val name by userViewModel.userName.collectAsState()
+    val name by User_state.userName.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -121,7 +121,7 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
                         }
 
                         if (loginHandler != null) {
-                            userViewModel.updateUser(
+                            User_state.updateUser(
                                 loginHandler.id,
                                 loginHandler.username,
                                 loginHandler.email,
@@ -129,8 +129,8 @@ fun UserScreen(navController: NavHostController, userViewModel: User_state,
                                 loginHandler.profile_picture.toString()
                             )
 
-                            Navigation().get_contact(contactViewModel, context)
-                            Navigation().get_email(emailViewModel,context)
+                            Navigation().get_contact(Contact_state, context)
+                            Navigation().get_email(Email_state,context)
                             navController.navigate("homedb"){
                                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
                             }

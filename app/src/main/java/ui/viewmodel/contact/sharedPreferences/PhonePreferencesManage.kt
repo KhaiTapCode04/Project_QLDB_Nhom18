@@ -1,14 +1,10 @@
-package ui.viewmodel.contact
-
-
+package ui.viewmodel.contact.sharedPreferences
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import data.model.Contact
 import phone
-
 
 class PhonePreferencesManage(context: Context) {
     companion object {

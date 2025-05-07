@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import data.api.ApiService
 import data.model.Contact
+import data.model.Get_contacts
 import data.model.group
 import email
 import retrofit2.Retrofit
@@ -53,15 +54,27 @@ class ContactRepository {
         }
     }
 
-    suspend fun addContacts(userId: Int, name: String, group_id: Int): Boolean {
+    suspend fun addContacts(userId: Int, name: String, group_id: Int): Int? {
         return try {
             val response = apiService.addContact(userId,name, group_id)
+            if(response.isSuccess){
+                response.data.firstOrNull()?.contact_id
+            }
+            else{
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+    suspend fun deleteContact(contact_id: Int): Boolean {
+        return try {
+            val response = apiService.deleteContact(contact_id)
             response.isSuccess
         } catch (e: Exception) {
             false
         }
     }
-
 
 
     suspend fun getEmail(userId: Int): List<email> {
@@ -91,22 +104,22 @@ class ContactRepository {
             emptyList()
         }
     }
-    suspend fun addEmail(contactId: Int, type: String, email: String): Boolean {
+    suspend fun addEmail(contact_id: Int, email_type: String, email_address: String): Boolean {
         return try {
-            val response = apiService.addEmail(contactId, type, email).execute()
-            response.isSuccessful && response.body()?.isSuccess == true
+            Log.d("check2", contact_id.toString() + " " + email_type + " " + email_address)
+            val response = apiService.addEmail(contact_id, email_type, email_address)
+            response.isSuccess
         } catch (e: Exception) {
             false
         }
     }
 
-    suspend fun addPhone(contactId: Int, type: String, phone: String): Boolean {
+    suspend fun addPhone(contactId: Int, phone_type: String, phone_number: String): Boolean {
         return try {
-            val response = apiService.addPhone(contactId, type, phone).execute()
-            response.isSuccessful && response.body()?.isSuccess == true
+            val response = apiService.addPhone(contactId, phone_type, phone_number)
+            response.isSuccess
         } catch (e: Exception) {
             false
         }
     }
-
 }

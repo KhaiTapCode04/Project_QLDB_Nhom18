@@ -1,4 +1,4 @@
-package ui.viewmodel.contact
+package ui.viewmodel.contact.sharedPreferences
 
 import android.content.Context
 import android.content.SharedPreferences

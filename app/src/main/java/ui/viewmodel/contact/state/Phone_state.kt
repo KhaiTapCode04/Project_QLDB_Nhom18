@@ -1,10 +1,10 @@
-
-package ui.viewmodel.contact
+package ui.viewmodel.contact.state
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import phone
+import kotlin.collections.plus
 
 class Phone_state : ViewModel() {
     private val _phone = MutableStateFlow<List<phone>>(emptyList())

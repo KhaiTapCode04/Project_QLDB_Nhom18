@@ -19,15 +19,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import data.model.Contact
+import kotlinx.coroutines.launch
 import ui.view.Navigation
 import ui.view.components.BottomNavigationBar
-import ui.viewmodel.contact.ConactPreferencesManage
-import ui.viewmodel.contact.Contact_state
+import ui.viewmodel.contact.ContactViewModel
+import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
+import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.users.UserPreferencesManager
 
@@ -42,11 +45,15 @@ suspend fun reload_contact(viewModel: Contact_state, context: Context) {
 }
 
 @Composable
-fun ContactListScreen(navController: NavHostController, viewModel: Contact_state, context: Context) {
+fun ContactListScreen(navController: NavHostController, Contact_state: Contact_state, context: Context) {
     LaunchedEffect(Unit) {
-        Navigation().get_contact(viewModel, context)
+        Navigation().get_contact(Contact_state, context)
     }
-    val contactList by viewModel.contacts.collectAsState()
+    val contactList by Contact_state.contacts.collectAsState()
+
+    var search by remember { mutableStateOf("") }
+    var fillter = contactList.filter { it.name.contains(search, ignoreCase = true) }
+
 
     Scaffold(
         topBar = {
@@ -109,8 +116,8 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
-                    value = "",
-                    onValueChange = {},
+                    value = search,
+                    onValueChange = {search = it},
                     placeholder = { Text("Tìm kiếm liên hệ") },
                     modifier = Modifier
                         .weight(1f)
@@ -137,8 +144,8 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
             }
 
             LazyColumn {
-                items(contactList) { contact ->
-                    ContactListItem(contact, navController)
+                items(fillter) { contact ->
+                    ContactListItem(contact, navController, Contact_state)
                 }
             }
         }
@@ -146,9 +153,10 @@ fun ContactListScreen(navController: NavHostController, viewModel: Contact_state
 }
 
 @Composable
-fun ContactListItem(contact: Contact, navController: NavHostController) {
+fun ContactListItem(contact: Contact, navController: NavHostController, Contact_state: Contact_state) {
     var showDropdownMenu by remember { mutableStateOf(false) }
-
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -251,7 +259,10 @@ fun ContactListItem(contact: Contact, navController: NavHostController) {
                 DropdownMenuItem(
                     text = { Text("Xóa") },
                     onClick = {
-                        // Handle delete action
+                        scope.launch {
+
+                        ContactViewModel().deleteContact(contact_id = contact.contact_id, Contact_state, context)
+                        }
                         showDropdownMenu = false
                     },
                     leadingIcon = {

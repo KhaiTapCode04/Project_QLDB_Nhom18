@@ -9,9 +9,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import email
 import ui.viewmodel.contact.Contact_service
-import ui.viewmodel.contact.EmailPreferencesManage
+import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
 import ui.viewmodel.users.UserPreferencesManager
-import ui.viewmodel.contact.Email_state
+import ui.viewmodel.contact.state.Email_state
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue

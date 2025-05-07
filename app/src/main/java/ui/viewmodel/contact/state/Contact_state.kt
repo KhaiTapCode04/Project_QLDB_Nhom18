@@ -1,8 +1,7 @@
-package ui.viewmodel.contact
+package ui.viewmodel.contact.state
 
 import androidx.lifecycle.ViewModel
 import data.model.Contact
-
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -16,12 +15,11 @@ class Contact_state: ViewModel() {
             .plus(newContact)
     }
 
-    fun removeEmailById(emailId: Int) {
+    fun removeContactById(emailId: Int) {
         _contacts.value = _contacts.value.filterNot { it.contact_id == emailId }
     }
 
-    fun clearAllEmails() {
+    fun clearAll() {
         _contacts.value = emptyList()
     }
 }
-

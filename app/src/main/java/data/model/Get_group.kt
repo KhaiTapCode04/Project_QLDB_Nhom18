@@ -6,6 +6,6 @@ data class Get_group(
     val data: List<group>
 )
 data class group(
-    val group_id: String,
+    val group_id: Int,
     val group_name: String,
 )

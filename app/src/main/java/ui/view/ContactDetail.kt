@@ -1,15 +1,9 @@
 import android.content.Context
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
@@ -24,23 +18,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import data.model.Contact
 import ui.view.Navigation
 import ui.view.components.BottomNavigationBar
-import ui.viewmodel.contact.Email_state
-import ui.viewmodel.contact.Phone_state
+import ui.viewmodel.contact.state.Email_state
+import ui.viewmodel.contact.state.Phone_state
 
 
 @Composable
-fun ContactDetailScreen(navController: NavHostController, contact: Contact, emailViewModel: Email_state,phoneViewModel: Phone_state, context: Context) {
+fun ContactDetailScreen(navController: NavHostController, contact: Contact, Email_state: Email_state,Phone_state: Phone_state, context: Context) {
     LaunchedEffect(Unit) {
-        Navigation().get_phone(phoneViewModel,context)
-        Navigation().get_email(emailViewModel,context)
+        Navigation().get_phone(Phone_state,context)
+        Navigation().get_email(Email_state,context)
     }
-    val emails by emailViewModel.emails.collectAsState()
-    val phones by phoneViewModel.phones.collectAsState()
+    val emails by Email_state.emails.collectAsState()
+    val phones by Phone_state.phones.collectAsState()
 
     val emailFilter = emails.filter { it.contact_id == contact.contact_id }
     val phoneFilter = phones.filter { it.contact_id == contact.contact_id }

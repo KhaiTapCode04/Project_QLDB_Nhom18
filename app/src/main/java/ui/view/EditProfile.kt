@@ -59,15 +59,15 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Composable
-fun EditProfile(navController: NavHostController, viewModel: User_state) {
+fun EditProfile(navController: NavHostController, User_state: User_state) {
     val context = LocalContext.current
 
     // Collect initial values from viewModel
-    val userId by viewModel.user_id.collectAsState()
-    val initialName by viewModel.userName.collectAsState()
-    val initialEmail by viewModel.email.collectAsState()
-    val initialPhone by viewModel.phone.collectAsState()
-    val profileImage by viewModel.profile_picturel.collectAsState()
+    val userId by User_state.user_id.collectAsState()
+    val initialName by User_state.userName.collectAsState()
+    val initialEmail by User_state.email.collectAsState()
+    val initialPhone by User_state.phone.collectAsState()
+    val profileImage by User_state.profile_picturel.collectAsState()
 
     // Create mutable state for editable fields
     var name by remember { mutableStateOf(initialName) }
@@ -317,7 +317,7 @@ fun EditProfile(navController: NavHostController, viewModel: User_state) {
                                 var a = UploadImgViewModel.UploadImg1(context,userId,croppedBitmap!!)
                                 if(a?.isSuccess == true){
                                     val userPrefs = UserPreferencesManager(context)
-                                    viewModel.updatePicture(userPrefs.getProfilePicture())
+                                    User_state.updatePicture(userPrefs.getProfilePicture())
                                     Toast.makeText(context,a.imageUrl, Toast.LENGTH_LONG).show()
                                 }
                             }
@@ -611,7 +611,7 @@ fun EditProfile(navController: NavHostController, viewModel: User_state) {
 
                                 if (loginHandler == true) {
                                     val userPrefs = UserPreferencesManager(context)
-                                    viewModel.updateUser(
+                                    User_state.updateUser(
                                         userPrefs.getUserId(),
                                         userPrefs.getUserName(),
                                         userPrefs.getUserEmail(),

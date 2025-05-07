@@ -22,23 +22,23 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import ui.viewmodel.contact.ConactPreferencesManage
-import ui.viewmodel.contact.Contact_state
-import ui.viewmodel.contact.EmailPreferencesManage
-import ui.viewmodel.contact.Email_state
-import ui.viewmodel.contact.PhonePreferencesManage
-import ui.viewmodel.contact.Phone_state
+import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
+import ui.viewmodel.contact.state.Contact_state
+import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
+import ui.viewmodel.contact.state.Email_state
+import ui.viewmodel.contact.sharedPreferences.PhonePreferencesManage
+import ui.viewmodel.contact.state.Phone_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
 
 @Composable
-fun ProfileScreen(navController: NavHostController, userViewModel: User_state, contactViewModel:Contact_state, emailViewModel: Email_state, phoneViewModel: Phone_state) {
+fun ProfileScreen(navController: NavHostController, User_state: User_state, Contact_state:Contact_state, Email_state: Email_state, Phone_state: Phone_state) {
     val context = LocalContext.current
-    val user_id by userViewModel.user_id.collectAsState()
-    val name by userViewModel.userName.collectAsState()
-    val email by userViewModel.email.collectAsState()
-    val phone by userViewModel.phone.collectAsState()
-    val profileImage by userViewModel.profile_picturel.collectAsState()
+    val user_id by User_state.user_id.collectAsState()
+    val name by User_state.userName.collectAsState()
+    val email by User_state.email.collectAsState()
+    val phone by User_state.phone.collectAsState()
+    val profileImage by User_state.profile_picturel.collectAsState()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -176,10 +176,10 @@ fun ProfileScreen(navController: NavHostController, userViewModel: User_state, c
                     contact.clearContacts()
                     email.clearEmails()
                     phone.clearPhones()
-                    userViewModel.clearUser()
-                    contactViewModel.clearAllEmails()
-                    emailViewModel.clearAllEmails()
-                    phoneViewModel.clearAllPhones()
+                    User_state.clearUser()
+                    Contact_state.clearAll()
+                    Email_state.clearAllEmails()
+                    Phone_state.clearAllPhones()
 
                     navController.navigate("login"){
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }

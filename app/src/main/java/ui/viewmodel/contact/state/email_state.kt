@@ -1,11 +1,12 @@
-
-package ui.viewmodel.contact
+package ui.viewmodel.contact.state
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import email
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ui.viewmodel.contact.Contact_service
+import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
 import ui.viewmodel.users.UserPreferencesManager
 
 class Email_state : ViewModel() {

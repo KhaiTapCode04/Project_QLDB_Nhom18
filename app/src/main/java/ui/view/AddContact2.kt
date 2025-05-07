@@ -22,23 +22,32 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import data.model.group
+import kotlinx.coroutines.launch
 import ui.view.components.BottomNavigationBar
-import ui.viewmodel.contact.AddContactViewModel
+import ui.viewmodel.contact.ContactViewModel
+import ui.viewmodel.contact.state.AddContact_state
+import ui.viewmodel.contact.state.Contact_state
 
 @Composable
-fun AddContact(navController: NavHostController, viewModel: AddContactViewModel = viewModel()) {
+fun AddContact(navController: NavHostController, AddContact_state: AddContact_state, Contact_state: Contact_state) {
 
     val context = LocalContext.current
-    val groups = viewModel.groups.value
-    val addResult = viewModel.addContactResult.value
-    val isLoading = viewModel.isLoading.value
+    val name by AddContact_state.name.collectAsState()
+    val email by AddContact_state.email.collectAsState()
+    val phone by AddContact_state.phone.collectAsState()
+
+    val groups by AddContact_state.groups.collectAsState()
+    val addContactResult by AddContact_state.addContactResult.collectAsState()
+    val isLoading by AddContact_state.isLoading.collectAsState()
+    val selectedGroup by AddContact_state.selectedGroup.collectAsState()
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        viewModel.getGroup()
+        AddContact_state.getGroup()
     }
 
-    LaunchedEffect(addResult) {
-        addResult?.let {
+    LaunchedEffect(addContactResult) {
+        addContactResult?.let {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
         }
     }
@@ -80,8 +89,8 @@ fun AddContact(navController: NavHostController, viewModel: AddContactViewModel 
                 // Họ và tên
                 FieldLabel("Họ và tên")
                 OutlinedTextField(
-                    value = viewModel.name.value,
-                    onValueChange = { viewModel.name.value = it },
+                    value = name,
+                    onValueChange = { AddContact_state._name.value = it },
                     placeholder = { Text("Nhập họ và tên", color = Color.Gray) },
                     modifier = Modifier.fillMaxWidth().height(56.dp)
                 )
@@ -91,8 +100,8 @@ fun AddContact(navController: NavHostController, viewModel: AddContactViewModel 
                 // Số điện thoại
                 FieldLabel("Số điện thoại")
                 OutlinedTextField(
-                    value = viewModel.phone.value,
-                    onValueChange = { viewModel.phone.value = it },
+                    value = phone,
+                    onValueChange = { AddContact_state._phone.value = it },
                     placeholder = { Text("Nhập số điện thoại", color = Color.Gray) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     modifier = Modifier.fillMaxWidth().height(56.dp)
@@ -103,8 +112,8 @@ fun AddContact(navController: NavHostController, viewModel: AddContactViewModel 
                 // Email
                 FieldLabel("Email")
                 OutlinedTextField(
-                    value = viewModel.email.value,
-                    onValueChange = { viewModel.email.value = it },
+                    value = email,
+                    onValueChange = { AddContact_state._email.value = it },
                     placeholder = { Text("Nhập email", color = Color.Gray) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = Modifier.fillMaxWidth().height(56.dp)
@@ -115,16 +124,16 @@ fun AddContact(navController: NavHostController, viewModel: AddContactViewModel 
                 // Nhóm
                 FieldLabel("Nhóm")
                 GroupDropdownMenu(
-                    selectedGroup = viewModel.selectedGroup.value?.group_name ?: "Chọn nhóm",
+                    selectedGroup = selectedGroup?.group_name ?: "Chọn nhóm",
                     groups = groups,
-                    onGroupSelected = { viewModel.selectedGroup.value = it }
+                    onGroupSelected = { AddContact_state._selectedGroup.value = it }
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 // Button lưu
                 Button(
-                    onClick = { viewModel.addContact(context) },
+                    onClick = {scope.launch { ContactViewModel().addContact(AddContact_state,Contact_state,context)} },
                     modifier = Modifier.fillMaxWidth().height(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
                 ) {
@@ -146,6 +155,8 @@ fun AddContact(navController: NavHostController, viewModel: AddContactViewModel 
         }
     }
 }
+
+
 
 @Composable
 fun FieldLabel(text: String) {
