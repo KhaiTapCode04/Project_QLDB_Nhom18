@@ -4,18 +4,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
+    val navBackStackEntry = navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry.value?.destination?.route
+
+
     NavigationBar {
         NavigationBarItem(
-            selected = true,
+            selected = currentRoute == "homedb",
             onClick = { navController.navigate("homedb") },
             icon = { Icon(Icons.Filled.Person, contentDescription = "Danh bạ") },
             label = { Text("Danh bạ") }
         )
         NavigationBarItem(
-            selected = false,
+            selected = currentRoute == "groupscreen",
             onClick = {
                 navController.navigate("groupscreen")
             },
@@ -23,8 +28,8 @@ fun BottomNavigationBar(navController: NavController) {
             label = { Text("Nhóm") }
         )
         NavigationBarItem(
-            selected = false,
-            onClick = {  },
+            selected = currentRoute == "setting",
+            onClick = { navController.navigate("setting") },
             icon = { Icon(Icons.Filled.Person, contentDescription = "Cài đặt") },
             label = { Text("Cài đặt") }
         )

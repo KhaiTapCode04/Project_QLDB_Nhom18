@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.min
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import data.model.Contact
@@ -33,35 +35,54 @@ import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
 import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.users.UserPreferencesManager
-
+import com.google.accompanist.swiperefresh.*
+import kotlinx.coroutines.delay
+import ui.view.reload_email
+import ui.viewmodel.contact.sharedPreferences.PhonePreferencesManage
+import ui.viewmodel.contact.state.Email_state
+import ui.viewmodel.contact.state.Phone_state
 
 suspend fun reload_contact(viewModel: Contact_state, context: Context) {
     val user_id = UserPreferencesManager(context).getUserId()
     val contact = Contact_service().get_contact(user_id)
+    viewModel.clearAll()
+    ConactPreferencesManage(context).clearContacts()
     contact.forEach {
         ConactPreferencesManage(context).saveOrUpdateContact(it)
         viewModel.addOrUpdateContact(it)
     }
 }
+suspend fun reload_phone(Phone_state: Phone_state, context: Context) {
+    val user_id = UserPreferencesManager(context).getUserId()
+    val phone = Contact_service().get_phone(user_id)
+    Phone_state.clearAllPhones()
+    PhonePreferencesManage(context).clearPhones()
+    phone.forEach {
+        PhonePreferencesManage(context).savePhoneList(it)
+        Phone_state.addOrUpdatePhone(it)
+    }
+}
 
 @Composable
-fun ContactListScreen(
-    navController: NavHostController,
-    viewmodel: Contact_state,
-    context: Context
-) {
+fun ContactListScreen(navController: NavHostController, Contact_state: Contact_state,Email_state: Email_state,Phone_state: Phone_state, context: Context) {
     LaunchedEffect(Unit) {
-        viewmodel.get_contact(context)
-        viewmodel.getGroup()
+        Contact_state.get_contact(context)
+        Contact_state.getGroup()
     }
-    val groups by viewmodel.groups.collectAsState()
-    val contactList by viewmodel.contacts.collectAsState()
+    val groups by Contact_state.groups.collectAsState()
+    val scope = rememberCoroutineScope()
+    val contactList by Contact_state.contacts.collectAsState()
     var search by remember { mutableStateOf("") }
-    var fillter = contactList.filter { it.name.contains(search, ignoreCase = true) }
+    var isSortedAsc by remember { mutableStateOf(true) }
+    var isRefreshing by remember { mutableStateOf(false) }
     val filteredContactList by remember(contactList, search, groups) {
         derivedStateOf {
             contactList.filter { it.name.contains(search, ignoreCase = true) }
         }
+    }
+    var sortedContactList by remember { mutableStateOf(filteredContactList) }
+    LaunchedEffect(filteredContactList) {
+        sortedContactList = filteredContactList
     }
     Scaffold(
         topBar = {
@@ -141,20 +162,44 @@ fun ContactListScreen(
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                IconButton(onClick = { /* Filter action */ }) {
+                IconButton(onClick = {
+                    isSortedAsc = !isSortedAsc
+                    sortedContactList = if (isSortedAsc) {
+                        sortedContactList.sortedBy { it.name }
+                    } else {
+                        sortedContactList.sortedByDescending { it.name }
+                    }
+                }) {
                     Icon(
                         imageVector = Icons.Outlined.FilterList,
                         contentDescription = "Filter"
                     )
                 }
             }
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing),
+                onRefresh = {
+                    isRefreshing = true
+                    scope.launch {
+                        reload_contact(Contact_state, context)
+                        reload_email(Email_state,context)
+                        reload_phone(Phone_state,context)
 
-            LazyColumn {
-                items(filteredContactList) { contact ->
-                    viewmodel.getGroupnameById(contact.group_id)
-                        ?.let { ContactListItem(contact, navController, viewmodel, it) }
+                        isRefreshing = false
+                    }
+                }
+            ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(max(200.dp, 1000.dp))
+            ) {
+                items(sortedContactList) { contact ->
+                    Contact_state.getGroupnameById(contact.group_id)
+                        ?.let { ContactListItem(contact, navController, Contact_state, it) }
                 }
             }
+        }
         }
     }
 }
