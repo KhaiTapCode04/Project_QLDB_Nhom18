@@ -13,9 +13,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.nhom18_lttbdd_qldb_ngaybc.R
 import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.state.Contact_state
 
@@ -35,7 +39,19 @@ fun GroupScreen(navController: NavHostController, viewModel: Contact_state, cont
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nhóm liên hệ") },
+                title = {
+                    Text(
+                        text = "Nhóm liên hệ",
+                        style = TextStyle(
+                            color = Color(0xFF000000),
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xB587FF95)
+                ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
@@ -55,7 +71,9 @@ fun GroupScreen(navController: NavHostController, viewModel: Contact_state, cont
                 }
             )
         },
-        bottomBar = { BottomNavigationBar(navController, "groupscreen") }
+        bottomBar = { BottomNavigationBar(navController, "groupscreen") },
+
+
     ) { paddingValues ->
 
         LazyColumn(

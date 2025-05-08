@@ -10,6 +10,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavType
@@ -17,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.nhom18_lttbdd_qldb_ngaybc.R
 import com.google.gson.Gson
 import data.model.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,8 +65,15 @@ class Navigation: ComponentActivity() {
     }
 
 
-
-
+//favicon
+    @Composable
+    fun ContactIcon() {
+        Image(
+            painter = painterResource(id = R.drawable.ic_contacts),
+            contentDescription = "Contact Icon",
+            modifier = Modifier.size(48.dp)
+        )
+    }
 
 }
 
@@ -96,6 +110,14 @@ fun TodoNavigation(viewModel: User_state) {
                 Email_state = Email_state,
             )
         }
+        /*composable("register") {
+            RegisterScreen(
+                navController = navController,
+                User_state = User_state,
+                Contact_state = Contact_state,
+                Email_state = Email_state
+            )
+        }*/
         composable("profile") {
             ProfileScreen(
                 navController = navController,
