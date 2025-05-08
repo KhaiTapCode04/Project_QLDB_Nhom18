@@ -83,7 +83,7 @@ fun TodoNavigation(viewModel: User_state) {
     val user = UserPreferencesManager(context)
     val emailState: Email_state = viewModel()
     val phoneState: Phone_state = viewModel()
-
+    val viewmodeleditcontact: EditContactViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = "login"
@@ -166,7 +166,7 @@ fun TodoNavigation(viewModel: User_state) {
                 navController = navController,
                 context = context,
                 contactId = contactId,
-                viewModel = EditContactViewModel()
+                viewModel = viewmodeleditcontact
             )
         }
     }

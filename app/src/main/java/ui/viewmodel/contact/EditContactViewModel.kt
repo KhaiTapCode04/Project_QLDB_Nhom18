@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import data.api.ApiService
+import data.model.Group
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ui.view.UserScreen
 import ui.viewmodel.users.UserPreferencesManager
 
 class EditContactViewModel : ViewModel() {
@@ -17,10 +17,21 @@ class EditContactViewModel : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _message = MutableStateFlow("")
-    val message = _message.asStateFlow()
+    private val _toastMessage = MutableStateFlow("")
+    val toastMessage = _toastMessage.asStateFlow()
 
-    // Khởi tạo Retrofit
+    // Các lỗi riêng
+    val nameError = MutableStateFlow("")
+    val phoneError = MutableStateFlow("")
+    val emailError = MutableStateFlow("")
+
+    // Danh sách group và nhóm đã chọn
+    val _groups = MutableStateFlow<List<Group>>(emptyList())
+    val groups = _groups.asStateFlow()
+
+    val _selectedGroup = MutableStateFlow<Group?>(null)
+    val selectedGroup = _selectedGroup.asStateFlow()
+
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://nettruyen.world/contacts/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -28,47 +39,55 @@ class EditContactViewModel : ViewModel() {
 
     private val api = retrofit.create(ApiService::class.java)
 
-    fun updateContact(context: Context,contactId: Int ,name: String, groupId: String, email: String, phone: String) {
+    fun getGroup() {
+        viewModelScope.launch {
+            _groups.value = Contact_service().get_group()
+        }
+    }
+
+    fun updateContact(context: Context, contactId: Int, name: String, email: String, phone: String) {
         val userId = UserPreferencesManager(context).getUserId()
+        val groupId = _selectedGroup.value?.group_id
+
         viewModelScope.launch {
 
-            // Validate
+            // Reset lỗi cũ
+            nameError.value = ""
+            phoneError.value = ""
+            emailError.value = ""
+
+            var hasError = false
+
             if (name.isBlank()) {
-                _message.value = "Vui lòng nhập họ và tên"
-                return@launch
+                nameError.value = "Vui lòng nhập họ và tên"
+                hasError = true
             }
-
             if (phone.isBlank()) {
-                _message.value = "Vui lòng nhập số điện thoại"
-                return@launch
+                phoneError.value = "Vui lòng nhập số điện thoại"
+                hasError = true
+            } else if (!phone.matches(Regex("^[0-9+]{9,15}$"))) {
+                phoneError.value = "Số điện thoại không hợp lệ"
+                hasError = true
             }
-
-            if (!phone.matches(Regex("^[0-9+]{9,15}$"))) {
-                _message.value = "Số điện thoại không hợp lệ"
-                return@launch
-            }
-
             if (email.isBlank()) {
-                _message.value = "Vui lòng nhập email"
+                emailError.value = "Vui lòng nhập email"
+                hasError = true
+            }
+//            else if (!email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$.{2,}"))) {
+//                emailError.value = "Email không hợp lệ"
+//                hasError = true
+//            }
+            if (groupId == null) {
+                _toastMessage.value = "Vui lòng chọn nhóm"
                 return@launch
             }
 
-            if (!email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$.{2,}"))) {
-                _message.value = "Email không hợp lệ"
-                return@launch
-            }
-
-            if (groupId.isBlank()) {
-                _message.value = "Vui lòng nhập ID nhóm"
-                return@launch
-            }
+            if (hasError) return@launch
 
             _isLoading.value = true
-            _message.value = ""
 
             try {
-
-                val resContact = api.editContact(contactId, userId, name, groupId.toInt())
+                val resContact = api.editContact(contactId, userId, name, groupId)
                 val resEmail = api.editEmail(contactId, email, "work")
                 val resPhone = api.editPhone(contactId, phone, "mobile")
 
@@ -76,16 +95,20 @@ class EditContactViewModel : ViewModel() {
                     resEmail.isSuccessful && resEmail.body()?.isSuccess == true &&
                     resPhone.isSuccessful && resPhone.body()?.isSuccess == true) {
 
-                    _message.value = "Cập nhật thành công!"
+                    _toastMessage.value = "Cập nhật thành công!"
                 } else {
-                    _message.value = "Cập nhật thất bại!"
+                    _toastMessage.value = "Cập nhật thất bại!"
                 }
 
             } catch (e: Exception) {
-                _message.value = "Lỗi hệ thống hoặc kết nối!"
+                _toastMessage.value = "Lỗi hệ thống hoặc kết nối!"
             }
 
             _isLoading.value = false
         }
+    }
+
+    fun clearToastMessage() {
+        _toastMessage.value = ""
     }
 }

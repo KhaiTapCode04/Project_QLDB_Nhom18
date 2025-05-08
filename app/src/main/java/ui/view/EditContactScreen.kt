@@ -1,6 +1,7 @@
 package ui.view
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.delay
 import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.EditContactViewModel
 
@@ -33,21 +35,40 @@ fun EditContactScreen(
     contactId: Int,
     viewModel: EditContactViewModel = viewModel()
 ) {
-    // State variables
     var name by remember { mutableStateOf("") }
-    var phoneNumber by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var groupId by remember { mutableStateOf("") }
+
+    val groups by viewModel.groups.collectAsState()
+    val selectedGroup by viewModel.selectedGroup.collectAsState()
 
     val isLoading by viewModel.isLoading.collectAsState()
-    val message by viewModel.message.collectAsState()
+    val toastMessage by viewModel.toastMessage.collectAsState()
+
+    val nameError by viewModel.nameError.collectAsState()
+    val phoneError by viewModel.phoneError.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+
+    // Load nhóm khi mở màn
+    LaunchedEffect(Unit) {
+        viewModel.getGroup()
+    }
+
+    LaunchedEffect(toastMessage) {
+        if (toastMessage.isNotEmpty()) {
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+            delay(2000)
+            viewModel.clearToastMessage()
+            if (toastMessage == "Cập nhật thành công!") {
+                navController.navigateUp()
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text("Chỉnh sửa liên hệ", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                },
+                title = { Text("Chỉnh sửa liên hệ", fontSize = 22.sp, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.Black)
@@ -55,15 +76,14 @@ fun EditContactScreen(
                 },
                 actions = {
                     IconButton(onClick = { /* Hồ sơ */ }) {
-                        Icon(Icons.Default.AccountCircle, contentDescription = "Profile", tint = Color(0xFF666666))
+                        Icon(Icons.Default.AccountCircle, contentDescription = "Profile", tint = Color.Gray)
                     }
                 }
             )
         },
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -75,80 +95,74 @@ fun EditContactScreen(
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text("Chỉnh sửa thông tin liên hệ để cập nhật danh bạ", fontSize = 14.sp, color = Color(0xFF666666))
+            Text("Cập nhật thông tin liên hệ", fontSize = 14.sp, color = Color.Gray)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Name
-            EditableTextField("Họ và tên", name) { name = it }
+            EditableTextField("Họ và tên", name, errorText = nameError) { name = it }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Phone
-            EditableTextField("Số điện thoại", phoneNumber, keyboardType = KeyboardType.Phone) { phoneNumber = it }
+            EditableTextField("Số điện thoại", phone, keyboardType = KeyboardType.Phone, errorText = phoneError) { phone = it }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Email
-            EditableTextField("Email", email, keyboardType = KeyboardType.Email) { email = it }
+            EditableTextField("Email", email, keyboardType = KeyboardType.Email, errorText = emailError) { email = it }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // GroupId
-            EditableTextField("Group ID", groupId, keyboardType = KeyboardType.Number) { groupId = it }
+            GroupDropdownMenu(
+                selectedGroup = selectedGroup?.group_name ?: "Chọn nhóm",
+                groups = groups,
+                onGroupSelected = { viewModel._selectedGroup.value = it }
+            )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // Save Button
             Button(
-                onClick = {
-                    viewModel.updateContact(context, contactId ,name, groupId, email, phoneNumber)
-                },
-                modifier = Modifier.fillMaxWidth().height(52.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                onClick = { viewModel.updateContact(context, contactId, name, email, phone) },
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
+                enabled = !isLoading
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Brush.horizontalGradient(listOf(Color(0xFF2196F3), Color(0xFF1976D2))))
-                        .padding(12.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Lưu", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+                } else {
+                    Text("Lưu", color = Color.White, fontSize = 16.sp)
                 }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Loading + Message
-            if (isLoading) {
-                CircularProgressIndicator()
-            }
-
-            if (message.isNotEmpty()) {
-                Text(message, color = Color.Red)
             }
         }
     }
 }
+
 
 @Composable
 fun EditableTextField(
     label: String,
     value: String,
     keyboardType: KeyboardType = KeyboardType.Text,
+    errorText: String = "",
     onValueChange: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(text = label, fontWeight = FontWeight.Medium, color = Color.Black)
         Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
                 .shadow(2.dp, RoundedCornerShape(12.dp))
                 .background(Color.White, RoundedCornerShape(12.dp)),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
+            isError = errorText.isNotEmpty()
         )
+
+        if (errorText.isNotEmpty()) {
+            Text(
+                text = errorText,
+                color = Color.Red,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
