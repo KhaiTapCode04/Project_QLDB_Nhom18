@@ -71,7 +71,7 @@ fun ContactDetailScreen(navController: NavHostController, contact: Contact, Emai
                 }
             )
         },
-        bottomBar = {BottomNavigationBar(navController)}
+//        bottomBar = {BottomNavigationBar(navController)}
 
     ) { paddingValues ->
         Column(

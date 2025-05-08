@@ -81,7 +81,7 @@ fun EditContactScreen(
                 }
             )
         },
-        bottomBar = { BottomNavigationBar(navController) }
+//        bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
 
         Column(

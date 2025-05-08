@@ -115,7 +115,7 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
         },
 
 
-        bottomBar = { BottomNavigationBar(navController) },
+        bottomBar = { BottomNavigationBar(navController, "homedb") },
 
         floatingActionButton = {
             FloatingActionButton(

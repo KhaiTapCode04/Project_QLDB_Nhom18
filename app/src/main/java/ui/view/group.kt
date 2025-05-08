@@ -55,7 +55,7 @@ fun GroupScreen(navController: NavHostController, viewModel: Contact_state, cont
                 }
             )
         },
-        bottomBar = { BottomNavigationBar(navController) }
+        bottomBar = { BottomNavigationBar(navController, "groupscreen") }
     ) { paddingValues ->
 
         LazyColumn(

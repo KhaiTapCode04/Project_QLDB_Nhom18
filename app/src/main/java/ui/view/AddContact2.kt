@@ -19,11 +19,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import data.model.Group
 import kotlinx.coroutines.launch
-import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.ContactViewModel
 import ui.viewmodel.contact.state.AddContact_state
 import ui.viewmodel.contact.state.Contact_state
@@ -69,7 +67,7 @@ fun AddContact(navController: NavHostController, AddContact_state: AddContact_st
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F7FA))
             )
         },
-        bottomBar = { BottomNavigationBar(navController) }
+//        bottomBar = { BottomNavigationBar(navController, "") }
     ) { paddingValues ->
 
         Box(modifier = Modifier.fillMaxSize()) {

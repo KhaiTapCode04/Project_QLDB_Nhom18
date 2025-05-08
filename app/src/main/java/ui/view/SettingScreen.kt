@@ -70,9 +70,7 @@ fun Setting(navController: NavHostController) {
             )
         },
         bottomBar = {
-            BottomNavigationBar(
-                navController
-            )
+            BottomNavigationBar(navController, "setting")
         }
     ) { paddingValues ->
         LazyColumn(
