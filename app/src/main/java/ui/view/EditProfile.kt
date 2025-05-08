@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -37,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -51,6 +53,7 @@ import com.example.nhom18_lttbdd_qldb_ngaybc.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ui.view.components.BottomNavigationBar
 import ui.viewmodel.users.UploadImgViewModel
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.UserService
@@ -335,30 +338,44 @@ fun EditProfile(navController: NavHostController, User_state: User_state) {
             }
         }
     }else{
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        if (editMode == "profile") "Chỉnh sửa hồ sơ" else "Thay đổi mật khẩu"
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Quay lại"
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Chỉnh sửa hồ sơ",
+                            style = TextStyle(
+                                color = Color(0xFF000000),
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xB587FF95)
+                    ),
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Quay lại"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { navController.navigate("profile") }) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Hồ sơ",
+                                modifier = Modifier.size(48.dp)
+                            )
+                        }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+
                 )
-            )
-        }
-    ) { paddingValues ->
+            },
+
+        ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -428,10 +445,16 @@ fun EditProfile(navController: NavHostController, User_state: User_state) {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
-                        contentDescription = "Edit Profile"
+                        contentDescription = "Edit Profile",
+                        tint = Color(0xB51C1C1C)
+
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Thông tin cá nhân")
+                    Text(
+                        text = "Thông tin cá nhân",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 15.sp),
+                        color = Color.Black
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -448,10 +471,16 @@ fun EditProfile(navController: NavHostController, User_state: User_state) {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Lock,
-                        contentDescription = "Change Password"
+                        contentDescription = "Change Password",
+                        tint = Color(0xB51C1C1C)
+
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Đổi mật khẩu")
+                    Text(
+                        text = "Đổi mật khẩu",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 15.sp),
+                        color = Color.Black
+                    )
                 }
             }
 
@@ -668,7 +697,11 @@ fun EditProfile(navController: NavHostController, User_state: User_state) {
                         contentDescription = "Save"
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(if (editMode == "profile") "Lưu thông tin" else "Cập nhật mật khẩu")
+                    Text(
+                        text = if (editMode == "profile") "Lưu thông tin" else "Cập nhật mật khẩu",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
+                        color = Color.White
+                    )
                 }
             }
 
@@ -680,10 +713,16 @@ fun EditProfile(navController: NavHostController, User_state: User_state) {
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Cancel"
+                    contentDescription = "Cancel",
+                    tint = Color.Red
+
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Huỷ bỏ")
+                Text(
+                    text = "Huỷ bỏ",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
+                    color = Color.Red
+                )
             }
         }
         }

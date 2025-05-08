@@ -17,6 +17,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -66,6 +67,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation ("androidx.vectordrawable:vectordrawable:1.1.0")
+    implementation("androidx.compose.foundation:foundation:1.5.0") // hoặc version tương ứng
     //Accompanist SwipeRefresh (0.33.2-alpha)
     implementation("com.google.accompanist:accompanist-swiperefresh:0.33.2-alpha")
     // Sử dụng phiên bản BOM mới hơn cho Compose

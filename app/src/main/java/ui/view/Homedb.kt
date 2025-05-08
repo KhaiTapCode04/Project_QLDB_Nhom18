@@ -1,6 +1,7 @@
 import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,13 +19,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.nhom18_lttbdd_qldb_ngaybc.R
 import com.google.gson.Gson
 import data.model.Contact
 import kotlinx.coroutines.launch
@@ -87,18 +94,29 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
     Scaffold(
         topBar = {
             TopAppBar(
-
-                title = { Text("Hồ Sơ") },
-                navigationIcon = {
+                title = {
+                    Text(
+                        text = "Quản lý danh bạ",
+                        style = TextStyle(
+                            color = Color(0xFF000000), // Màu xanh đậm #339900 (theo yêu cầu)
+                            fontSize = 32.sp, // Chữ to hơn
+                            fontWeight = FontWeight.Bold // Chữ đậm hơn
+                        )
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xB587FF95)
+                ),
+                /*navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Quay lại"
                         )
                     }
-                },
+                },*/
                 actions = {
-                    IconButton(onClick = { /* Profile action */
+                    IconButton(onClick = {
                         navController.navigate("profile")
                     }) {
                         Icon(
@@ -108,27 +126,30 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
                                 .size(48.dp)
                                 .clickable {
                                     navController.navigate("profile")
-                                },
+                                }
                         )
                     }
-                })
+                }
+            )
         },
-
 
         bottomBar = { BottomNavigationBar(navController, "homedb") },
 
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Add contact action */
+                onClick = {
                     navController.navigate("addcontact")
                 },
-                containerColor = Color(0xFF2196F3)
+                containerColor = Color(0xFF1D4BCD)
             ) {
-                Icon(Icons.Filled.Add, contentDescription = "Add Contact")
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_add),
+                    contentDescription = "",
+                    tint = Color.White
+                )
             }
         }
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -145,22 +166,44 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
                 TextField(
                     value = search,
                     onValueChange = { search = it },
-                    placeholder = { Text("Tìm kiếm liên hệ") },
+                    placeholder = {
+                        Text(
+                            text = "Tìm kiếm liên hệ",
+                            color = Color.Gray.copy(alpha = 0.6f),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
                     modifier = Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(8.dp)),
+                        .weight(2f)
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.White)
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 8.dp),
                     singleLine = true,
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Search",
+                            painter = painterResource(id = R.drawable.ic_search),
+                            contentDescription = "Search Icon",
+                            tint = Color.Gray.copy(alpha = 0.6f),
                             modifier = Modifier
-                                .clickable {
-                                    navController.navigate("profile")
-                                },
+                                .size(50.dp)
+                                .padding(10.dp)
+
                         )
-                    }
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        cursorColor = MaterialTheme.colorScheme.primary
+                    )
                 )
+
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = {
                     isSortedAsc = !isSortedAsc
@@ -189,16 +232,18 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
                     }
                 }
             ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(max(200.dp, 1000.dp))
-            ) {
-                items(sortedContactList) { contact ->
-                    Contact_state.getGroupnameById(contact.group_id)
-                        ?.let { ContactListItem(contact, navController, Contact_state, it) }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 200.dp, max = 1000.dp)
+                        .padding(horizontal = 12.dp)
+                ) {
+                    items(sortedContactList) { contact ->
+                        Contact_state.getGroupnameById(contact.group_id)?.let { groupName ->
+                            ContactListItem(contact, navController, Contact_state, groupName)
+                        }
+                    }
                 }
-            }
         }
         }
     }
@@ -236,7 +281,7 @@ fun ContactListItem(
             Icon(
                 imageVector = Icons.Default.Person,
                 contentDescription = "Profile",
-                tint = Color.White
+                tint = Color.Black
             )
         }
 
@@ -246,18 +291,27 @@ fun ContactListItem(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = contact.name,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black,
+                    lineHeight = 22.sp
+                )
             )
-//            Text(
-//                text = contact.name,
-//                style = MaterialTheme.typography.bodyMedium,
-//                color = Color.Gray
-//            )
+           /* Text(
+                text = contact.name,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )*/
             Text(
                 text = "Nhóm: ${Group_name}",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    lineHeight = 18.sp
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
@@ -280,13 +334,14 @@ fun ContactListItem(
                         val gson = Gson()
                         val contactJson = Uri.encode(gson.toJson(contact))
                         navController.navigate("contactDetail/$contactJson")
-                        // Handle view details action
                         showDropdownMenu = false
                     },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Xem chi tiết"
+                            painter = painterResource(id = R.drawable.ic_view),
+                            contentDescription = "Xem chi tiết",
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Unspecified
                         )
                     }
                 )
@@ -294,26 +349,29 @@ fun ContactListItem(
                     text = { Text("Chỉnh sửa") },
                     onClick = {
                         navController.navigate("edit/${contact.contact_id}")
-                        // Handle edit action
                         showDropdownMenu = false
                     },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Chỉnh sửa"
+                            painter = painterResource(id = R.drawable.ic_edit),
+                            contentDescription = "Chỉnh sửa",
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Unspecified
+
                         )
                     }
                 )
                 DropdownMenuItem(
                     text = { Text("Chặn") },
                     onClick = {
-                        Contact_state.
                         showDropdownMenu = false
                     },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Chặn"
+                            painter = painterResource(id = R.drawable.ic_block),
+                            contentDescription = "Chặn",
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Unspecified
                         )
                     }
                 )
@@ -321,7 +379,6 @@ fun ContactListItem(
                     text = { Text("Xóa") },
                     onClick = {
                         scope.launch {
-
                             ContactViewModel().deleteContact(
                                 contact_id = contact.contact_id,
                                 Contact_state,
@@ -332,8 +389,11 @@ fun ContactListItem(
                     },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Xóa"
+                            painter = painterResource(id = R.drawable.ic_delete),
+                            contentDescription = "Xóa",
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Unspecified
+
                         )
                     }
                 )

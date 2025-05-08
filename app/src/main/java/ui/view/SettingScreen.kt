@@ -9,8 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,22 +54,36 @@ fun Setting(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Cài Đặt", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "Cài đặt",
+                        style = TextStyle(
+                            color = Color(0xFF000000),
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
                 },
-                actions = {
-                    IconButton(onClick = { /* Hồ sơ */ }) {
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xB587FF95)
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_profile),
-                            contentDescription = "Profile",
-                            tint = darkGreen,
-                            modifier = Modifier.size(24.dp)
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Quay lại"
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color.Black
-                )
+                actions = {
+                    IconButton(onClick = { navController.navigate("profile") }) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Hồ sơ",
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
+                }
+
             )
         },
         bottomBar = {
