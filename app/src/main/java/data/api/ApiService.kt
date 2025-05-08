@@ -7,6 +7,7 @@ import data.model.AddPhoneResponse
 import data.model.Get_contacts
 import data.model.Get_group
 import data.model.Get_user
+import data.model.Group
 import data.model.UploadResponse
 import kotlinx.coroutines.flow.StateFlow
 import okhttp3.MultipartBody
@@ -80,7 +81,7 @@ interface ApiService {
     suspend fun deleteContact( @Field("contact_id") contact_id: Int): Get_contacts
 
     @GET("get_group.php")
-    suspend fun Get_group(): Get_group
+    suspend fun getGroupApi(): Get_group
 
 }
 

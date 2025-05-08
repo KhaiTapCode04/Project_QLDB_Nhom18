@@ -4,7 +4,7 @@ import Email
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import data.model.group
+import data.model.Group
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -44,7 +44,7 @@ class Email_state : ViewModel() {
         }
     }
 
-    val _groups = MutableStateFlow<List<group>>(emptyList())
+    val _groups = MutableStateFlow<List<Group>>(emptyList())
     val groups = _groups.asStateFlow()
     fun getGroup() {
         viewModelScope.launch {

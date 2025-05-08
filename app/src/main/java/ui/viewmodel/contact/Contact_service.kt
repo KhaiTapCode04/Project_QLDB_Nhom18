@@ -3,13 +3,13 @@ package ui.viewmodel.contact
 import Email
 import Phone
 import data.model.Contact
-import data.model.group
+import data.model.Group
 import data.repository.ContactRepository
 
 class Contact_service {
 
-    suspend fun get_group(): List<group>{
-        return ContactRepository().getGroup()
+    suspend fun get_group(): List<Group>{
+        return ContactRepository().getGroupApi()
     }
     suspend fun get_contact(user_id: Int): List<Contact>{
         return ContactRepository().getContacts(user_id)

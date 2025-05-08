@@ -3,9 +3,9 @@ package data.model
 data class Get_group(
     val isSuccess: Boolean,
     val reason: String,
-    val data: List<group>
+    val data: List<Group>
 )
-data class group(
+data class Group(
     val group_id: Int,
     val group_name: String,
 )
