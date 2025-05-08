@@ -10,7 +10,9 @@ fun BottomNavigationBar(navController: NavController) {
     NavigationBar {
         NavigationBarItem(
             selected = true,
-            onClick = {  },
+            onClick = {
+                navController.navigate("homedb")
+            },
             icon = { Icon(Icons.Filled.Person, contentDescription = "Danh bạ") },
             label = { Text("Danh bạ") }
         )
@@ -24,7 +26,9 @@ fun BottomNavigationBar(navController: NavController) {
         )
         NavigationBarItem(
             selected = false,
-            onClick = {  },
+            onClick = {
+                navController.navigate("setting")
+            },
             icon = { Icon(Icons.Filled.Person, contentDescription = "Cài đặt") },
             label = { Text("Cài đặt") }
         )

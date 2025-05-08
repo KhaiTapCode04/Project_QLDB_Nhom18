@@ -3,7 +3,6 @@ package ui.view
 
 import ContactDetailScreen
 import ContactListScreen
-import GroupScreen
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -151,6 +150,13 @@ fun TodoNavigation(viewModel: User_state) {
             val contact = Gson().fromJson(contactJson, Contact::class.java)
 
             ContactDetailScreen(navController, contact, emailState, phoneState, context)
+        }
+
+        composable("setting") {
+            SettingScreen(
+                navController = navController,
+                context = context
+            )
         }
     }
 }

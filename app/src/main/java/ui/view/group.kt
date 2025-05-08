@@ -1,3 +1,6 @@
+package ui.view
+
+import ContactListItem
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
