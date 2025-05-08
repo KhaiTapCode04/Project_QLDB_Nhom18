@@ -30,8 +30,8 @@ import androidx.navigation.NavHostController
 import com.example.nhom18_lttbdd_qldb_ngaybc.R
 import ui.view.components.BottomNavigationBar
 
-// ✅ Data class
-data class SettingItem(val title: String, val iconResId: Int)
+// ✅ Data class,
+data class SettingItem(val title: String, val iconResId: Int, val route: String)
 
 @Composable
 fun Setting(navController: NavHostController) {
@@ -39,12 +39,12 @@ fun Setting(navController: NavHostController) {
     var showDialog by remember { mutableStateOf(false) }
 
     val settingsItems = listOf(
-        SettingItem("Thông tin tài khoản", R.drawable.ic_profile),
-        SettingItem("Xuất/Nhập danh bạ", R.drawable.ic_export),
-        SettingItem("Danh sách chặn", R.drawable.ic_block),
-        SettingItem("Thùng rác", R.drawable.ic_delete),
-        SettingItem("Giao diện", R.drawable.ic_theme),
-        SettingItem("Giới thiệu", R.drawable.ic_info)
+        SettingItem("Thông tin tài khoản", R.drawable.ic_profile,"profile"),
+        SettingItem("Xuất/Nhập danh bạ", R.drawable.ic_export,""),
+        SettingItem("Danh sách chặn", R.drawable.ic_block, "blocklist"),
+        SettingItem("Thùng rác", R.drawable.ic_delete, ""),
+        SettingItem("Giao diện", R.drawable.ic_theme, ""),
+        SettingItem("Giới thiệu", R.drawable.ic_info, "")
     )
 
     Scaffold(
@@ -83,7 +83,7 @@ fun Setting(navController: NavHostController) {
             items(settingsItems) { item ->
                 SettingsItemView(item = item, iconColor = darkGreen, onClick = {
                     if (item.title == "Xuất/Nhập danh bạ") showDialog = true
-                })
+                }, navController = navController)
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
@@ -105,11 +105,11 @@ fun Setting(navController: NavHostController) {
 }
 
 @Composable
-fun SettingsItemView(item: SettingItem, iconColor: Color, onClick: () -> Unit) {
+fun SettingsItemView(item: SettingItem, iconColor: Color, onClick: () -> Unit, navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { navController.navigate(item.route) },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(3.dp)

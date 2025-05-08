@@ -307,7 +307,7 @@ fun ContactListItem(
                 DropdownMenuItem(
                     text = { Text("Chặn") },
                     onClick = {
-
+                        Contact_state.
                         showDropdownMenu = false
                     },
                     leadingIcon = {

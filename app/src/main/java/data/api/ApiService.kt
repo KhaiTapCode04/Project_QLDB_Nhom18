@@ -4,7 +4,9 @@ import Get_email
 import Get_phone
 import data.model.AddEmailResponse
 import data.model.AddPhoneResponse
+import data.model.ApiBlockContactResponse
 import data.model.ApiEditContactResponse
+import data.model.BlockedContactsResponse
 import data.model.Get_contacts
 import data.model.Get_group
 import data.model.Get_user
@@ -109,6 +111,28 @@ interface ApiService {
         @Field("phone_number") phoneNumber: String,
         @Field("phone_type") phoneType: String
     ): Response<ApiEditContactResponse>
+
+    @FormUrlEncoded
+    @POST("block_contact.php")
+    suspend fun blockContact(
+        @Field("user_id") userId: Int,
+        @Field("contact_id") contactId: Int
+    ): ApiBlockContactResponse
+
+    @FormUrlEncoded
+    @POST("unblock_contact.php")
+    suspend fun unblockContact(
+        @Field("user_id") userId: Int,
+        @Field("contact_id") contactId: Int
+    ): ApiBlockContactResponse
+
+    @FormUrlEncoded
+    @POST("get_blocked_contacts.php")
+    suspend fun getBlockedContacts(
+        @Field("user_id") userId: Int
+    ): BlockedContactsResponse
+
+
 }
 
 

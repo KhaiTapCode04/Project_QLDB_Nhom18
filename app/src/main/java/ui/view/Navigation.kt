@@ -22,6 +22,7 @@ import data.model.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ui.viewmodel.contact.BlockedContactViewModel
 import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
 
 import ui.viewmodel.contact.Contact_service
@@ -84,6 +85,7 @@ fun TodoNavigation(viewModel: User_state) {
     val emailState: Email_state = viewModel()
     val phoneState: Phone_state = viewModel()
     val viewmodeleditcontact: EditContactViewModel = viewModel()
+    val viewmodelBlocklist : BlockedContactViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = "login"
@@ -167,6 +169,13 @@ fun TodoNavigation(viewModel: User_state) {
                 context = context,
                 contactId = contactId,
                 viewModel = viewmodeleditcontact
+            )
+        }
+        composable("blocklist") {
+            BlockedContactScreen(
+                navController= navController,
+                context= context,
+                viewModel = viewmodelBlocklist
             )
         }
     }
