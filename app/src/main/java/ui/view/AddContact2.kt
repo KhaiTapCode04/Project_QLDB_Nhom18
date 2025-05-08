@@ -67,7 +67,7 @@ fun AddContact(navController: NavHostController, AddContact_state: AddContact_st
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F7FA))
             )
         },
-//        bottomBar = { BottomNavigationBar(navController, "") }
+//        bottomBar = { BottomNavigationBar(navController, "") } hello
     ) { paddingValues ->
 
         Box(modifier = Modifier.fillMaxSize()) {
