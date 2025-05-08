@@ -5,7 +5,7 @@ import Phone
 import android.util.Log
 import data.api.ApiService
 import data.model.Contact
-import data.model.group
+import data.model.Group
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -18,9 +18,9 @@ class ContactRepository {
 
     private val apiService = retrofit.create(ApiService::class.java)
 
-    suspend fun getGroup(): List<group>{
+    suspend fun getGroupApi(): List<Group>{
         return try{
-            val response = apiService.Get_group()
+            val response = apiService.getGroupApi()
             Log.e("API get group",":response: ${response.isSuccess}")
             if (response.isSuccess){
                 Log.e("Data get group:",": ${response.data}")

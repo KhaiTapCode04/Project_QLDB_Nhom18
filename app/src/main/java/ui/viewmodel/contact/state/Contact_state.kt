@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import data.model.Contact
-import data.model.group
+import data.model.Group
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -41,7 +41,7 @@ class Contact_state: ViewModel() {
     fun clearAll() {
         _contacts.value = emptyList()
     }
-    val _groups = MutableStateFlow<List<group>>(emptyList())
+    val _groups = MutableStateFlow<List<Group>>(emptyList())
     val groups = _groups.asStateFlow()
     fun getGroup() {
         viewModelScope.launch {

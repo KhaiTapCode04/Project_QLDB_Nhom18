@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import data.model.group
+import data.model.Group
 import kotlinx.coroutines.launch
 import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.ContactViewModel
@@ -172,8 +172,8 @@ fun FieldLabel(text: String) {
 @Composable
 fun GroupDropdownMenu(
     selectedGroup: String,
-    groups: List<group>,
-    onGroupSelected: (group) -> Unit
+    groups: List<Group>,
+    onGroupSelected: (Group) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 

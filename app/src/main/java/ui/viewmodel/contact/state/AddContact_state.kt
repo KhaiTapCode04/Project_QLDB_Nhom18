@@ -3,7 +3,7 @@ package ui.viewmodel.contact.state
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import data.model.group
+import data.model.Group
 import data.repository.ContactRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,10 +21,10 @@ class AddContact_state: ViewModel() {
     val _phone = MutableStateFlow("")
     val phone = _phone.asStateFlow()
 
-    val _groups = MutableStateFlow<List<group>>(emptyList())
+    val _groups = MutableStateFlow<List<Group>>(emptyList())
     val groups = _groups.asStateFlow()
 
-    val _selectedGroup = MutableStateFlow<group?>(null)
+    val _selectedGroup = MutableStateFlow<Group?>(null)
     val selectedGroup = _selectedGroup.asStateFlow()
 
 
