@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
 
 import ui.viewmodel.contact.Contact_service
+import ui.viewmodel.contact.EditContactViewModel
 import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.sharedPreferences.PhonePreferencesManage
@@ -156,6 +157,17 @@ fun TodoNavigation(viewModel: User_state) {
             SettingScreen(
                 navController = navController,
                 context = context
+            )
+        }
+        composable("edit/{contactId}") { backStackEntry ->
+
+            val contactId = backStackEntry.arguments?.getString("contactId")?.toIntOrNull() ?: 0
+
+            EditContactScreen(
+                navController = navController,
+                context = context,
+                contactId = contactId,
+                viewModel = EditContactViewModel()
             )
         }
     }

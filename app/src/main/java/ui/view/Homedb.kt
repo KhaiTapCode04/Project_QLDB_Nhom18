@@ -248,6 +248,7 @@ fun ContactListItem(
                 DropdownMenuItem(
                     text = { Text("Chỉnh sửa") },
                     onClick = {
+                        navController.navigate("edit/${contact.contact_id}")
                         // Handle edit action
                         showDropdownMenu = false
                     },

@@ -4,6 +4,7 @@ import Get_email
 import Get_phone
 import data.model.AddEmailResponse
 import data.model.AddPhoneResponse
+import data.model.ApiEditContactResponse
 import data.model.Get_contacts
 import data.model.Get_group
 import data.model.Get_user
@@ -18,7 +19,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
-
+import retrofit2.Response
 
 interface ApiService {
     @FormUrlEncoded
@@ -83,5 +84,31 @@ interface ApiService {
     @GET("get_group.php")
     suspend fun getGroupApi(): Get_group
 
+
+    @FormUrlEncoded
+    @POST("edit_contact.php")
+    suspend fun editContact(
+        @Field("contact_id") contactId: Int,
+        @Field("user_id") userId: Int,
+        @Field("name") name: String,
+        @Field("group_id") groupId: Int
+    ): Response<ApiEditContactResponse>
+
+    @FormUrlEncoded
+    @POST("edit_email.php")
+    suspend fun editEmail(
+        @Field("contact_id") contactId: Int,
+        @Field("email_address") emailAddress: String,
+        @Field("email_type") emailType: String
+    ): Response<ApiEditContactResponse>
+
+    @FormUrlEncoded
+    @POST("edit_phone.php")
+    suspend fun editPhone(
+        @Field("contact_id") contactId: Int,
+        @Field("phone_number") phoneNumber: String,
+        @Field("phone_type") phoneType: String
+    ): Response<ApiEditContactResponse>
 }
+
 
