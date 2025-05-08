@@ -111,7 +111,7 @@ fun TodoNavigation(viewModel: User_state) {
             )
         }
         composable("homedb"){
-            ContactListScreen(navController = navController, viewmodel = Contact_state, context)
+            ContactListScreen(navController = navController, Contact_state = Contact_state, Email_state = Email_state,Phone_state = Phone_state, context)
 
         }
 //        composable("email"){
@@ -153,9 +153,8 @@ fun TodoNavigation(viewModel: User_state) {
         }
 
         composable("setting") {
-            SettingScreen(
+            Setting(
                 navController = navController,
-                context = context
             )
         }
     }
