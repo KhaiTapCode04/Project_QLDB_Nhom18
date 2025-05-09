@@ -31,6 +31,11 @@ class Block_contact_state : ViewModel() {
                 addOrUpdateBlockContact(it)
             }
         }
+        else{
+            BlockConactPreferencesManage(context).getBlockContactList().forEach {
+                addOrUpdateBlockContact(it)
+            }
+        }
     }
     suspend fun reload_block_contacts(context: Context) {
         val user_id = UserPreferencesManager(context).getUserId()

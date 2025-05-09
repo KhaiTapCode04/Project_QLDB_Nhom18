@@ -32,6 +32,11 @@ class Contact_state: ViewModel() {
                 addOrUpdateContact(it)
             }
         }
+        else{
+            ConactPreferencesManage(context).getContactList().forEach {
+                addOrUpdateContact(it)
+            }
+        }
     }
     suspend fun reload_contact(context: Context) {
         val user_id = UserPreferencesManager(context).getUserId()
@@ -63,8 +68,5 @@ class Contact_state: ViewModel() {
         viewModelScope.launch {
             _groups.value = Contact_service().get_group()
         }
-    }
-    fun getGroupnameById(group_id: Int) : String?{
-        return _groups.value.find { it.group_id == group_id }?.group_name
     }
 }

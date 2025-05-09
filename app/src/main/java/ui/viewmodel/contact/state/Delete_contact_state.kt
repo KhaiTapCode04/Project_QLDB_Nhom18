@@ -1,6 +1,7 @@
 package ui.viewmodel.contact.state
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ui.viewmodel.contact.Contact_service
-import ui.viewmodel.contact.sharedPreferences.DeleteConactPreferencesManage
+import ui.viewmodel.contact.sharedPreferences.DeleteConactPreferencesManager
 import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
 import ui.viewmodel.users.UserPreferencesManager
 
@@ -23,11 +24,16 @@ class Delete_contact_state : ViewModel() {
     val deleteContacts = _deleteContacts.asStateFlow()
 
     suspend fun select_delete_contacts(context: Context) {
-        if(DeleteConactPreferencesManage(context).getDeleteContactList().isEmpty()) {
+        if(DeleteConactPreferencesManager(context).getDeleteContactList().isEmpty()) {
             val user_id = UserPreferencesManager(context).getUserId()
             val contact = Contact_service().select_delete_contact(user_id)
             contact.forEach {
-                DeleteConactPreferencesManage(context).saveOrUpdateDeleteContact(it)
+                DeleteConactPreferencesManager(context).saveOrUpdateDeleteContact(it)
+                addOrUpdateDeleteContact(it)
+            }
+        }
+        else{
+            DeleteConactPreferencesManager(context).getDeleteContactList().forEach {
                 addOrUpdateDeleteContact(it)
             }
         }
@@ -35,10 +41,10 @@ class Delete_contact_state : ViewModel() {
     suspend fun reload_delete_contacts(context: Context) {
         val user_id = UserPreferencesManager(context).getUserId()
         val contact = Contact_service().select_delete_contact(user_id)
-        DeleteConactPreferencesManage(context).clearDeleteContacts()
+        DeleteConactPreferencesManager(context).clearDeleteContacts()
         clearAll()
         contact.forEach {
-            DeleteConactPreferencesManage(context).saveOrUpdateDeleteContact(it)
+            DeleteConactPreferencesManager(context).saveOrUpdateDeleteContact(it)
             addOrUpdateDeleteContact(it)
         }
     }

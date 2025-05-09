@@ -27,7 +27,9 @@ class Phone_state : ViewModel() {
             }
             _phone.value = phoneList
         } else {
-            _phone.value = listFromPref
+            PhonePreferencesManage(context).getPhoneList().forEach {
+                addOrUpdatePhone(it)
+            }
         }
     }
     suspend fun reload_phone( context: Context){

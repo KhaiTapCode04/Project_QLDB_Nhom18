@@ -41,7 +41,9 @@ class Email_state : ViewModel() {
             }
             _emails.value = emailList
         } else {
-            _emails.value = listFromPref
+            EmailPreferencesManage(context).getEmailList().forEach {
+                addOrUpdateEmail(it)
+            }
         }
     }
     suspend fun reload_email( context: Context){

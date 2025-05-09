@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ui.viewmodel.contact.sharedPreferences.BlockConactPreferencesManage
 import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
+import ui.viewmodel.contact.sharedPreferences.DeleteConactPreferencesManager
 import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
 import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Contact_state
@@ -61,15 +62,10 @@ fun UserScreen(
             user.getUserPhone(),
             user.getProfilePicture()
         )
-        ConactPreferencesManage(context).getContactList().forEach {
-            Contact_state.addOrUpdateContact(it)
-        }
-        BlockConactPreferencesManage(context).getBlockContactList().forEach {
-            Block_contact_state.addOrUpdateBlockContact(it)
-        }
-        EmailPreferencesManage(context).getEmailList().forEach {
-            Email_state.addOrUpdateEmail(it)
-        }
+
+
+
+
 
         navController.navigate("homedb") {
             popUpTo("login") { inclusive = true }

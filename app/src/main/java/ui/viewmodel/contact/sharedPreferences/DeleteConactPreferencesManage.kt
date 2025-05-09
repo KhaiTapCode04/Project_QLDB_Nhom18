@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import data.model.Contact
 
-class DeleteConactPreferencesManage(private val context: Context) {
+class DeleteConactPreferencesManager(private val context: Context) {
     companion object {
         private const val PREF_NAME = "DeleteContactPreferences"
         private const val KEY_Delete_CONTACT_LIST = "delete_contact_list"
