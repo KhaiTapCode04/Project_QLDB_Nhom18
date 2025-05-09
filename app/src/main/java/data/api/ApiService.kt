@@ -125,7 +125,11 @@ interface ApiService {
         @Field("user_id") userId: Int
     ): Get_contacts
 
-
+    @FormUrlEncoded
+    @POST("select_delete_contact.php")
+    suspend fun select_delete_contact(
+        @Field("user_id") userId: Int
+    ): Get_contacts
 }
 
 

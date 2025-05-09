@@ -24,4 +24,8 @@ class Contact_service {
     suspend fun get_blocked_contacts(user_id: Int): List<Contact>{
         return ContactRepository().get_blocked_contacts(user_id)
     }
+    suspend fun select_delete_contact(user_id: Int): List<Contact>{
+        return ContactRepository().select_delete_contact(user_id)
+    }
+
 }

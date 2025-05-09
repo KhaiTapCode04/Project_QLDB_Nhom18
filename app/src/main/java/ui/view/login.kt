@@ -30,6 +30,7 @@ import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
 import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
 import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Contact_state
+import ui.viewmodel.contact.state.Delete_contact_state
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.state.Phone_state
 import ui.viewmodel.groups.Group_state
@@ -45,8 +46,10 @@ fun UserScreen(
     Contact_state: Contact_state,
     Group_state:Group_state,
     Block_contact_state: Block_contact_state,
+    Delete_contact_state:Delete_contact_state,
     Email_state: Email_state,
     Phone_state: Phone_state
+
 ) {
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
@@ -247,6 +250,7 @@ fun UserScreen(
                                 Contact_state.get_contact(context)
                                 Group_state.get_group(context)
                                 Block_contact_state.get_block_contacts(context)
+                                Delete_contact_state.select_delete_contacts(context)
                                 Email_state.get_email(context)
                                 Phone_state.get_phone(context)
                                 navController.navigate("homedb") {

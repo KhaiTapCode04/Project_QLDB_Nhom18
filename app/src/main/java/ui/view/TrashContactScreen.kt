@@ -29,21 +29,22 @@ import data.model.Contact
 import kotlinx.coroutines.launch
 import ui.viewmodel.contact.ContactViewModel
 import ui.viewmodel.contact.state.Contact_state
+import ui.viewmodel.contact.state.Delete_contact_state
 import ui.viewmodel.contact.state.Trash_contact_state
 
 @Composable
 fun TrashContactScreen(
     navController: NavHostController,
     context: Context,
-    trashContactState: Trash_contact_state,
-    contactState: Contact_state
+    Delete_contact_state: Delete_contact_state,
+    Contact_state : Contact_state
 ) {
-    val trashedContacts by trashContactState.trashedContacts.collectAsState()
+    val trashedContacts by Delete_contact_state.deleteContacts.collectAsState()
     val scope = rememberCoroutineScope()
 
     var isRefreshing by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        trashContactState.getTrashedContacts(context)
+        Delete_contact_state.select_delete_contacts(context)
     }
 
     Scaffold(
@@ -73,7 +74,7 @@ fun TrashContactScreen(
             onRefresh = {
                 scope.launch {
                     isRefreshing = true
-                    trashContactState.reloadTrashedContacts(context)
+                    Delete_contact_state.select_delete_contacts(context)
                     isRefreshing = false
                 }
             },
@@ -101,8 +102,8 @@ fun TrashContactScreen(
                     TrashContactCard(
                         context = context,
                         contact = trashedContact,
-                        trashContactState = trashContactState,
-                        contactState = contactState
+                        Delete_contact_state = Delete_contact_state,
+                        contactState = Contact_state
                     )
                 }
             }
@@ -114,7 +115,7 @@ fun TrashContactScreen(
 fun TrashContactCard(
     context: Context,
     contact: Contact,
-    trashContactState: Trash_contact_state,
+    Delete_contact_state: Delete_contact_state,
     contactState: Contact_state
 ) {
     var showMenu by remember { mutableStateOf(false) }

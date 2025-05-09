@@ -44,6 +44,7 @@ import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
 
 import ui.viewmodel.contact.state.Contact_state
+import ui.viewmodel.contact.state.Delete_contact_state
 import ui.viewmodel.groups.Group_state
 
 class Navigation: ComponentActivity() {
@@ -87,6 +88,7 @@ fun TodoNavigation(viewModel: User_state) {
     val Contact_state: Contact_state = viewModel()
     val Email_state: Email_state = viewModel()
     val Phone_state: Phone_state = viewModel()
+    val Delete_contact_state: Delete_contact_state = viewModel()
     val AddContact_state: AddContact_state = viewModel()
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
@@ -105,6 +107,7 @@ fun TodoNavigation(viewModel: User_state) {
                 Group_state =Group_state,
                 Contact_state = Contact_state,
                 Block_contact_state =Block_contact_state,
+                Delete_contact_state =Delete_contact_state,
                 Email_state = Email_state,
                 Phone_state = Phone_state
             )
@@ -198,6 +201,15 @@ fun TodoNavigation(viewModel: User_state) {
         }*/
         composable("about") {
             AboutScreen(navController = navController)
+        }
+        composable("TrashContactScreen"){
+            TrashContactScreen(
+                navController = navController,
+                context = context,
+                Delete_contact_state = Delete_contact_state,
+                Contact_state = Contact_state,
+
+            )
         }
 
     }

@@ -157,4 +157,18 @@ class ContactRepository {
             false
         }
     }
+    suspend fun select_delete_contact( user_id: Int ): List<Contact>{
+        return try{
+            val response = apiService.select_delete_contact(user_id)
+            if(response.isSuccess){
+                response.data
+            }
+            else{
+                emptyList()
+            }
+        }
+        catch (e: Exception){
+            emptyList()
+        }
+    }
 }

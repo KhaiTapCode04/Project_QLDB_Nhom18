@@ -227,7 +227,7 @@ fun EditProfile(navController: NavHostController, User_state: User_state) {
                 .onGloballyPositioned { coordinates ->
                     containerSize = coordinates.size
                 }
-                // QUAN TRỌNG: Thêm transformable vào Box chính
+
                 .transformable(state = transformableState)
         ) {
             Image(
