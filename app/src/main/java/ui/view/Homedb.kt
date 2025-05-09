@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.collect
 import ui.view.reload_email
 import ui.viewmodel.contact.sharedPreferences.PhonePreferencesManage
 import ui.viewmodel.contact.state.Block_contact_state
+import ui.viewmodel.contact.state.Delete_contact_state
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.state.Phone_state
 import ui.viewmodel.groups.Group_state
@@ -58,7 +59,7 @@ import ui.viewmodel.users.User_state
 
 
 @Composable
-fun ContactListScreen(navController: NavHostController,Group_state:Group_state, Contact_state: Contact_state,Block_contact_state: Block_contact_state,Email_state: Email_state,Phone_state: Phone_state, context: Context) {
+fun ContactListScreen(navController: NavHostController,Group_state:Group_state, Contact_state: Contact_state,Delete_contact_state: Delete_contact_state,Block_contact_state: Block_contact_state,Email_state: Email_state,Phone_state: Phone_state, context: Context) {
 
 
 
@@ -244,7 +245,7 @@ fun ContactListScreen(navController: NavHostController,Group_state:Group_state, 
                         .padding(horizontal = 12.dp)
                 ) {
                     items(sortedContactList) { contact ->
-                            ContactListItem(contact, navController, Contact_state,Block_contact_state)
+                            ContactListItem(contact, navController, Contact_state,Delete_contact_state,Block_contact_state)
                     }
                 }
         }
@@ -257,6 +258,7 @@ fun ContactListItem(
     contact: Contact,
     navController: NavHostController,
     Contact_state: Contact_state,
+    Delete_contact_state: Delete_contact_state,
     Block_contact_state:Block_contact_state,
 ) {
     var showDropdownMenu by remember { mutableStateOf(false) }
@@ -389,6 +391,7 @@ fun ContactListItem(
                             ContactViewModel().deleteContact(
                                 contact_id = contact.contact_id,
                                 Contact_state,
+                                Delete_contact_state,
                                 context
                             )
                         }

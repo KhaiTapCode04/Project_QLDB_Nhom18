@@ -93,15 +93,23 @@ class ContactRepository {
             null
         }
     }
-    suspend fun deleteContact(contact_id: Int): Boolean {
+    suspend fun deleteContact(contact_id: Int, user_id: Int): Boolean {
         return try {
-            val response = apiService.deleteContact(contact_id)
+            val response = apiService.deleteContact(contact_id, user_id)
             response.isSuccess
         } catch (e: Exception) {
             false
         }
     }
 
+    suspend fun forever_delete_contact(contact_id: Int): Boolean {
+        return try {
+            val response = apiService.forever_delete_contact(contact_id)
+            response.isSuccess
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     suspend fun getEmail(userId: Int): List<Email> {
         return try {

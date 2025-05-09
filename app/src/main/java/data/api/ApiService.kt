@@ -75,7 +75,11 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST("deleteContact.php")
-    suspend fun deleteContact( @Field("contact_id") contact_id: Int): Get_contacts
+    suspend fun deleteContact( @Field("contact_id") contact_id: Int, @Field("user_id") user_id: Int): Get_contacts
+
+    @FormUrlEncoded
+    @POST("forever_delete_contact.php")
+    suspend fun forever_delete_contact( @Field("contact_id") contact_id: Int): Get_contacts
 
     @GET("get_group.php")
     suspend fun getGroupApi(): Get_group

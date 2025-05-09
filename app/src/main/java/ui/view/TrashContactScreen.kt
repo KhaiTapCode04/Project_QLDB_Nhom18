@@ -74,7 +74,7 @@ fun TrashContactScreen(
             onRefresh = {
                 scope.launch {
                     isRefreshing = true
-                    Delete_contact_state.select_delete_contacts(context)
+                    Delete_contact_state.reload_delete_contacts(context)
                     isRefreshing = false
                 }
             },
@@ -185,13 +185,9 @@ fun TrashContactCard(
                             Text("Xóa vĩnh viễn")
                         },
                         onClick = {
-                            /*scope.launch {
-                                viewModel.permanentlyDeleteContact(
-                                    contact.contact_id,
-                                    trashContactState,
-                                    context
-                                )
-                            }*/
+                            scope.launch {
+                                ContactViewModel().forever_delete_contact(contact.contact_id,Delete_contact_state, context)
+                            }
                             showMenu = false
                         },
                         leadingIcon = {

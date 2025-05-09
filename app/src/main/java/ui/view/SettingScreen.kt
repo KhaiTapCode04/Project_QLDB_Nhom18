@@ -139,12 +139,7 @@ fun SettingsItemView(item: SettingItem, iconColor: Color, onClick: () -> Unit, n
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFE0F2F1))
-                    .clickable{
-                        if(item.title == "Thùng rác"){
-                            navController.navigate("TrashContactScreen")
-                        }
-                    },
+                    .background(Color(0xFFE0F2F1)),
                 contentAlignment = Alignment.Center
             ) {
                 Image(

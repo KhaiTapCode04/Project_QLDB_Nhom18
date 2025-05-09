@@ -8,6 +8,7 @@ import ui.view.Navigation
 import ui.viewmodel.contact.state.AddContact_state
 import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Contact_state
+import ui.viewmodel.contact.state.Delete_contact_state
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.state.Phone_state
 import ui.viewmodel.users.UserPreferencesManager
@@ -65,12 +66,13 @@ class ContactViewModel {
             Toast.makeText(context,"Đã chặn thất bại",Toast.LENGTH_LONG).show()
         }
     }
-    suspend fun deleteContact(contact_id: Int, Contact_state: Contact_state, context: Context){
-        val delete = ContactRepository().deleteContact(contact_id)
+    suspend fun deleteContact(contact_id: Int, Contact_state: Contact_state,Delete_contact_state: Delete_contact_state, context: Context){
+        val user_id = UserPreferencesManager(context).getUserId()
+        val delete = ContactRepository().deleteContact(contact_id, user_id)
         if(delete){
             Toast.makeText(context,"Đã xóa thành công",Toast.LENGTH_LONG).show()
             Contact_state.reload_contact(context)
-
+            Delete_contact_state.reload_delete_contacts(context)
         }else{
             Toast.makeText(context,"Đã xóa thất bại",Toast.LENGTH_LONG).show()
         }
@@ -89,6 +91,15 @@ class ContactViewModel {
         }
     }
 
-
+    suspend fun forever_delete_contact(contact_id: Int,Delete_contact_state: Delete_contact_state, context: Context){
+        val delete = ContactRepository().forever_delete_contact(contact_id)
+        Log.d("forever_delete_contact"+contact_id,delete.toString())
+        if(delete){
+            Toast.makeText(context,"Đã xóa vĩnh viễn thành công",Toast.LENGTH_LONG).show()
+            Delete_contact_state.reload_delete_contacts(context)
+        }else{
+            Toast.makeText(context,"Đã xóa thất bại",Toast.LENGTH_LONG).show()
+        }
+    }
 
 }

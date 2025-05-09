@@ -23,9 +23,10 @@ import com.example.nhom18_lttbdd_qldb_ngaybc.R
 import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Contact_state
+import ui.viewmodel.contact.state.Delete_contact_state
 
 @Composable
-fun GroupScreen(navController: NavHostController, Contact_state: Contact_state,Block_contact_state: Block_contact_state, context: Context) {
+fun GroupScreen(navController: NavHostController, Contact_state: Contact_state, Delete_contact_state: Delete_contact_state, Block_contact_state: Block_contact_state, context: Context) {
 
     // Load dữ liệu khi vào màn
     LaunchedEffect(Unit) {
@@ -110,6 +111,7 @@ fun GroupScreen(navController: NavHostController, Contact_state: Contact_state,B
                                 contact = contact,
                                 navController = navController,
                                 Contact_state =  Contact_state,
+                                Delete_contact_state = Delete_contact_state,
                                 Block_contact_state= Block_contact_state,
                             )
                         }
