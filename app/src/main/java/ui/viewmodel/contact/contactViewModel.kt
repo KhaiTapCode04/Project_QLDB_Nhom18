@@ -1,6 +1,7 @@
 package ui.viewmodel.contact
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import data.repository.ContactRepository
 import ui.view.Navigation
@@ -74,6 +75,20 @@ class ContactViewModel {
             Toast.makeText(context,"Đã xóa thất bại",Toast.LENGTH_LONG).show()
         }
     }
+    suspend fun unBlockContact(contact_id: Int, Block_contact_state: Block_contact_state,Contact_state: Contact_state, context: Context){
+        val delete = ContactRepository().unlockContact(contact_id)
+        Log.e(contact_id.toString(),contact_id.toString())
+        if(delete){
+            Toast.makeText(context,"Đã gỡ chặn thành công",Toast.LENGTH_LONG).show()
+            Contact_state.reload_contact(context)
+            Block_contact_state.reload_block_contacts(context)
+
+
+        }else{
+            Toast.makeText(context,"Đã gỡ chặn thất bại",Toast.LENGTH_LONG).show()
+        }
+    }
+
 
 
 }

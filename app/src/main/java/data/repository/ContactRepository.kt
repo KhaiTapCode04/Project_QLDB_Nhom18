@@ -148,9 +148,9 @@ class ContactRepository {
             false
         }
     }
-    suspend fun unlockContact(user_id: Int, contact_id: Int ): Boolean{
+    suspend fun unlockContact( contact_id: Int ): Boolean{
         return try{
-            val response = apiService.unblock_contact(user_id,contact_id)
+            val response = apiService.unblock_contact(contact_id)
             response.isSuccess
         }
         catch (e: Exception){

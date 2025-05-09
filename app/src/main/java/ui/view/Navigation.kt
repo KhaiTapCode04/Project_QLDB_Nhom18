@@ -189,7 +189,8 @@ fun TodoNavigation(viewModel: User_state) {
             BlockedContactScreen(
                 navController= navController,
                 context= context,
-                Block_contact_state = Block_contact_state
+                Block_contact_state = Block_contact_state,
+                Contact_state = Contact_state
             )
         }
     }

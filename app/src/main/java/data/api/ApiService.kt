@@ -116,7 +116,6 @@ interface ApiService {
     @FormUrlEncoded
     @POST("unblock_contact.php")
     suspend fun unblock_contact(
-        @Field("user_id") userId: Int,
         @Field("contact_id") contactId: Int
     ): Get_contacts
 

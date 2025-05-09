@@ -27,13 +27,16 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 import data.model.Contact
 import kotlinx.coroutines.launch
+import ui.viewmodel.contact.ContactViewModel
 import ui.viewmodel.contact.state.Block_contact_state
+import ui.viewmodel.contact.state.Contact_state
 
 @Composable
 fun BlockedContactScreen(
     navController: NavHostController,
     context: Context,
-    Block_contact_state: Block_contact_state = viewModel()
+    Block_contact_state: Block_contact_state,
+    Contact_state: Contact_state
 ) {
 
     val blockedContacts by Block_contact_state.blockedContacts.collectAsState()
@@ -92,7 +95,7 @@ fun BlockedContactScreen(
                 }
 
                 items(blockedContacts) { blockedContact ->
-                    BlockedContactCard(context, blockedContact, Block_contact_state)
+                    BlockedContactCard(context, blockedContact,Block_contact_state, Contact_state)
                 }
 
             }
@@ -101,9 +104,9 @@ fun BlockedContactScreen(
 }
 
 @Composable
-fun BlockedContactCard(context: Context, blockedContact: Contact, viewModel: Block_contact_state) {
-
+fun BlockedContactCard(context: Context,Contact: Contact, Block_contact_state: Block_contact_state, Contact_state: Contact_state) {
     var showMenu by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -119,7 +122,7 @@ fun BlockedContactCard(context: Context, blockedContact: Contact, viewModel: Blo
         ) {
 
             Column {
-                Text(blockedContact.name, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(Contact.name, fontSize = 16.sp, fontWeight = FontWeight.Medium)
                 Text("Đã bị chặn", fontSize = 14.sp, color = Color.Gray)
             }
 
@@ -135,7 +138,9 @@ fun BlockedContactCard(context: Context, blockedContact: Contact, viewModel: Blo
                     DropdownMenuItem(
                         text = { Text("Bỏ chặn") },
                         onClick = {
-//                            viewModel.unblockContact(context, blockedContact.contact_id)
+                            scope.launch {
+                            ContactViewModel().unBlockContact(Contact.contact_id,Block_contact_state, Contact_state,context)
+                            }
                             showMenu = false
                         }
                     )
