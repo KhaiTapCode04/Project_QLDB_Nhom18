@@ -71,7 +71,7 @@ fun GroupScreen(navController: NavHostController, viewModel: Contact_state, cont
                 }
             )
         },
-        bottomBar = { BottomNavigationBar(navController, "groupscreen") },
+        bottomBar = { BottomNavigationBar(navController) },
 
 
     ) { paddingValues ->

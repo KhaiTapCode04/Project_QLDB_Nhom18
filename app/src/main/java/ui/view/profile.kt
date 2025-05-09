@@ -2,13 +2,10 @@ package ui.view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,10 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -47,43 +42,15 @@ fun ProfileScreen(navController: NavHostController, User_state: User_state, Cont
     val profileImage by User_state.profile_picturel.collectAsState()
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Hồ sơ",
-                        style = TextStyle(
-                            color = Color(0xFF000000),
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xB587FF95)
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Quay lại"
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { navController.navigate("profile") }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Hồ sơ",
-                            modifier = Modifier.size(48.dp)
-                        )
-                    }
-                }
-
+            CenterAlignedTopAppBar(
+                title = { Text("Hồ sơ người dùng") },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         },
-        bottomBar = {
-            BottomNavigationBar(navController,"setting")
-        }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -124,13 +91,9 @@ fun ProfileScreen(navController: NavHostController, User_state: User_state, Cont
 
             // Contact Information
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xEEDBE3EA)
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
                 )
             ) {
                 Column(
@@ -144,13 +107,13 @@ fun ProfileScreen(navController: NavHostController, User_state: User_state, Cont
                         Icon(
                             imageVector = Icons.Default.Email,
                             contentDescription = "Email",
-                            tint = Color(0xB51C1C1C)
+                            tint = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Column {
                             Text(
                                 text = "Email",
-                                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 17.sp),
+                                style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Gray
                             )
                             Text(
@@ -169,13 +132,13 @@ fun ProfileScreen(navController: NavHostController, User_state: User_state, Cont
                         Icon(
                             imageVector = Icons.Default.Phone,
                             contentDescription = "Phone",
-                            tint = Color(0xB51C1C1C)
+                            tint = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Column {
                             Text(
                                 text = "Số điện thoại",
-                                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 17.sp),
+                                style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Gray
                             )
                             Text(
@@ -200,11 +163,7 @@ fun ProfileScreen(navController: NavHostController, User_state: User_state, Cont
                     contentDescription = "Edit profile"
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Chỉnh sửa",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-                    color = Color.White
-                )
+                Text("Chỉnh sửa hồ sơ")
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -229,18 +188,16 @@ fun ProfileScreen(navController: NavHostController, User_state: User_state, Cont
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                )
             ) {
                 Icon(
                     imageVector = Icons.Default.Logout,
                     contentDescription = "Logout"
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Đăng xuất",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-                    color = Color.Red
-                )
+                Text("Đăng xuất")
             }
         }
     }

@@ -1,5 +1,7 @@
 import android.content.Context
 import android.net.Uri
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,7 +56,13 @@ suspend fun reload_contact(viewModel: Contact_state, context: Context) {
     val contact = Contact_service().get_contact(user_id)
     viewModel.clearAll()
     ConactPreferencesManage(context).clearContacts()
+    if(!contact.isEmpty()){
+        Log.d("asddf","hehe")
+    }else{
+        Log.d("asddf","hihi"+user_id)
+    }
     contact.forEach {
+        Log.d("asddf",it.name)
         ConactPreferencesManage(context).saveOrUpdateContact(it)
         viewModel.addOrUpdateContact(it)
     }
@@ -133,7 +141,7 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
             )
         },
 
-        bottomBar = { BottomNavigationBar(navController, "homedb") },
+        bottomBar = { BottomNavigationBar(navController) },
 
         floatingActionButton = {
             FloatingActionButton(
@@ -175,7 +183,7 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
                     },
                     modifier = Modifier
                         .weight(2f)
-                        .height(48.dp)
+                        .height(50.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.White)
                         .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
@@ -222,13 +230,18 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isRefreshing),
                 onRefresh = {
-                    isRefreshing = true
+
                     scope.launch {
+                        isRefreshing = true
                         reload_contact(Contact_state, context)
                         reload_email(Email_state,context)
                         reload_phone(Phone_state,context)
-
                         isRefreshing = false
+                        Toast.makeText(context,"done", Toast.LENGTH_SHORT).show()
+                        sortedContactList.forEach {
+                            Log.d("check", it.name)
+
+                        }
                     }
                 }
             ) {

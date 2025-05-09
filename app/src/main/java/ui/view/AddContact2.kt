@@ -97,7 +97,7 @@ fun AddContact(
             )
         },
         bottomBar = {
-            BottomNavigationBar(navController,"homedb")
+            BottomNavigationBar(navController)
 
         }
     ) { paddingValues ->

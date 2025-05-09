@@ -23,7 +23,7 @@ class ContactViewModel {
         val groupId = selectedGroup.group_id
         AddContact_state._isLoading.value = true
         val contact_id = ContactRepository().addContacts(currentUserId, name, groupId)
-        Toast.makeText(context,contact_id.toString(),Toast.LENGTH_LONG).show()
+
         if (contact_id != null) {
             Navigation().reload_contact(Contact_state,context)
             if (email.isNotBlank()) {
@@ -56,7 +56,6 @@ class ContactViewModel {
 
         }else{
             Toast.makeText(context,"Đã xóa thất bại",Toast.LENGTH_LONG).show()
-
         }
     }
 

@@ -10,10 +10,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.nhom18_lttbdd_qldb_ngaybc.R
 
 @Composable
-fun BottomNavigationBar(navController: NavController, selected: String) {
+fun BottomNavigationBar(navController: NavController) {
+    val navBackStackEntry = navController.currentBackStackEntryAsState()
+    val selected = navBackStackEntry.value?.destination?.route
     NavigationBar(
         containerColor = Color(0xB587FF95),
         tonalElevation = 4.dp
