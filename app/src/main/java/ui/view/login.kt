@@ -27,8 +27,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
 import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
+import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.contact.state.Email_state
+import ui.viewmodel.contact.state.Phone_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.UserService
 import ui.viewmodel.users.User_state
@@ -39,7 +41,9 @@ fun UserScreen(
     navController: NavHostController,
     User_state: User_state,
     Contact_state: Contact_state,
-    Email_state: Email_state
+    Block_contact_state: Block_contact_state,
+    Email_state: Email_state,
+    Phone_state: Phone_state
 ) {
     val context = LocalContext.current
     val user = UserPreferencesManager(context)
@@ -234,8 +238,10 @@ fun UserScreen(
                                     loginHandler.profile_picture.toString()
                                 )
 
-                                Contact_state().get_contact(context)
+                                Contact_state.get_contact(context)
+                                Block_contact_state.get_block_contacts(context)
                                 Email_state.get_email(context)
+                                Phone_state.get_phone(context)
                                 navController.navigate("homedb") {
                                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                                 }

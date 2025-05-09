@@ -29,7 +29,7 @@ import data.model.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import ui.viewmodel.contact.BlockedContactViewModel
+
 import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
 
 import ui.viewmodel.contact.Contact_service
@@ -38,6 +38,7 @@ import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.sharedPreferences.PhonePreferencesManage
 import ui.viewmodel.contact.state.AddContact_state
+import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Phone_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
@@ -54,16 +55,7 @@ class Navigation: ComponentActivity() {
         }
     }
 
-    suspend fun reload_contact(Contact_state: Contact_state, context: Context) {
-        val user_id = UserPreferencesManager(context).getUserId()
-        val contact = Contact_service().get_contact(user_id)
-        Contact_state.clearAll()
-        ConactPreferencesManage(context).clearContacts()
-        contact.forEach {
-            ConactPreferencesManage(context).saveOrUpdateContact(it)
-            Contact_state.addOrUpdateContact(it)
-        }
-    }
+
 
 
 //favicon
@@ -99,7 +91,7 @@ fun TodoNavigation(viewModel: User_state) {
     val emailState: Email_state = viewModel()
     val phoneState: Phone_state = viewModel()
     val viewmodeleditcontact: EditContactViewModel = viewModel()
-    val viewmodelBlocklist : BlockedContactViewModel = viewModel()
+    val Block_contact_state : Block_contact_state = viewModel()
     NavHost(
         navController = navController,
         startDestination = "login"
@@ -109,7 +101,9 @@ fun TodoNavigation(viewModel: User_state) {
                 navController = navController,
                 User_state = User_state,
                 Contact_state = Contact_state,
+                Block_contact_state =Block_contact_state,
                 Email_state = Email_state,
+                Phone_state = Phone_state
             )
         }
         /*composable("register") {
@@ -197,7 +191,7 @@ fun TodoNavigation(viewModel: User_state) {
             BlockedContactScreen(
                 navController= navController,
                 context= context,
-                viewModel = viewmodelBlocklist
+                Block_contact_state = Block_contact_state
             )
         }
     }

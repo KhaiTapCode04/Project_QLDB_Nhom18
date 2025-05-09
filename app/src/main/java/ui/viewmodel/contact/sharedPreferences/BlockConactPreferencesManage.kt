@@ -1,0 +1,53 @@
+package ui.viewmodel.contact.sharedPreferences
+
+import android.content.Context
+import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import data.model.Contact
+
+class BlockConactPreferencesManage(private val context: Context) {
+    companion object {
+        private const val PREF_NAME = "BlockContactPreferences"
+        private const val KEY_Block_CONTACT_LIST = "block_contact_list"
+    }
+
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
+    private val gson = Gson()
+
+    fun saveOrUpdateBlockContact(contact: Contact) {
+        val currentList = getBlockContactList().toMutableList()
+        val index = currentList.indexOfFirst { it.contact_id == contact.contact_id }
+
+        if (index != -1) {
+            // Đã có contact này ➔ Cập nhật
+            currentList[index] = contact
+        } else {
+            // Chưa có ➔ Thêm mới
+            currentList.add(contact)
+        }
+
+        val json = gson.toJson(currentList)
+        sharedPreferences.edit()
+            .putString(KEY_Block_CONTACT_LIST, json)
+            .apply()
+    }
+
+    fun getBlockContactList(): List<Contact> {//string -> object -> algoth
+        val json = sharedPreferences.getString(KEY_Block_CONTACT_LIST, null)
+        return if (json != null) {
+            val type = object : TypeToken<List<Contact>>() {}.type
+            gson.fromJson(json, type)
+        } else {
+            emptyList()
+        }
+    }
+
+    fun clearBlockContacts() {
+        sharedPreferences.edit()
+            .remove(KEY_Block_CONTACT_LIST)
+            .apply()
+    }
+}

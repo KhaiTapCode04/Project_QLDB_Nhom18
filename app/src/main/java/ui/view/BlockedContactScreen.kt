@@ -25,29 +25,26 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import data.model.BlockedContact
-import ui.viewmodel.contact.BlockedContactViewModel
+import data.model.Contact
+import kotlinx.coroutines.launch
+import ui.viewmodel.contact.state.Block_contact_state
 
 @Composable
 fun BlockedContactScreen(
     navController: NavHostController,
     context: Context,
-    viewModel: BlockedContactViewModel = viewModel()
+    Block_contact_state: Block_contact_state = viewModel()
 ) {
 
-    val blockedContacts by viewModel.blockedContacts.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val toastMessage by viewModel.toastMessage.collectAsState()
+    val blockedContacts by Block_contact_state.blockedContacts.collectAsState()
+    val scope = rememberCoroutineScope()
 
+    var isRefreshing by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        viewModel.loadBlockedContacts(context)
+        Block_contact_state.get_block_contacts(context)
     }
 
-    LaunchedEffect(toastMessage) {
-        if (toastMessage.isNotEmpty()) {
-            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
-            viewModel.clearToast()
-        }
-    }
+
 
     Scaffold(
         topBar = {
@@ -68,8 +65,14 @@ fun BlockedContactScreen(
     ) { paddingValues ->
 
         SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = isLoading),
-            onRefresh = { viewModel.loadBlockedContacts(context) },
+            state = rememberSwipeRefreshState(isRefreshing),
+            onRefresh = {
+
+                scope.launch {isRefreshing = true
+                    Block_contact_state.reload_block_contacts(context)
+                    isRefreshing = false
+                } },
+
             modifier = Modifier
                 .padding(paddingValues)
                 .background(Color(0xFFF8F9FA))
@@ -80,14 +83,14 @@ fun BlockedContactScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
-                if (blockedContacts.isEmpty() && !isLoading) {
+                if (blockedContacts.isEmpty()) {
                     item {
                         Text("Không có liên hệ nào bị chặn", color = Color.Gray)
                     }
                 }
 
                 items(blockedContacts) { blockedContact ->
-                    BlockedContactCard(context, blockedContact, viewModel)
+                    BlockedContactCard(context, blockedContact, Block_contact_state)
                 }
 
             }
@@ -96,7 +99,7 @@ fun BlockedContactScreen(
 }
 
 @Composable
-fun BlockedContactCard(context: Context, blockedContact: BlockedContact, viewModel: BlockedContactViewModel) {
+fun BlockedContactCard(context: Context, blockedContact: Contact, viewModel: Block_contact_state) {
 
     var showMenu by remember { mutableStateOf(false) }
 
@@ -130,7 +133,7 @@ fun BlockedContactCard(context: Context, blockedContact: BlockedContact, viewMod
                     DropdownMenuItem(
                         text = { Text("Bỏ chặn") },
                         onClick = {
-                            viewModel.unblockContact(context, blockedContact.contact_id)
+//                            viewModel.unblockContact(context, blockedContact.contact_id)
                             showMenu = false
                         }
                     )

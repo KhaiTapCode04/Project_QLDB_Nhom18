@@ -2,13 +2,19 @@ package data.repository
 
 import Email
 import Phone
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.viewModelScope
 import data.api.ApiService
 import data.model.Contact
+import data.model.Get_contacts
 import data.model.Group
+import data.model.User
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ui.viewmodel.users.UserPreferencesManager
 
 
 class ContactRepository {
@@ -48,6 +54,27 @@ class ContactRepository {
             }
         } catch (e: Exception) {
             emptyList()
+        }
+    }
+    suspend fun get_blocked_contacts(userId: Int): List<Contact> {
+        return try {
+            val response = apiService.get_blocked_contacts(userId)
+            if (response.isSuccess) {
+                response.data
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    suspend fun blockContact(user_id: Int, contact_id: Int): Boolean {
+        return try {
+            val response = apiService.blockContact(user_id,contact_id)
+            response.isSuccess
+        }catch (e: Exception){
+            false
         }
     }
 

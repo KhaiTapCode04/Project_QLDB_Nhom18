@@ -25,7 +25,7 @@ class ContactViewModel {
         val contact_id = ContactRepository().addContacts(currentUserId, name, groupId)
 
         if (contact_id != null) {
-            Navigation().reload_contact(Contact_state,context)
+            Contact_state.reload_contact(context)
             if (email.isNotBlank()) {
                 val addEmailSuccess = ContactRepository().addEmail(contact_id, "personal", email)
                 if(addEmailSuccess){
@@ -48,11 +48,21 @@ class ContactViewModel {
         AddContact_state._isLoading.value = false
         AddContact_state.clearAllFields()
     }
+    suspend fun blockContact( contact_id: Int, Contact_state: Contact_state, context: Context){
+        val user_id = UserPreferencesManager(context).getUserId()
+        val block = ContactRepository().blockContact(user_id, contact_id)
+        if(block){
+            Toast.makeText(context,"Đã chặn thành công",Toast.LENGTH_LONG).show()
+            Contact_state.reload_contact(context)
+        }else{
+            Toast.makeText(context,"Đã chặn thất bại",Toast.LENGTH_LONG).show()
+        }
+    }
     suspend fun deleteContact(contact_id: Int, Contact_state: Contact_state, context: Context){
         val delete = ContactRepository().deleteContact(contact_id)
         if(delete){
             Toast.makeText(context,"Đã xóa thành công",Toast.LENGTH_LONG).show()
-            Navigation().reload_contact(Contact_state,context)
+            Contact_state.reload_contact(context)
 
         }else{
             Toast.makeText(context,"Đã xóa thất bại",Toast.LENGTH_LONG).show()

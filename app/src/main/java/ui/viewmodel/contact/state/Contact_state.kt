@@ -19,18 +19,8 @@ class Contact_state: ViewModel() {
     private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
     val contacts = _contacts.asStateFlow()
     private val _forceUpdate = MutableStateFlow(false)
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://nettruyen.world/contacts/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
 
-    private val api = retrofit.create(ApiService::class.java)
-    fun blockContact(contactId: Int, context: Context) {
-        val userId = UserPreferencesManager(context).getUserId()
-        viewModelScope.launch {
-            api.blockContact(userId, contactId)
-        }
-    }
+
 
     suspend fun get_contact(context: Context) {
         if(ConactPreferencesManage(context).getContactList().isEmpty()) {
@@ -42,7 +32,16 @@ class Contact_state: ViewModel() {
             }
         }
     }
-
+    suspend fun reload_contact(context: Context) {
+        val user_id = UserPreferencesManager(context).getUserId()
+        val contact = Contact_service().get_contact(user_id)
+        clearAll()
+        ConactPreferencesManage(context).clearContacts()
+        contact.forEach {
+            ConactPreferencesManage(context).saveOrUpdateContact(it)
+            addOrUpdateContact(it)
+        }
+    }
     fun addOrUpdateContact(newContact: Contact) {
         _contacts.value = _contacts.value
             .filterNot { it.contact_id == newContact.contact_id }

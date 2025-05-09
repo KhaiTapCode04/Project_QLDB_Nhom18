@@ -377,6 +377,10 @@ fun ContactListItem(
                 DropdownMenuItem(
                     text = { Text("Chặn") },
                     onClick = {
+                        scope.launch {
+                            ContactViewModel().blockContact(contact_id=contact.contact_id,Contact_state,
+                            context)
+                        }
                         showDropdownMenu = false
                     },
                     leadingIcon = {

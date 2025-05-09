@@ -117,7 +117,7 @@ interface ApiService {
     suspend fun blockContact(
         @Field("user_id") userId: Int,
         @Field("contact_id") contactId: Int
-    ): ApiBlockContactResponse
+    ): Get_contacts
 
     @FormUrlEncoded
     @POST("unblock_contact.php")
@@ -128,9 +128,9 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST("get_blocked_contacts.php")
-    suspend fun getBlockedContacts(
+    suspend fun get_blocked_contacts(
         @Field("user_id") userId: Int
-    ): BlockedContactsResponse
+    ): Get_contacts
 
 
 }
