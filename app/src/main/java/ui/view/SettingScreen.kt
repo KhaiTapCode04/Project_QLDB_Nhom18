@@ -45,8 +45,8 @@ fun Setting(navController: NavHostController) {
         SettingItem("Thông tin tài khoản", R.drawable.ic_profile,"profile"),
         SettingItem("Xuất/Nhập danh bạ", R.drawable.ic_export,""),
         SettingItem("Danh sách chặn", R.drawable.ic_block, "blocklist"),
-        SettingItem("Thùng rác", R.drawable.ic_delete, ""),
-        SettingItem("Giao diện", R.drawable.ic_theme, ""),
+        SettingItem("Thùng rác", R.drawable.ic_delete, "TrashContactScreen"),
+      /*  SettingItem("Giao diện", R.drawable.ic_theme, ""),*/
         SettingItem("Giới thiệu", R.drawable.ic_info, "")
     )
 

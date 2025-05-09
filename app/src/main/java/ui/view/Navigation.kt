@@ -193,5 +193,12 @@ fun TodoNavigation(viewModel: User_state) {
                 Contact_state = Contact_state
             )
         }
+        /*composable("trash") {
+            TrashContactScreen(navController = navController)
+        }*/
+        composable("about") {
+            AboutScreen(navController = navController)
+        }
+
     }
 }

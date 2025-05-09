@@ -111,6 +111,7 @@ fun ContactListScreen(navController: NavHostController,Group_state:Group_state, 
                         )
                     }
                 },*/
+
                 actions = {
                     IconButton(onClick = {
                         navController.navigate("profile")
@@ -129,6 +130,7 @@ fun ContactListScreen(navController: NavHostController,Group_state:Group_state, 
             )
         },
 
+
         bottomBar = { BottomNavigationBar(navController) },
 
         floatingActionButton = {
@@ -138,6 +140,7 @@ fun ContactListScreen(navController: NavHostController,Group_state:Group_state, 
                 },
                 containerColor = Color(0xFF1D4BCD)
             ) {
+
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add),
                     contentDescription = "",
@@ -153,6 +156,7 @@ fun ContactListScreen(navController: NavHostController,Group_state:Group_state, 
         ) {
 
             Divider()
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

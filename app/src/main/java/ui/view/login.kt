@@ -315,8 +315,8 @@ fun UserScreen(
                     )
                 }
 
-                TextButton(
-                    onClick = { /* TODO: Navigate to forgot password screen */ },
+                /*TextButton(
+                    onClick = { *//* TODO: Navigate to forgot password screen *//* },
                     colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF2196F3))
                 ) {
                     Text(
@@ -324,7 +324,7 @@ fun UserScreen(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium
                     )
-                }
+                }*/
             }
 
             Spacer(modifier = Modifier.height(24.dp))
