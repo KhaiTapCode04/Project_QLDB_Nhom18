@@ -106,14 +106,6 @@ fun TodoNavigation(viewModel: User_state) {
                 Phone_state = Phone_state
             )
         }
-        /*composable("register") {
-            RegisterScreen(
-                navController = navController,
-                User_state = User_state,
-                Contact_state = Contact_state,
-                Email_state = Email_state
-            )
-        }*/
         composable("profile") {
             ProfileScreen(
                 navController = navController,
