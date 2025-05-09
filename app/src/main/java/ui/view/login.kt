@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ui.viewmodel.contact.sharedPreferences.BlockConactPreferencesManage
 import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
 import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
 import ui.viewmodel.contact.state.Block_contact_state
@@ -57,6 +58,9 @@ fun UserScreen(
         )
         ConactPreferencesManage(context).getContactList().forEach {
             Contact_state.addOrUpdateContact(it)
+        }
+        BlockConactPreferencesManage(context).getBlockContactList().forEach {
+            Block_contact_state.addOrUpdateBlockContact(it)
         }
         EmailPreferencesManage(context).getEmailList().forEach {
             Email_state.addOrUpdateEmail(it)

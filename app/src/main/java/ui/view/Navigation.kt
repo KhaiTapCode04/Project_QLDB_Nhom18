@@ -119,6 +119,7 @@ fun TodoNavigation(viewModel: User_state) {
                 navController = navController,
                 User_state = User_state,
                 Contact_state = Contact_state,
+                Block_contact_state = Block_contact_state,
                 Email_state = Email_state,
                 Phone_state = Phone_state
             )
@@ -130,7 +131,7 @@ fun TodoNavigation(viewModel: User_state) {
             )
         }
         composable("homedb"){
-            ContactListScreen(navController = navController, Contact_state = Contact_state, Email_state = Email_state,Phone_state = Phone_state, context)
+            ContactListScreen(navController = navController, Contact_state = Contact_state,Block_contact_state= Block_contact_state, Email_state = Email_state,Phone_state = Phone_state, context)
 
         }
 //        composable("email"){
@@ -146,7 +147,8 @@ fun TodoNavigation(viewModel: User_state) {
         composable("groupscreen") {
             GroupScreen(
                 navController = navController,
-                viewModel= Contact_state,
+                Contact_state= Contact_state,
+                Block_contact_state=Block_contact_state,
                 context = context
             )
         }

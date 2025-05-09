@@ -35,7 +35,7 @@ class BlockConactPreferencesManage(private val context: Context) {
             .apply()
     }
 
-    fun getBlockContactList(): List<Contact> {//string -> object -> algoth
+    fun getBlockContactList(): List<Contact> {
         val json = sharedPreferences.getString(KEY_Block_CONTACT_LIST, null)
         return if (json != null) {
             val type = object : TypeToken<List<Contact>>() {}.type

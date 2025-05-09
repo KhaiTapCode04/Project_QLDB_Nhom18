@@ -5,6 +5,7 @@ import android.widget.Toast
 import data.repository.ContactRepository
 import ui.view.Navigation
 import ui.viewmodel.contact.state.AddContact_state
+import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.users.UserPreferencesManager
 
@@ -48,12 +49,13 @@ class ContactViewModel {
         AddContact_state._isLoading.value = false
         AddContact_state.clearAllFields()
     }
-    suspend fun blockContact( contact_id: Int, Contact_state: Contact_state, context: Context){
+    suspend fun blockContact( contact_id: Int, Contact_state: Contact_state,Block_contact_state: Block_contact_state, context: Context){
         val user_id = UserPreferencesManager(context).getUserId()
         val block = ContactRepository().blockContact(user_id, contact_id)
         if(block){
             Toast.makeText(context,"Đã chặn thành công",Toast.LENGTH_LONG).show()
             Contact_state.reload_contact(context)
+            Block_contact_state.reload_block_contacts(context)
         }else{
             Toast.makeText(context,"Đã chặn thất bại",Toast.LENGTH_LONG).show()
         }

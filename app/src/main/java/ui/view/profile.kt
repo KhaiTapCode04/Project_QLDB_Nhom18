@@ -22,18 +22,21 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import data.model.BlockedContact
 import ui.view.components.BottomNavigationBar
+import ui.viewmodel.contact.sharedPreferences.BlockConactPreferencesManage
 import ui.viewmodel.contact.sharedPreferences.ConactPreferencesManage
 import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.contact.sharedPreferences.EmailPreferencesManage
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.sharedPreferences.PhonePreferencesManage
+import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Phone_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
 
 @Composable
-fun ProfileScreen(navController: NavHostController, User_state: User_state, Contact_state:Contact_state, Email_state: Email_state, Phone_state: Phone_state) {
+fun ProfileScreen(navController: NavHostController, User_state: User_state, Contact_state:Contact_state,Block_contact_state: Block_contact_state, Email_state: Email_state, Phone_state: Phone_state) {
     val context = LocalContext.current
     val user_id by User_state.user_id.collectAsState()
     val name by User_state.userName.collectAsState()
@@ -172,14 +175,17 @@ fun ProfileScreen(navController: NavHostController, User_state: User_state, Cont
                 onClick = {
                     val user = UserPreferencesManager(context)
                     val contact = ConactPreferencesManage(context)
+                    val blockContact = BlockConactPreferencesManage(context)
                     val email = EmailPreferencesManage(context)
                     val phone = PhonePreferencesManage(context)
                     user.clearUserInfo()
                     contact.clearContacts()
+                    blockContact.clearBlockContacts()
                     email.clearEmails()
                     phone.clearPhones()
                     User_state.clearUser()
                     Contact_state.clearAll()
+                    Block_contact_state.clearAll()
                     Email_state.clearAllEmails()
                     Phone_state.clearAllPhones()
 

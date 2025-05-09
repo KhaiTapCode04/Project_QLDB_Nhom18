@@ -44,7 +44,9 @@ fun BlockedContactScreen(
         Block_contact_state.get_block_contacts(context)
     }
 
-
+    if(blockedContacts.isEmpty()){
+        Toast.makeText(context,"heheee", Toast.LENGTH_SHORT).show()
+    }
 
     Scaffold(
         topBar = {

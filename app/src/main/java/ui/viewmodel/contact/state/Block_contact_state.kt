@@ -24,6 +24,7 @@ class Block_contact_state : ViewModel() {
 
     suspend fun get_block_contacts(context: Context) {
         if(BlockConactPreferencesManage(context).getBlockContactList().isEmpty()) {
+            Toast.makeText(context, "hi", Toast.LENGTH_SHORT).show()
             val user_id = UserPreferencesManager(context).getUserId()
             val contact = Contact_service().get_blocked_contacts(user_id)
             contact.forEach {
@@ -35,7 +36,7 @@ class Block_contact_state : ViewModel() {
     suspend fun reload_block_contacts(context: Context) {
         val user_id = UserPreferencesManager(context).getUserId()
         val contact = Contact_service().get_blocked_contacts(user_id)
-        UserPreferencesManager(context).clearUserInfo()
+        BlockConactPreferencesManage(context).clearBlockContacts()
         clearAll()
         contact.forEach {
             BlockConactPreferencesManage(context).saveOrUpdateBlockContact(it)

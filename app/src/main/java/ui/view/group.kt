@@ -21,20 +21,21 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nhom18_lttbdd_qldb_ngaybc.R
 import ui.view.components.BottomNavigationBar
+import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Contact_state
 
 @Composable
-fun GroupScreen(navController: NavHostController, viewModel: Contact_state, context: Context) {
+fun GroupScreen(navController: NavHostController, Contact_state: Contact_state,Block_contact_state: Block_contact_state, context: Context) {
 
     // Load dữ liệu khi vào màn
     LaunchedEffect(Unit) {
-        viewModel.get_contact(context)
-        viewModel.getGroup()
+        Contact_state.get_contact(context)
+        Contact_state.getGroup()
     }
 
     // Nhận dữ liệu từ ViewModel
-    val groups by viewModel.groups.collectAsState()
-    val contacts by viewModel.contacts.collectAsState()
+    val groups by  Contact_state.groups.collectAsState()
+    val contacts by  Contact_state.contacts.collectAsState()
 
     Scaffold(
         topBar = {
@@ -104,11 +105,12 @@ fun GroupScreen(navController: NavHostController, viewModel: Contact_state, cont
 
                     // Các contact trong nhóm
                     items(groupContacts) { contact ->
-                        viewModel.getGroupnameById(contact.group_id)?.let { groupName ->
+                        Contact_state.getGroupnameById(contact.group_id)?.let { groupName ->
                             ContactListItem(
                                 contact = contact,
                                 navController = navController,
-                                Contact_state = viewModel,
+                                Contact_state =  Contact_state,
+                                Block_contact_state= Block_contact_state,
                                 Group_name = groupName
                             )
                         }

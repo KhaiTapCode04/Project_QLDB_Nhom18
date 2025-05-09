@@ -48,6 +48,7 @@ import com.google.accompanist.swiperefresh.*
 import kotlinx.coroutines.delay
 import ui.view.reload_email
 import ui.viewmodel.contact.sharedPreferences.PhonePreferencesManage
+import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.state.Phone_state
 
@@ -79,7 +80,7 @@ suspend fun reload_phone(Phone_state: Phone_state, context: Context) {
 }
 
 @Composable
-fun ContactListScreen(navController: NavHostController, Contact_state: Contact_state,Email_state: Email_state,Phone_state: Phone_state, context: Context) {
+fun ContactListScreen(navController: NavHostController, Contact_state: Contact_state,Block_contact_state: Block_contact_state,Email_state: Email_state,Phone_state: Phone_state, context: Context) {
     LaunchedEffect(Unit) {
         Contact_state.get_contact(context)
         Contact_state.getGroup()
@@ -253,7 +254,7 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
                 ) {
                     items(sortedContactList) { contact ->
                         Contact_state.getGroupnameById(contact.group_id)?.let { groupName ->
-                            ContactListItem(contact, navController, Contact_state, groupName)
+                            ContactListItem(contact, navController, Contact_state,Block_contact_state, groupName)
                         }
                     }
                 }
@@ -267,6 +268,8 @@ fun ContactListItem(
     contact: Contact,
     navController: NavHostController,
     Contact_state: Contact_state,
+
+    Block_contact_state:Block_contact_state,
     Group_name: String
 ) {
     var showDropdownMenu by remember { mutableStateOf(false) }
@@ -378,7 +381,7 @@ fun ContactListItem(
                     text = { Text("Chặn") },
                     onClick = {
                         scope.launch {
-                            ContactViewModel().blockContact(contact_id=contact.contact_id,Contact_state,
+                            ContactViewModel().blockContact(contact_id=contact.contact_id,Contact_state,Block_contact_state,
                             context)
                         }
                         showDropdownMenu = false
