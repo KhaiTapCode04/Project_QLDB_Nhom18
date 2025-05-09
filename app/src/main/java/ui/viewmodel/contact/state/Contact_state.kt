@@ -1,6 +1,7 @@
 package ui.viewmodel.contact.state
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import data.api.ApiService
@@ -38,6 +39,7 @@ class Contact_state: ViewModel() {
         clearAll()
         ConactPreferencesManage(context).clearContacts()
         contact.forEach {
+            Log.d("check111", it.contact_id.toString() + it.group_id.toString() + it.group_name + it.name + it.user_id)
             ConactPreferencesManage(context).saveOrUpdateContact(it)
             addOrUpdateContact(it)
         }

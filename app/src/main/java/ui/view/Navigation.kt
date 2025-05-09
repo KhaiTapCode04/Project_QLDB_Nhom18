@@ -44,6 +44,7 @@ import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.User_state
 
 import ui.viewmodel.contact.state.Contact_state
+import ui.viewmodel.groups.Group_state
 
 class Navigation: ComponentActivity() {
 
@@ -82,6 +83,7 @@ fun TodoNavigation(viewModel: User_state) {
     val navController = rememberNavController()
     val sharedViewModel: SharedViewModel = viewModel()
     val User_state: User_state = viewModel()
+    val Group_state: Group_state = viewModel()
     val Contact_state: Contact_state = viewModel()
     val Email_state: Email_state = viewModel()
     val Phone_state: Phone_state = viewModel()
@@ -100,6 +102,7 @@ fun TodoNavigation(viewModel: User_state) {
             UserScreen(
                 navController = navController,
                 User_state = User_state,
+                Group_state =Group_state,
                 Contact_state = Contact_state,
                 Block_contact_state =Block_contact_state,
                 Email_state = Email_state,
@@ -123,7 +126,7 @@ fun TodoNavigation(viewModel: User_state) {
             )
         }
         composable("homedb"){
-            ContactListScreen(navController = navController, Contact_state = Contact_state,Block_contact_state= Block_contact_state, Email_state = Email_state,Phone_state = Phone_state, context)
+            ContactListScreen(navController = navController,Group_state=Group_state, Contact_state = Contact_state,Block_contact_state= Block_contact_state, Email_state = Email_state,Phone_state = Phone_state, context)
 
         }
 //        composable("email"){
@@ -150,6 +153,7 @@ fun TodoNavigation(viewModel: User_state) {
                 navController = navController,
                 AddContact_state = AddContact_state,
                 Contact_state = Contact_state,
+                Email_state = Email_state,Phone_state = Phone_state
             )
         }
 

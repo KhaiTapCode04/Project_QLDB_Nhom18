@@ -33,12 +33,16 @@ import kotlinx.coroutines.launch
 import ui.viewmodel.contact.ContactViewModel
 import ui.viewmodel.contact.state.AddContact_state
 import ui.viewmodel.contact.state.Contact_state
+import ui.viewmodel.contact.state.Email_state
+import ui.viewmodel.contact.state.Phone_state
 
 @Composable
 fun AddContact(
     navController: NavHostController,
     AddContact_state: AddContact_state,
-    Contact_state: Contact_state
+    Contact_state: Contact_state,
+    Email_state:Email_state,
+    Phone_state:Phone_state
 ) {
     val context = LocalContext.current
     val name by AddContact_state.name.collectAsState()
@@ -256,7 +260,7 @@ fun AddContact(
 
                         if (nameError == null && phoneError == null && emailError == null && groupError == null) {
                             scope.launch {
-                                ContactViewModel().addContact(AddContact_state, Contact_state, context)
+                                ContactViewModel().addContact(AddContact_state, Contact_state, Email_state, Phone_state,context)
                                 Toast.makeText(context, "Đã lưu liên hệ", Toast.LENGTH_SHORT).show()
                                 delay(1000)
                                 navController.navigate("homedb") {

@@ -2,17 +2,11 @@ package data.api
 
 import Get_email
 import Get_phone
-import data.model.AddEmailResponse
-import data.model.AddPhoneResponse
-import data.model.ApiBlockContactResponse
 import data.model.ApiEditContactResponse
-import data.model.BlockedContactsResponse
 import data.model.Get_contacts
 import data.model.Get_group
 import data.model.Get_user
-import data.model.Group
 import data.model.UploadResponse
-import kotlinx.coroutines.flow.StateFlow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Field
@@ -121,10 +115,10 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST("unblock_contact.php")
-    suspend fun unblockContact(
+    suspend fun unblock_contact(
         @Field("user_id") userId: Int,
         @Field("contact_id") contactId: Int
-    ): ApiBlockContactResponse
+    ): Get_contacts
 
     @FormUrlEncoded
     @POST("get_blocked_contacts.php")

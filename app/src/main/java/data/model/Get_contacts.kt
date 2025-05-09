@@ -10,4 +10,5 @@ data class Contact(
     val user_id: Int,
     val name: String,
     val group_id: Int,
+    val group_name: String
 )

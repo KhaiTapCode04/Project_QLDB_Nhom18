@@ -45,47 +45,31 @@ import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.contact.Contact_service
 import ui.viewmodel.users.UserPreferencesManager
 import com.google.accompanist.swiperefresh.*
+import data.model.Group
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import ui.view.reload_email
 import ui.viewmodel.contact.sharedPreferences.PhonePreferencesManage
 import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.state.Phone_state
+import ui.viewmodel.groups.Group_state
+import ui.viewmodel.users.User_state
 
-suspend fun reload_contact(viewModel: Contact_state, context: Context) {
-    val user_id = UserPreferencesManager(context).getUserId()
-    val contact = Contact_service().get_contact(user_id)
-    viewModel.clearAll()
-    ConactPreferencesManage(context).clearContacts()
-    if(!contact.isEmpty()){
-        Log.d("asddf","hehe")
-    }else{
-        Log.d("asddf","hihi"+user_id)
-    }
-    contact.forEach {
-        Log.d("asddf",it.name)
-        ConactPreferencesManage(context).saveOrUpdateContact(it)
-        viewModel.addOrUpdateContact(it)
-    }
-}
-suspend fun reload_phone(Phone_state: Phone_state, context: Context) {
-    val user_id = UserPreferencesManager(context).getUserId()
-    val phone = Contact_service().get_phone(user_id)
-    Phone_state.clearAllPhones()
-    PhonePreferencesManage(context).clearPhones()
-    phone.forEach {
-        PhonePreferencesManage(context).savePhoneList(it)
-        Phone_state.addOrUpdatePhone(it)
-    }
-}
 
 @Composable
-fun ContactListScreen(navController: NavHostController, Contact_state: Contact_state,Block_contact_state: Block_contact_state,Email_state: Email_state,Phone_state: Phone_state, context: Context) {
+fun ContactListScreen(navController: NavHostController,Group_state:Group_state, Contact_state: Contact_state,Block_contact_state: Block_contact_state,Email_state: Email_state,Phone_state: Phone_state, context: Context) {
+
+
+
+
     LaunchedEffect(Unit) {
         Contact_state.get_contact(context)
         Contact_state.getGroup()
+        Group_state.get_group(context)
     }
-    val groups by Contact_state.groups.collectAsState()
+
+    val groups by Group_state.group.collectAsState()
     val scope = rememberCoroutineScope()
     val contactList by Contact_state.contacts.collectAsState()
     var search by remember { mutableStateOf("") }
@@ -99,6 +83,9 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
     var sortedContactList by remember { mutableStateOf(filteredContactList) }
     LaunchedEffect(filteredContactList) {
         sortedContactList = filteredContactList
+    }
+    sortedContactList.forEach {
+        Log.e(it.contact_id.toString(), it.toString())
     }
     Scaffold(
         topBar = {
@@ -234,9 +221,9 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
 
                     scope.launch {
                         isRefreshing = true
-                        reload_contact(Contact_state, context)
-                        reload_email(Email_state,context)
-                        reload_phone(Phone_state,context)
+                        Contact_state.reload_contact(context)
+                        Email_state.reload_email(context)
+                        Phone_state.reload_phone(context)
                         isRefreshing = false
                         Toast.makeText(context,"done", Toast.LENGTH_SHORT).show()
                         sortedContactList.forEach {
@@ -253,9 +240,7 @@ fun ContactListScreen(navController: NavHostController, Contact_state: Contact_s
                         .padding(horizontal = 12.dp)
                 ) {
                     items(sortedContactList) { contact ->
-                        Contact_state.getGroupnameById(contact.group_id)?.let { groupName ->
-                            ContactListItem(contact, navController, Contact_state,Block_contact_state, groupName)
-                        }
+                            ContactListItem(contact, navController, Contact_state,Block_contact_state)
                     }
                 }
         }
@@ -268,9 +253,7 @@ fun ContactListItem(
     contact: Contact,
     navController: NavHostController,
     Contact_state: Contact_state,
-
     Block_contact_state:Block_contact_state,
-    Group_name: String
 ) {
     var showDropdownMenu by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -320,7 +303,7 @@ fun ContactListItem(
                 color = Color.Gray
             )*/
             Text(
-                text = "Nhóm: ${Group_name}",
+                text = "Nhóm: ${contact.group_name}",
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontSize = 14.sp,
                     color = Color.Gray,

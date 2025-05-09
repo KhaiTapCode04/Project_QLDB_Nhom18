@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import data.model.Contact
 import ui.view.components.BottomNavigationBar
+import ui.viewmodel.contact.state.AddContact_state
+import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.state.Phone_state
 
@@ -46,20 +48,15 @@ fun ContactDetailScreen(
     LaunchedEffect(Unit) {
         Phone_state.get_phone(context)
         Email_state.get_email(context)
-        Email_state.getGroup()
     }
-    val groups by Email_state.groups.collectAsState()
+    val groupName = contact.group_name
     val phones by Phone_state.phones.collectAsState()
     val emails by Email_state.emails.collectAsState()
 
     val emailFilter = emails.filter { it.contact_id == contact.contact_id }
     val phoneFilter = phones.filter { it.contact_id == contact.contact_id }
 
-    val groupName by remember(groups) {
-        derivedStateOf {
-            Email_state.getGroupnameById(contact.group_id) ?: ""
-        }
-    }
+
 
     Scaffold(
         topBar = {
@@ -220,23 +217,6 @@ fun ContactDetailScreen(
                                 }
                             }
                         )
-
-                        Divider(color = Color(0xFFE0E0E0), thickness = 0.5.dp)
-
-                        // Address
-                        ContactDetailRow(
-                            icon = Icons.Default.Home,
-                            label = "Địa chỉ",
-                            content = {
-                                Text(
-                                    text = contact.contact_id.toString(),
-                                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
-                                    modifier = Modifier.padding(top = 4.dp),
-                                    color = Color.Black
-                                )
-                            }
-                        )
-
                         Divider(color = Color(0xFFE0E0E0), thickness = 0.5.dp)
 
                         // Group

@@ -1,8 +1,11 @@
 package ui.viewmodel.users
 
+import Email
 import androidx.lifecycle.ViewModel
+import data.model.Group
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.collections.filterNot
 
 //class User_state : ViewModel() {
 //
@@ -97,6 +100,9 @@ class User_state : ViewModel() {
     private val _profile_picture = MutableStateFlow("")
     val profile_picturel = _profile_picture.asStateFlow()
 
+
+
+
     fun updateUser(id: Int, name: String, email: String, phone: String, profile_picture: String) {
         _user_id.value = id
         _userName.value = name
@@ -114,4 +120,6 @@ class User_state : ViewModel() {
         _phone.value = ""
         _profile_picture.value = ""
     }
+
+
 }

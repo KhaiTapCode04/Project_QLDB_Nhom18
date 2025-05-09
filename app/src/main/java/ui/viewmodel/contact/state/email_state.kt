@@ -37,21 +37,21 @@ class Email_state : ViewModel() {
             val emailList = Contact_service().get_email(user_id)
             emailList.forEach {
                 EmailPreferencesManage(context).saveEmailList(it)
+                addOrUpdateEmail(it)
             }
             _emails.value = emailList
         } else {
             _emails.value = listFromPref
         }
     }
-
-    val _groups = MutableStateFlow<List<Group>>(emptyList())
-    val groups = _groups.asStateFlow()
-    fun getGroup() {
-        viewModelScope.launch {
-            _groups.value = Contact_service().get_group()
+    suspend fun reload_email( context: Context){
+        val user_id = UserPreferencesManager(context).getUserId()
+        val email = Contact_service().get_email(user_id)
+        email.forEach {
+            EmailPreferencesManage(context).saveEmailList(it)
+            addOrUpdateEmail(it)
         }
     }
-    fun getGroupnameById(group_id: Int) : String?{
-        return _groups.value.find { it.group_id == group_id }?.group_name
-    }
+
+
 }

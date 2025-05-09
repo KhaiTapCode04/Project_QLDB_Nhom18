@@ -32,6 +32,7 @@ import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.contact.state.Email_state
 import ui.viewmodel.contact.state.Phone_state
+import ui.viewmodel.groups.Group_state
 import ui.viewmodel.users.UserPreferencesManager
 import ui.viewmodel.users.UserService
 import ui.viewmodel.users.User_state
@@ -42,6 +43,7 @@ fun UserScreen(
     navController: NavHostController,
     User_state: User_state,
     Contact_state: Contact_state,
+    Group_state:Group_state,
     Block_contact_state: Block_contact_state,
     Email_state: Email_state,
     Phone_state: Phone_state
@@ -243,6 +245,7 @@ fun UserScreen(
                                 )
 
                                 Contact_state.get_contact(context)
+                                Group_state.get_group(context)
                                 Block_contact_state.get_block_contacts(context)
                                 Email_state.get_email(context)
                                 Phone_state.get_phone(context)

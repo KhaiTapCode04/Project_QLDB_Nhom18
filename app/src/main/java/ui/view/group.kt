@@ -34,10 +34,12 @@ fun GroupScreen(navController: NavHostController, Contact_state: Contact_state,B
     }
 
     // Nhận dữ liệu từ ViewModel
-    val groups by  Contact_state.groups.collectAsState()
-    val contacts by  Contact_state.contacts.collectAsState()
 
-    Scaffold(
+    val contacts by  Contact_state.contacts.collectAsState()
+    val groups = contacts.map {
+        it.group_name
+    }.distinct()
+        Scaffold(
         topBar = {
             TopAppBar(
                 title = {
@@ -85,15 +87,12 @@ fun GroupScreen(navController: NavHostController, Contact_state: Contact_state,B
 
             // Với mỗi group → hiển thị nhóm + các liên hệ
             groups.forEach { groupItem ->
-
-                val groupContacts = contacts.filter { it.group_id == groupItem.group_id }
-
-                if (groupContacts.isNotEmpty()) {
-
+                val contactsInGroup = contacts.filter { it.group_name == groupItem }
+                if (groups.isNotEmpty()) {
                     // Nhóm (Title)
                     item {
                         Text(
-                            text = "Nhóm: ${groupItem.group_name}",
+                            text = "Nhóm: ${groupItem}",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
@@ -101,21 +100,21 @@ fun GroupScreen(navController: NavHostController, Contact_state: Contact_state,B
                                 .background(Color(0xFFE0E0E0))
                                 .padding(12.dp)
                         )
+
                     }
 
                     // Các contact trong nhóm
-                    items(groupContacts) { contact ->
-                        Contact_state.getGroupnameById(contact.group_id)?.let { groupName ->
+                    items(contactsInGroup) { contact ->
+
                             ContactListItem(
                                 contact = contact,
                                 navController = navController,
                                 Contact_state =  Contact_state,
                                 Block_contact_state= Block_contact_state,
-                                Group_name = groupName
                             )
                         }
                     }
-                }
+
             }
         }
     }

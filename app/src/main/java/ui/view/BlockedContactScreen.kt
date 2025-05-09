@@ -24,7 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import data.model.BlockedContact
+
 import data.model.Contact
 import kotlinx.coroutines.launch
 import ui.viewmodel.contact.state.Block_contact_state

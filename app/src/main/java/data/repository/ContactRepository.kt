@@ -48,11 +48,13 @@ class ContactRepository {
         return try {
             val response = apiService.getContact(userId)
             if (response.isSuccess) {
+                Log.e("contacts",": ${response.data}")
                 response.data
             } else {
                 emptyList()
             }
         } catch (e: Exception) {
+            Log.d("contacts",": ${e}")
             emptyList()
         }
     }
@@ -143,6 +145,15 @@ class ContactRepository {
             val response = apiService.addPhone(contactId, phone_type, phone_number)
             response.isSuccess
         } catch (e: Exception) {
+            false
+        }
+    }
+    suspend fun unlockContact(user_id: Int, contact_id: Int ): Boolean{
+        return try{
+            val response = apiService.unblock_contact(user_id,contact_id)
+            response.isSuccess
+        }
+        catch (e: Exception){
             false
         }
     }
