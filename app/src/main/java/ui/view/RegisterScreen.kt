@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
+import ui.viewmodel.users.UserService
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
@@ -37,7 +39,7 @@ fun RegisterScreen(navController: NavHostController) {
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val scope = rememberCoroutineScope()
-
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -281,15 +283,15 @@ fun RegisterScreen(navController: NavHostController) {
                             isLoading = true
                             errorMessage = null
                             scope.launch {
-                                // TODO: Thêm logic gọi API đăng ký ở đây
-                                // Ví dụ: val result = UserService.register(username, email, phone, password)
-                                // Nếu thành công, điều hướng về đăng nhập hoặc trang chính
-                                kotlinx.coroutines.delay(1000) // Giả lập thời gian xử lý
-                                isLoading = false
-                                errorMessage = "Đăng ký thành công! Vui lòng đăng nhập."
-                                navController.navigate("login") {
-                                    popUpTo("register") { inclusive = true }
+                                val Register = UserService.Register(context,username, email, phone, password)
+                                if(Register){
+                                    errorMessage = "Đăng ký thành công! Vui lòng đăng nhập."
+                                    navController.navigate("login") {
+                                        popUpTo("register") { inclusive = true }
+                                    }
                                 }
+                                isLoading = false
+
                             }
                         }
                     }

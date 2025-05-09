@@ -5,6 +5,7 @@ package ui.viewmodel.users
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import data.model.User
 import data.repository.AuthRepository
 
@@ -36,6 +37,26 @@ object UserService {
         } else {
             return null
         }
+    }
+
+    suspend fun Register(context: Context, username: String, email: String, phone: String, password: String): Boolean{
+
+            val Register = AuthRepository().Register(username,email,phone,password)
+            if(Register.isSuccess){
+                return true
+            }
+            else {
+                if (Register.reason == "username") {
+                    Toast.makeText(context, "đã trùng tên tài khoản", Toast.LENGTH_LONG).show()
+                } else if (Register.reason == "email") {
+                    Toast.makeText(context, "đã trùng email", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "không thể kết nối với máy chủ", Toast.LENGTH_LONG)
+                        .show()
+                }
+                return false
+            }
+
     }
     suspend fun update_user(context: Context, user_id: Int, email: String, phone: String): Boolean {
         val check = AuthRepository().update_user(user_id, email, phone)

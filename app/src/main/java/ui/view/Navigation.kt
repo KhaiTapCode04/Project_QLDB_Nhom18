@@ -112,6 +112,9 @@ fun TodoNavigation(viewModel: User_state) {
                 Phone_state = Phone_state
             )
         }
+        composable ("RegisterScreen"){
+            RegisterScreen(navController=navController)
+        }
         composable("profile") {
             ProfileScreen(
                 navController = navController,
@@ -139,7 +142,7 @@ fun TodoNavigation(viewModel: User_state) {
         composable("ContactDetail/{contactJson}",arguments = listOf(navArgument("contactJson") { type = NavType.StringType })){backStackEntry ->
             val contactJson = backStackEntry.arguments?.getString("contactJson") ?: ""
             val contact = Gson().fromJson(contactJson, Contact::class.java)
-            ContactDetailScreen(navController = navController,contact, Email_state = Email_state, Phone_state = Phone_state, context)
+            ContactDetailScreen(navController = navController,contact,Contact_state= Contact_state, Block_contact_state=Block_contact_state, Email_state = Email_state, Phone_state = Phone_state, context)
         }
 
         composable("groupscreen") {
@@ -170,7 +173,8 @@ fun TodoNavigation(viewModel: User_state) {
             val contactJson = backStackEntry.arguments?.getString("contactJson") ?: ""
             val contact = Gson().fromJson(contactJson, Contact::class.java)
 
-            ContactDetailScreen(navController, contact, emailState, phoneState, context)
+            ContactDetailScreen(navController, contact,Contact_state=Contact_state,
+                Block_contact_state=Block_contact_state, emailState, phoneState, context)
         }
 
         composable("setting") {

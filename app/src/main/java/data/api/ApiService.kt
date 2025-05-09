@@ -23,6 +23,11 @@ interface ApiService {
     suspend fun loginWithForm(@Field("username") email: String, @Field("password") password: String): Get_user
 
     @FormUrlEncoded
+    @POST("register.php")
+    suspend fun Register(@Field("username") username: String, @Field("email") email: String, @Field("phone") phone: String, @Field("password") password: String): Get_user
+
+
+    @FormUrlEncoded
     @POST("add_email.php")
     suspend fun addEmail(
         @Field("contact_id") contact_id: Int,
@@ -133,6 +138,12 @@ interface ApiService {
     @POST("select_delete_contact.php")
     suspend fun select_delete_contact(
         @Field("user_id") userId: Int
+    ): Get_contacts
+
+    @FormUrlEncoded
+    @POST("restore.php")
+    suspend fun restore_contact(
+        @Field("contact_id") contact_id: Int
     ): Get_contacts
 }
 

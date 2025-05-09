@@ -305,7 +305,7 @@ fun UserScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 TextButton(
-                    onClick = { navController.navigate("register") },
+                    onClick = { navController.navigate("RegisterScreen") },
                     colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF2196F3))
                 ) {
                     Text(

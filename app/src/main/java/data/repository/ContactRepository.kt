@@ -179,4 +179,14 @@ class ContactRepository {
             emptyList()
         }
     }
+    suspend fun restore_contact( contact_id: Int ): Boolean{
+        return try{
+            val response = apiService.restore_contact(contact_id)
+            Log.d("estore_contact"+contact_id,response.isSuccess.toString())
+            response.isSuccess
+        }
+        catch (e: Exception){
+            false
+        }
+    }
 }

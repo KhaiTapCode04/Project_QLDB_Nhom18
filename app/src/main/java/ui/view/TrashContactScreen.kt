@@ -103,7 +103,7 @@ fun TrashContactScreen(
                         context = context,
                         contact = trashedContact,
                         Delete_contact_state = Delete_contact_state,
-                        contactState = Contact_state
+                        Contact_state = Contact_state
                     )
                 }
             }
@@ -116,7 +116,7 @@ fun TrashContactCard(
     context: Context,
     contact: Contact,
     Delete_contact_state: Delete_contact_state,
-    contactState: Contact_state
+    Contact_state: Contact_state
 ) {
     var showMenu by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -161,14 +161,9 @@ fun TrashContactCard(
                             Text("Khôi phục")
                         },
                         onClick = {
-                            /*scope.launch {
-                                viewModel.restoreContact(
-                                    contact.contact_id,
-                                    trashContactState,
-                                    contactState,
-                                    context
-                                )
-                            }*/
+                            scope.launch {
+                                ContactViewModel().restore_contact(contact.contact_id,Delete_contact_state, Contact_state,context)
+                            }
                             showMenu = false
                         },
                         leadingIcon = {

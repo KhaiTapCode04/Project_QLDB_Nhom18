@@ -71,7 +71,7 @@ class UserPreferencesManager(private val context: Context) {
         return sharedPreferences.getString(KEY_USER_EMAIL, DEFAULT_USER_EMAIL) ?: DEFAULT_USER_EMAIL
     }
     fun saveUserPhone(userPhone: String) {
-        sharedPreferences.edit().putString(KEY_USER_EMAIL, userPhone).apply()
+        sharedPreferences.edit().putString(KEY_USER_PHONE, userPhone).apply()
     }
     fun getUserPhone(): String {
         return sharedPreferences.getString(KEY_USER_PHONE, DEFAULT_USER_PHONE) ?: DEFAULT_USER_PHONE

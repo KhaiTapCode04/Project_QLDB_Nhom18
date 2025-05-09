@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import data.repository.ContactRepository
-import ui.view.Navigation
 import ui.viewmodel.contact.state.AddContact_state
 import ui.viewmodel.contact.state.Block_contact_state
 import ui.viewmodel.contact.state.Contact_state
@@ -79,7 +78,6 @@ class ContactViewModel {
     }
     suspend fun unBlockContact(contact_id: Int, Block_contact_state: Block_contact_state,Contact_state: Contact_state, context: Context){
         val delete = ContactRepository().unlockContact(contact_id)
-        Log.e(contact_id.toString(),contact_id.toString())
         if(delete){
             Toast.makeText(context,"Đã gỡ chặn thành công",Toast.LENGTH_LONG).show()
             Contact_state.reload_contact(context)
@@ -93,12 +91,21 @@ class ContactViewModel {
 
     suspend fun forever_delete_contact(contact_id: Int,Delete_contact_state: Delete_contact_state, context: Context){
         val delete = ContactRepository().forever_delete_contact(contact_id)
-        Log.d("forever_delete_contact"+contact_id,delete.toString())
         if(delete){
             Toast.makeText(context,"Đã xóa vĩnh viễn thành công",Toast.LENGTH_LONG).show()
             Delete_contact_state.reload_delete_contacts(context)
         }else{
             Toast.makeText(context,"Đã xóa thất bại",Toast.LENGTH_LONG).show()
+        }
+    }
+    suspend fun restore_contact(contact_id: Int,Delete_contact_state: Delete_contact_state,Contact_state: Contact_state, context: Context){
+        val restore = ContactRepository().restore_contact(contact_id)
+        if(restore){
+            Toast.makeText(context,"Đã khôi phục liên hệ thành công",Toast.LENGTH_LONG).show()
+            Delete_contact_state.reload_delete_contacts(context)
+            Contact_state.reload_contact(context)
+        }else{
+            Toast.makeText(context,"Đã khôi phục liên hệ thất bại",Toast.LENGTH_LONG).show()
         }
     }
 

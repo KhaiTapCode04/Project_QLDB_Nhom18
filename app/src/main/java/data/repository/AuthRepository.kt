@@ -2,6 +2,7 @@ package data.repository
 
 import android.util.Log
 import data.api.ApiService
+import data.model.Get_user
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -22,6 +23,18 @@ class AuthRepository {
             if (response.isSuccess) response.data else null
         } catch (e: Exception) {
             null
+        }
+    }
+    suspend fun Register(username: String,email: String,phone: String, password: String): Get_user {
+        return try {
+            val response = apiService.Register(username,email,phone,password)
+            response
+        } catch (e: Exception) {
+            Get_user(
+                isSuccess = false,
+                reason = e.message ?: "An error occurred during registration",
+                data = User()
+            )
         }
     }
 
