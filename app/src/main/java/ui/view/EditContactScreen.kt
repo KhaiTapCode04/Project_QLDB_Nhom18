@@ -11,6 +11,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -68,48 +72,133 @@ fun EditContactScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Chỉnh sửa liên hệ", fontSize = 22.sp, fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        text = "Chỉnh sửa liên hệ",
+                        style = TextStyle(
+                            color = Color(0xFF000000),
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xB587FF95)
+                ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.Black)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Quay lại"
+                        )
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Hồ sơ */ }) {
-                        Icon(Icons.Default.AccountCircle, contentDescription = "Profile", tint = Color.Gray)
+                    IconButton(onClick = { navController.navigate("profile") }) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Hồ sơ",
+                            modifier = Modifier.size(48.dp)
+                        )
                     }
                 }
+
             )
         },
-//        bottomBar = { BottomNavigationBar(navController) }
+        /*bottomBar = {
+            BottomNavigationBar(navController)
+
+        }*/
     ) { paddingValues ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF8F9FA))
+                .background(Color(0xFFF5F7FA)) // Xám trắng nhạt
                 .padding(paddingValues)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-
             Text("Cập nhật thông tin liên hệ", fontSize = 14.sp, color = Color.Gray)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            EditableTextField("Họ và tên", name, errorText = nameError) { name = it }
-            Spacer(modifier = Modifier.height(16.dp))
+            // Họ và tên
+            FieldLabel("Họ và tên")
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Họ và tên",
+                        tint = Color(0xFF616161)
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF2196F3),
+                    unfocusedBorderColor = Color(0xFFB0BEC5)
+                )
+            )
 
-            EditableTextField("Số điện thoại", phone, keyboardType = KeyboardType.Phone, errorText = phoneError) { phone = it }
-            Spacer(modifier = Modifier.height(16.dp))
+            // Số điện thoại
+            FieldLabel("Số điện thoại")
+            OutlinedTextField(
+                value = phone,
+                onValueChange = { name = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Phone,
+                        contentDescription = "Số điện thoại",
+                        tint = Color(0xFF616161)
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF2196F3),
+                    unfocusedBorderColor = Color(0xFFB0BEC5)
+                )
+            )
 
-            EditableTextField("Email", email, keyboardType = KeyboardType.Email, errorText = emailError) { email = it }
-            Spacer(modifier = Modifier.height(16.dp))
+            // Email
+            FieldLabel("Email")
+            OutlinedTextField(
+                value = email,
+                onValueChange = { name= it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = "Email",
+                        tint = Color(0xFF616161)
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF2196F3),
+                    unfocusedBorderColor = Color(0xFFB0BEC5)
+                )
+            )
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Nhóm
+            FieldLabel("Nhóm")
             GroupDropdownMenu(
-                selectedGroup = selectedGroup?.group_name ?: "Chọn nhóm",
+                selectedGroup = selectedGroup?.group_name ?: "",
                 groups = groups,
                 onGroupSelected = { viewModel._selectedGroup.value = it }
             )
@@ -119,13 +208,13 @@ fun EditContactScreen(
             Button(
                 onClick = { viewModel.updateContact(context, contactId, name, email, phone) },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                 enabled = !isLoading
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
                 } else {
-                    Text("Lưu", color = Color.White, fontSize = 16.sp)
+                    Text("Cập nhập", color = Color.White, fontSize = 19.sp)
                 }
             }
         }

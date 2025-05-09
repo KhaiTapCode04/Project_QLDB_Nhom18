@@ -23,12 +23,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import data.model.Group
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.ContactViewModel
 import ui.viewmodel.contact.state.AddContact_state
 import ui.viewmodel.contact.state.Contact_state
@@ -43,15 +44,19 @@ fun AddContact(
     val name by AddContact_state.name.collectAsState()
     val email by AddContact_state.email.collectAsState()
     val phone by AddContact_state.phone.collectAsState()
-
     val groups by AddContact_state.groups.collectAsState()
     val addContactResult by AddContact_state.addContactResult.collectAsState()
     val isLoading by AddContact_state.isLoading.collectAsState()
     val selectedGroup by AddContact_state.selectedGroup.collectAsState()
     val scope = rememberCoroutineScope()
 
+    var nameError by remember { mutableStateOf<String?>(null) }
+    var phoneError by remember { mutableStateOf<String?>(null) }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var groupError by remember { mutableStateOf<String?>(null) }
+
     LaunchedEffect(Unit) {
-        AddContact_state.getGroup()
+        AddContact_state.getGroup() // Ensure groups are loaded
     }
 
     LaunchedEffect(addContactResult) {
@@ -63,173 +68,220 @@ fun AddContact(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        text = "Thêm liên hệ mới",
-                        style = TextStyle(
-                            color = Color(0xFF000000),
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xB587FF95)
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Quay lại"
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { navController.navigate("profile") }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Hồ sơ",
-                            modifier = Modifier.size(48.dp)
-                        )
-                    }
-                }
-
+                title = { Text("Thêm liên hệ mới", style = TextStyle(color = Color.Black, fontSize = 25.sp, fontWeight = FontWeight.Bold)) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xB587FF95)),
+                navigationIcon = { IconButton(onClick = { navController.navigateUp() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Quay lại") } },
+                actions = { IconButton(onClick = { navController.navigate("profile") }) { Icon(Icons.Default.Person, "Hồ sơ", Modifier.size(48.dp)) } }
             )
-        },
-        bottomBar = {
-            BottomNavigationBar(navController)
-
         }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFF5F7FA)) // Xám trắng nhạt
+                    .background(Color(0xFFF5F7FA))
                     .padding(paddingValues)
                     .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(24.dp))
+                Text("Thêm thông tin liên hệ mới", fontSize = 14.sp, color = Color.Gray)
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Họ và tên
                 FieldLabel("Họ và tên")
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { AddContact_state._name.value = it },
-                    placeholder = { Text("Nhập họ và tên", color = Color(0xFF757575)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Họ và tên",
-                            tint = Color(0xFF616161)
+                Column {
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = {
+                            if (it.length <= 50) {
+                                AddContact_state._name.value = it
+                                nameError = null
+                            } else {
+                                nameError = "Tên không được vượt quá 50 ký tự"
+                            }
+                        },
+                        isError = nameError != null,
+                        placeholder = { Text("Nhập họ và tên", color = Color(0xFF757575)) },
+                        leadingIcon = { Icon(Icons.Default.Person, "Họ và tên", tint = Color(0xFF616161)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF2196F3),
+                            unfocusedBorderColor = Color(0xFFB0BEC5),
+                            errorBorderColor = MaterialTheme.colorScheme.error
                         )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF2196F3),
-                        unfocusedBorderColor = Color(0xFFB0BEC5)
                     )
-                )
+                    nameError?.let {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 4.dp),
+                            fontSize = 12.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Số điện thoại
                 FieldLabel("Số điện thoại")
-                OutlinedTextField(
-                    value = phone,
-                    onValueChange = { AddContact_state._phone.value = it },
-                    placeholder = { Text("Nhập số điện thoại", color = Color(0xFF757575)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Phone,
-                            contentDescription = "Số điện thoại",
-                            tint = Color(0xFF616161)
+                Column {
+                    OutlinedTextField(
+                        value = phone,
+                        onValueChange = {
+                            val cleaned = it.filter { char -> char.isDigit() }
+                            if (cleaned.length <= 15) {
+                                AddContact_state._phone.value = cleaned
+                                phoneError = if (cleaned.isEmpty()) "Số điện thoại không được để trống"
+                                else if (cleaned.length < 10) "Số điện thoại tối thiểu 10 chữ số"
+                                else null
+                            } else {
+                                phoneError = "Số điện thoại tối đa 15 chữ số"
+                            }
+                        },
+                        isError = phoneError != null,
+                        placeholder = { Text("Nhập số điện thoại", color = Color(0xFF757575)) },
+                        leadingIcon = { Icon(Icons.Default.Phone, "Số điện thoại", tint = Color(0xFF616161)) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF2196F3),
+                            unfocusedBorderColor = Color(0xFFB0BEC5),
+                            errorBorderColor = MaterialTheme.colorScheme.error
                         )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF2196F3),
-                        unfocusedBorderColor = Color(0xFFB0BEC5)
                     )
-                )
+                    phoneError?.let {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 4.dp),
+                            fontSize = 12.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Email
                 FieldLabel("Email")
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { AddContact_state._email.value = it },
-                    placeholder = { Text("Nhập email", color = Color(0xFF757575)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Email,
-                            contentDescription = "Email",
-                            tint = Color(0xFF616161)
+                Column {
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = {
+                            AddContact_state._email.value = it
+                            emailError = if (it.isNotEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(it).matches())
+                                "Email không hợp lệ" else null
+                        },
+                        isError = emailError != null,
+                        placeholder = { Text("Nhập email", color = Color(0xFF757575)) },
+                        leadingIcon = { Icon(Icons.Default.Email, "Email", tint = Color(0xFF616161)) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF2196F3),
+                            unfocusedBorderColor = Color(0xFFB0BEC5),
+                            errorBorderColor = MaterialTheme.colorScheme.error
                         )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF2196F3),
-                        unfocusedBorderColor = Color(0xFFB0BEC5)
                     )
-                )
+                    emailError?.let {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 4.dp),
+                            fontSize = 12.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Nhóm
                 FieldLabel("Nhóm")
-                GroupDropdownMenu(
-                    selectedGroup = selectedGroup?.group_name ?: "Chọn nhóm",
-                    groups = groups,
-                    onGroupSelected = { AddContact_state._selectedGroup.value = it }
-                )
+                Column {
+                    GroupDropdownMenu(
+                        selectedGroup = selectedGroup?.group_name ?: "Chọn nhóm",
+                        groups = groups,
+                        onGroupSelected = {
+                            AddContact_state._selectedGroup.value = it
+                            groupError = null
+                        }
+                    )
+                    if (groups.isEmpty()) {
+                        Text(
+                            "Không có nhóm nào để chọn",
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(start = 16.dp, top = 4.dp),
+                            fontSize = 12.sp
+                        )
+                    } else if (selectedGroup == null) {
+                        Text(
+                            "Vui lòng chọn một nhóm",
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(start = 16.dp, top = 4.dp),
+                            fontSize = 12.sp
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Button lưu
                 Button(
                     onClick = {
-                        scope.launch {
-                            ContactViewModel().addContact(AddContact_state, Contact_state, context)
+                        nameError = if (name.isBlank()) "Tên không được để trống" else if (name.length > 50) "Tên không được vượt quá 50 ký tự" else null
+                        phoneError = if (phone.isBlank()) "Số điện thoại không được để trống"
+                        else if (!phone.all { it.isDigit() }) "Số điện thoại chỉ chứa số"
+                        else if (phone.length < 10) "Số điện thoại tối thiểu 10 chữ số"
+                        else if (phone.length > 15) "Số điện thoại tối đa 15 chữ số"
+                        else null
+                        emailError = if (email.isNotEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) "Email không hợp lệ" else null
+                        groupError = if (selectedGroup == null && groups.isNotEmpty()) "Vui lòng chọn một nhóm" else null
+
+                        if (nameError == null && phoneError == null && emailError == null && groupError == null) {
+                            scope.launch {
+                                ContactViewModel().addContact(AddContact_state, Contact_state, context)
+                                Toast.makeText(context, "Đã lưu liên hệ", Toast.LENGTH_SHORT).show()
+                                delay(1000)
+                                navController.navigate("homedb") {
+                                    popUpTo(navController.graph.startDestinationId)
+                                    launchSingleTop = true
+                                }
+                            }
+                        } else {
+                            Toast.makeText(context, "Vui lòng kiểm tra lại thông tin", Toast.LENGTH_SHORT).show()
                         }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)), // Xanh lá
-                    shape = RoundedCornerShape(12.dp)
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                    shape = RoundedCornerShape(12.dp),
+                    enabled = !isLoading
                 ) {
-                    Text(
-                        text = "Lưu",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Text("Lưu", color = Color.White, fontSize = 19.sp, fontWeight = FontWeight.Medium)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Loading overlay
             if (isLoading) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f)),
+                    modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.3f)),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(color = Color(0xFF4CAF50))
@@ -280,7 +332,6 @@ fun GroupDropdownMenu(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
                 .menuAnchor(),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
