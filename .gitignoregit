@@ -1,0 +1,1 @@
+".idea/vcs.xml"  clean -f .idea/AndroidProjectSystem.xml .idea/runConfigurations.xml .idea/vcs.xml
