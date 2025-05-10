@@ -45,7 +45,7 @@ fun EditContactScreen(
     LaunchedEffect(Unit) {
         AddContact_state.getGroup() // Ensure groups are loaded
     }
-    var name by remember { mutableStateOf(contact.name ?: "") }
+    var name by remember { mutableStateOf(contact.name) }
     var phone by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
@@ -138,7 +138,7 @@ fun EditContactScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(70.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF2196F3),
@@ -165,7 +165,7 @@ fun EditContactScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(70.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF2196F3),
@@ -192,7 +192,7 @@ fun EditContactScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(70.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF2196F3),
@@ -218,7 +218,7 @@ fun EditContactScreen(
 
             Button(
                 onClick = { viewModel.updateContact(context, contact.contact_id, name, email, phone) },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier.fillMaxWidth().height(70.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                 enabled = !isLoading
             ) {
