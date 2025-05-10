@@ -28,22 +28,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import data.model.Contact
 import kotlinx.coroutines.delay
 import ui.view.components.BottomNavigationBar
 import ui.viewmodel.contact.EditContactViewModel
+import ui.viewmodel.contact.state.AddContact_state
 
 @Composable
 fun EditContactScreen(
     navController: NavHostController,
     context: Context,
-    contactId: Int,
+    contact: Contact,
+    AddContact_state: AddContact_state,
     viewModel: EditContactViewModel = viewModel()
 ) {
-    var name by remember { mutableStateOf("") }
+    LaunchedEffect(Unit) {
+        AddContact_state.getGroup() // Ensure groups are loaded
+    }
+    var name by remember { mutableStateOf(contact.name ?: "") }
     var phone by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
-    val groups by viewModel.groups.collectAsState()
+    val groups by AddContact_state.groups.collectAsState()
     val selectedGroup by viewModel.selectedGroup.collectAsState()
 
     val isLoading by viewModel.isLoading.collectAsState()
@@ -53,7 +59,6 @@ fun EditContactScreen(
     val phoneError by viewModel.phoneError.collectAsState()
     val emailError by viewModel.emailError.collectAsState()
 
-    // Load nhóm khi mở màn
     LaunchedEffect(Unit) {
         viewModel.getGroup()
     }
@@ -102,19 +107,13 @@ fun EditContactScreen(
                         )
                     }
                 }
-
             )
-        },
-        /*bottomBar = {
-            BottomNavigationBar(navController)
-
-        }*/
+        }
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF5F7FA)) // Xám trắng nhạt
+                .background(Color(0xFFF5F7FA))
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState()),
@@ -144,14 +143,18 @@ fun EditContactScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF2196F3),
                     unfocusedBorderColor = Color(0xFFB0BEC5)
-                )
+                ),
+                isError = nameError.isNotEmpty(),
+                supportingText = if (nameError.isNotEmpty()) {
+                    { Text(nameError, color = Color.Red) }
+                } else null
             )
 
             // Số điện thoại
             FieldLabel("Số điện thoại")
             OutlinedTextField(
                 value = phone,
-                onValueChange = { name = it },
+                onValueChange = { phone = it },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Phone,
@@ -167,14 +170,18 @@ fun EditContactScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF2196F3),
                     unfocusedBorderColor = Color(0xFFB0BEC5)
-                )
+                ),
+                isError = phoneError.isNotEmpty(),
+                supportingText = if (phoneError.isNotEmpty()) {
+                    { Text(phoneError, color = Color.Red) }
+                } else null
             )
 
             // Email
             FieldLabel("Email")
             OutlinedTextField(
                 value = email,
-                onValueChange = { name= it },
+                onValueChange = { email = it },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Email,
@@ -190,7 +197,11 @@ fun EditContactScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF2196F3),
                     unfocusedBorderColor = Color(0xFFB0BEC5)
-                )
+                ),
+                isError = emailError.isNotEmpty(),
+                supportingText = if (emailError.isNotEmpty()) {
+                    { Text(emailError, color = Color.Red) }
+                } else null
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -206,7 +217,7 @@ fun EditContactScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                onClick = { viewModel.updateContact(context, contactId, name, email, phone) },
+                onClick = { viewModel.updateContact(context, contact.contact_id, name, email, phone) },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                 enabled = !isLoading
@@ -214,44 +225,9 @@ fun EditContactScreen(
                 if (isLoading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
                 } else {
-                    Text("Cập nhập", color = Color.White, fontSize = 19.sp)
+                    Text("Cập nhật", color = Color.White, fontSize = 19.sp)
                 }
             }
-        }
-    }
-}
-
-
-@Composable
-fun EditableTextField(
-    label: String,
-    value: String,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    errorText: String = "",
-    onValueChange: (String) -> Unit
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(text = label, fontWeight = FontWeight.Medium, color = Color.Black)
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(2.dp, RoundedCornerShape(12.dp))
-                .background(Color.White, RoundedCornerShape(12.dp)),
-            shape = RoundedCornerShape(12.dp),
-            isError = errorText.isNotEmpty()
-        )
-
-        if (errorText.isNotEmpty()) {
-            Text(
-                text = errorText,
-                color = Color.Red,
-                style = MaterialTheme.typography.bodySmall
-            )
         }
     }
 }

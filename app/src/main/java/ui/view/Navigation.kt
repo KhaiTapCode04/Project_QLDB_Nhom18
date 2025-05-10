@@ -182,14 +182,19 @@ fun TodoNavigation(viewModel: User_state) {
                 navController = navController,
             )
         }
-        composable("edit/{contactId}") { backStackEntry ->
-
-            val contactId = backStackEntry.arguments?.getString("contactId")?.toIntOrNull() ?: 0
+        composable("edit/{contactJson}",
+            arguments = listOf(navArgument("contactJson") {
+                type = NavType.StringType
+            })
+        ) { backStackEntry ->
+            val contactJson = backStackEntry.arguments?.getString("contactJson") ?: ""
+            val contact = Gson().fromJson(contactJson, Contact::class.java)
 
             EditContactScreen(
                 navController = navController,
                 context = context,
-                contactId = contactId,
+                contact = contact,
+                AddContact_state = AddContact_state,
                 viewModel = viewmodeleditcontact
             )
         }

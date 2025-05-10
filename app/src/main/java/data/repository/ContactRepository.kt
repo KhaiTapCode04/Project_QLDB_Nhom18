@@ -189,4 +189,31 @@ class ContactRepository {
             false
         }
     }
+    suspend fun editContact(contactId: Int, userId:Int, name: String, groupId: Int): Boolean{
+        return try{
+            val response = apiService.editContact(contactId,userId,name,groupId)
+            response.isSuccessful
+        }
+        catch (e: Exception){
+            false
+        }
+    }
+    suspend fun editEmail(contactId: Int, email: String): Boolean{
+        return try{
+            val response = apiService.editEmail(contactId,email,"work")
+            response.isSuccessful
+        }
+        catch (e: Exception){
+            false
+        }
+    }
+    suspend fun editPhone(contactId: Int, phone: String): Boolean{
+        return try{
+            val response = apiService.editPhone(contactId,phone,"mobile")
+            response.isSuccessful
+        }
+        catch (e: Exception){
+            false
+        }
+    }
 }

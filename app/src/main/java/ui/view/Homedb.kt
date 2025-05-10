@@ -325,7 +325,7 @@ fun ContactListItem(
                 DropdownMenuItem(
                     text = { Text("Chỉnh sửa") },
                     onClick = {
-                        navController.navigate("edit/${contact}")
+                        navController.navigate("edit/${Gson().toJson(contact)}")
                         showDropdownMenu = false
                     },
                     leadingIcon = {

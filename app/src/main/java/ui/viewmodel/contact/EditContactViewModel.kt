@@ -1,15 +1,18 @@
 package ui.viewmodel.contact
 
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import data.api.ApiService
 import data.model.Group
+import data.repository.ContactRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ui.viewmodel.contact.state.Contact_state
 import ui.viewmodel.users.UserPreferencesManager
 
 class EditContactViewModel : ViewModel() {
@@ -32,12 +35,7 @@ class EditContactViewModel : ViewModel() {
     val _selectedGroup = MutableStateFlow<Group?>(null)
     val selectedGroup = _selectedGroup.asStateFlow()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://nettruyen.world/contacts/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
 
-    private val api = retrofit.create(ApiService::class.java)
 
     fun getGroup() {
         viewModelScope.launch {
@@ -87,15 +85,12 @@ class EditContactViewModel : ViewModel() {
             _isLoading.value = true
 
             try {
-                val resContact = api.editContact(contactId, userId, name, groupId)
-                val resEmail = api.editEmail(contactId, email, "work")
-                val resPhone = api.editPhone(contactId, phone, "mobile")
-
-                if (resContact.isSuccessful && resContact.body()?.isSuccess == true &&
-                    resEmail.isSuccessful && resEmail.body()?.isSuccess == true &&
-                    resPhone.isSuccessful && resPhone.body()?.isSuccess == true) {
-
+                val resContact = ContactRepository().editContact(contactId, userId, name, groupId)
+                val resEmail =ContactRepository().editEmail(contactId, email)
+                val resPhone = ContactRepository().editPhone(contactId, phone)
+                if (resContact == true && resEmail== true && resPhone== true) {
                     _toastMessage.value = "Cập nhật thành công!"
+                    Contact_state().reload_contact(context)
                 } else {
                     _toastMessage.value = "Cập nhật thất bại!"
                 }

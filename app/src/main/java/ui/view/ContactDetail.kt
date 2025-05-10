@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.gson.Gson
 import data.model.Contact
 import kotlinx.coroutines.launch
 import ui.view.components.BottomNavigationBar
@@ -275,7 +276,7 @@ fun ContactDetailScreen(
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Button(
-                    onClick = { /* Edit action */ },
+                    onClick = { navController.navigate("edit/${Gson().toJson(contact)}") },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF4CAF50) // Xanh lá
                     ),
