@@ -17,7 +17,7 @@ import java.io.FileOutputStream
 
 class UploadImg {
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://nettruyen.world/")
+        .baseUrl("https://quackquack.io.vn/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val apiService = retrofit.create(ApiService::class.java)

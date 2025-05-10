@@ -1,7 +1,7 @@
 package ui.view
 
 import android.content.Context
-import android.widget.Toast
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -52,9 +52,7 @@ fun BlockedContactScreen(
         Block_contact_state.get_block_contacts(context)
     }
 
-    if(blockedContacts.isEmpty()){
-        Toast.makeText(context,"heheee", Toast.LENGTH_SHORT).show()
-    }
+
 
     Scaffold(
         topBar = {

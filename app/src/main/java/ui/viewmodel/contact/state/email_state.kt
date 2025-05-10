@@ -22,8 +22,8 @@ class Email_state : ViewModel() {
             .plus(newEmail)
     }
 
-    fun removeEmailById(emailId: Int) {
-        _emails.value = _emails.value.filterNot { it.email_id == emailId }
+    fun getEmailById(Contact_id: Int): List<Email> {
+        return _emails.value.filter { it.contact_id == Contact_id }
     }
 
     fun clearAllEmails() {

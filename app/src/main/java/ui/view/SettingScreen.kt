@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.nhom18_lttbdd_qldb_ngaybc.R
 import ui.view.components.BottomNavigationBar
 
@@ -43,11 +44,11 @@ fun Setting(navController: NavHostController) {
 
     val settingsItems = listOf(
         SettingItem("Thông tin tài khoản", R.drawable.ic_profile,"profile"),
-        SettingItem("Xuất/Nhập danh bạ", R.drawable.ic_export,""),
+        SettingItem("Xuất/Nhập danh bạ", R.drawable.ic_export,"setting"),
         SettingItem("Danh sách chặn", R.drawable.ic_block, "blocklist"),
         SettingItem("Thùng rác", R.drawable.ic_delete, "TrashContactScreen"),
-      /*  SettingItem("Giao diện", R.drawable.ic_theme, ""),*/
-        SettingItem("Giới thiệu", R.drawable.ic_info, "")
+
+        SettingItem("Giới thiệu", R.drawable.ic_info, "setting")
     )
 
     Scaffold(
@@ -123,10 +124,11 @@ fun Setting(navController: NavHostController) {
 
 @Composable
 fun SettingsItemView(item: SettingItem, iconColor: Color, onClick: () -> Unit, navController: NavHostController) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { navController.navigate(item.route) },
+            .clickable {if(item.route != "setting"){ navController.navigate(item.route)} },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(3.dp)

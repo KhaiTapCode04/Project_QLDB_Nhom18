@@ -19,7 +19,7 @@ import ui.viewmodel.users.UserPreferencesManager
 
 class ContactRepository {
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://nettruyen.world/contacts/")
+        .baseUrl("https://quackquack.io.vn/contacts/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

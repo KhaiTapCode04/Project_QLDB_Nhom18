@@ -11,7 +11,7 @@ import data.model.User
 
 class AuthRepository {
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://nettruyen.world/")
+        .baseUrl("https://quackquack.io.vn/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
